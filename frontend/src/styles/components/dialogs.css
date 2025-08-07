@@ -5,7 +5,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -56,23 +56,23 @@
 }
 
 .custom-dialog-icon.warning {
-    background-color: #fef3c7;
-    color: #d97706;
+    background-color: rgba(255, 179, 0, 0.2);
+    color: var(--warning-color);
 }
 
 .custom-dialog-icon.danger {
-    background-color: #fee2e2;
-    color: #dc2626;
+    background-color: rgba(255, 23, 68, 0.2);
+    color: var(--error-color);
 }
 
 .custom-dialog-icon.info {
-    background-color: #dbeafe;
-    color: #2563eb;
+    background-color: rgba(33, 150, 243, 0.2);
+    color: var(--accent-color);
 }
 
 .custom-dialog-icon.success {
-    background-color: #dcfce7;
-    color: #16a34a;
+    background-color: rgba(67, 214, 117, 0.2);
+    color: var(--success-color);
 }
 
 .custom-dialog h3 {
@@ -129,17 +129,17 @@
 }
 
 .custom-dialog-btn-primary:hover {
-    background-color: #2563eb;
-    border-color: #2563eb;
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
 }
 
 .custom-dialog-btn-danger {
-    background-color: var(--danger-color);
+    background-color: var(--error-color);
     color: white;
-    border-color: var(--danger-color);
+    border-color: var(--error-color);
 }
 
 .custom-dialog-btn-danger:hover {
-    background-color: #dc2626;
-    border-color: #dc2626;
+    background-color: #c62828;
+    border-color: #c62828;
 }

@@ -1,10 +1,1046 @@
-/* Components CSS - All component styles */
+/* Components CSS - Modals, projects, calendar, and other components */
 
-/* Import all component stylesheets */
-@import './components/modals.css';
-@import './components/projects.css';
-@import './components/timeblocks.css';
-@import './components/calendar.css';
-@import './components/settings.css';
-@import './components/dialogs.css';
-@import './components/empty-states.css';
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-icon {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.9rem;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 1rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.modal-btn {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-btn:hover {
+    transform: translateY(-1px);
+}
+
+.modal-btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+.modal-btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.modal-btn-secondary {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
+
+/* Projects Styles */
+.projects-list,
+.completed-projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.project-card {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    box-shadow: var(--shadow);
+    transition: all 0.2s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.project-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.project-main-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.project-icon {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.project-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.project-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.2rem;
+}
+
+.project-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-time-tracked {
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    font-weight: 600;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+}
+
+.project-description {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-url {
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-url:hover {
+    text-decoration: underline;
+}
+
+.project-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+.project-status {
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.project-status.active {
+    background-color: rgba(67, 214, 117, 0.2);
+    color: var(--success-color);
+}
+
+.project-status.completed {
+    background-color: rgba(33, 150, 243, 0.2);
+    color: var(--accent-color);
+}
+
+.project-status.paused {
+    background-color: rgba(255, 179, 0, 0.2);
+    color: var(--warning-color);
+}
+
+.project-deadline {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+}
+
+.project-deadline.overdue {
+    color: var(--error-color);
+    font-weight: 600;
+}
+
+.project-deadline.due-soon {
+    color: var(--warning-color);
+    font-weight: 600;
+}
+
+.project-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 0.5rem;
+}
+
+.project-btn {
+    border: none;
+    background: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
+}
+
+.project-btn:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.project-btn.edit {
+    color: var(--accent-color);
+}
+
+.project-btn.edit:hover {
+    background-color: rgba(33, 150, 243, 0.1);
+}
+
+.project-btn.complete {
+    color: var(--success-color);
+}
+
+.project-btn.complete:hover {
+    background-color: rgba(67, 214, 117, 0.1);
+}
+
+.project-btn.delete {
+    color: var(--error-color);
+}
+
+.project-btn.delete:hover {
+    background-color: rgba(255, 23, 68, 0.1);
+}
+
+.project-btn.toggle-status {
+    color: var(--warning-color);
+}
+
+.project-btn.toggle-status:hover {
+    background-color: rgba(255, 179, 0, 0.1);
+}
+
+/* Project progress bar */
+.project-progress {
+    margin-top: 0.3rem;
+    width: 100%;
+}
+
+.project-progress-bar {
+    width: 100%;
+    height: 4px;
+    background-color: var(--bg-tertiary);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.project-progress-fill {
+    height: 100%;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.project-progress-text {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    margin-top: 0.2rem;
+}
+
+/* Calendar Styles */
+.calendar-container {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.calendar-nav {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.calendar-nav-btn {
+    border: none;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    padding: 0.4rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+}
+
+.calendar-nav-btn:hover {
+    background-color: var(--accent-color);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.calendar-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background-color: var(--border-color);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.calendar-day-header {
+    background-color: var(--bg-tertiary);
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.calendar-day {
+    background-color: var(--bg-primary);
+    padding: 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    position: relative;
+}
+
+.calendar-day:hover {
+    background-color: var(--bg-secondary);
+}
+
+.calendar-day.other-month {
+    color: var(--text-tertiary);
+    background-color: var(--bg-secondary);
+}
+
+.calendar-day.today {
+    background-color: var(--accent-color);
+    color: white;
+    font-weight: 600;
+}
+
+.calendar-day.selected {
+    background-color: var(--accent-hover);
+    color: white;
+    font-weight: 600;
+}
+
+.calendar-day.has-timeblocks {
+    position: relative;
+}
+
+.calendar-day.has-timeblocks::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background-color: var(--success-color);
+    border-radius: 50%;
+}
+
+.calendar-day.today.has-timeblocks::after {
+    background-color: white;
+}
+
+/* Calendar time summary */
+.calendar-day-summary {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 0.6rem;
+    color: var(--accent-color);
+    font-weight: 600;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+}
+
+.calendar-day.today .calendar-day-summary {
+    color: white;
+}
+
+/* Calendar legend */
+.calendar-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+}
+
+.calendar-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.calendar-legend-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.calendar-legend-dot.today {
+    background-color: var(--accent-color);
+}
+
+.calendar-legend-dot.has-blocks {
+    background-color: var(--success-color);
+}
+
+/* Calendar stats */
+.calendar-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius);
+}
+
+.calendar-stat {
+    text-align: center;
+}
+
+.calendar-stat-value {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+}
+
+.calendar-stat-label {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+}
+
+/* Settings Styles */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-item label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.setting-item label i {
+    color: var(--accent-color);
+    width: 1rem;
+}
+
+.setting-select {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+/* Custom Dialog */
+.custom-dialog-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1100;
+    animation: fadeIn 0.3s ease;
+}
+
+.custom-dialog-overlay.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-dialog {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 400px;
+    animation: slideIn 0.3s ease;
+    box-shadow: var(--shadow-lg);
+}
+
+.custom-dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.custom-dialog-icon {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--warning-color);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.custom-dialog-icon.info {
+    background-color: var(--accent-color);
+}
+
+.custom-dialog-icon.success {
+    background-color: var(--success-color);
+}
+
+.custom-dialog-icon.error {
+    background-color: var(--error-color);
+}
+
+.custom-dialog-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.custom-dialog-body {
+    padding: 1rem;
+}
+
+.custom-dialog-body p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.custom-dialog-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.custom-dialog-btn {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.custom-dialog-btn:hover {
+    transform: translateY(-1px);
+}
+
+.custom-dialog-btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+.custom-dialog-btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.custom-dialog-btn-secondary {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
+
+.custom-dialog-btn-secondary:hover {
+    background-color: var(--bg-secondary);
+}
+
+.custom-dialog-btn-danger {
+    background-color: var(--error-color);
+    border-color: var(--error-color);
+    color: white;
+}
+
+.custom-dialog-btn-danger:hover {
+    background-color: #c62828;
+}
+
+/* Context Menu */
+.context-menu {
+    position: fixed;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    z-index: 1200;
+    min-width: 150px;
+    animation: fadeInScale 0.2s ease;
+}
+
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 0.85rem;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+}
+
+.context-menu-item:first-child {
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.context-menu-item:last-child {
+    border-radius: 0 0 var(--radius) var(--radius);
+}
+
+.context-menu-item:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.context-menu-item.danger {
+    color: var(--error-color);
+}
+
+.context-menu-item.danger:hover {
+    background-color: rgba(255, 23, 68, 0.1);
+}
+
+.context-menu-separator {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 0.25rem 0;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Loading states */
+.loading {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+}
+
+.loading-spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--bg-tertiary);
+    border-top: 2px solid var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Tooltips */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 1000;
+    margin-bottom: 0.25rem;
+    border: 1px solid var(--border-color);
+}
+
+.tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.status-indicator.online {
+    background-color: var(--success-color);
+}
+
+.status-indicator.offline {
+    background-color: var(--error-color);
+}
+
+.status-indicator.away {
+    background-color: var(--warning-color);
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.4rem;
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.badge.primary {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.badge.success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.badge.warning {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+.badge.danger {
+    background-color: var(--error-color);
+    color: white;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .modal-btn {
+        width: 100%;
+    }
+    
+    .project-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .project-main-info {
+        width: 100%;
+    }
+    
+    .project-meta {
+        align-items: flex-start;
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .project-actions {
+        margin-left: 0;
+    }
+    
+    .calendar-grid {
+        font-size: 0.8rem;
+    }
+    
+    .calendar-day {
+        min-height: 2rem;
+        font-size: 0.75rem;
+    }
+    
+    .calendar-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .custom-dialog {
+        width: 95%;
+        margin: 1rem;
+    }
+    
+    .custom-dialog-actions {
+        flex-direction: column;
+    }
+    
+    .custom-dialog-btn {
+        width: 100%;
+    }
+    
+    .context-menu {
+        min-width: 120px;
+    }
+    
+    .time-block {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .time-block-actions {
+        align-self: flex-end;
+    }
+}
+
+@media (max-width: 480px) {
+    .project-card {
+        padding: 0.5rem;
+    }
+    
+    .project-title {
+        font-size: 0.9rem;
+    }
+    
+    .project-description,
+    .project-url {
+        font-size: 0.75rem;
+    }
+    
+    .calendar-day {
+        min-height: 1.8rem;
+        font-size: 0.7rem;
+        padding: 0.25rem;
+    }
+    
+    .calendar-day-summary {
+        font-size: 0.55rem;
+    }
+    
+    .modal-content {
+        width: 98%;
+        margin: 0.5rem;
+    }
+    
+    .time-block {
+        padding: 0.5rem;
+    }
+}
+
+/* Dark theme specific adjustments */
+[data-theme="light"] .project-status.active {
+    background-color: rgba(67, 214, 117, 0.15);
+    color: #2e7d36;
+}
+
+[data-theme="light"] .project-status.completed {
+    background-color: rgba(25, 118, 210, 0.15);
+    color: #1565c0;
+}
+
+[data-theme="light"] .project-status.paused {
+    background-color: rgba(255, 179, 0, 0.15);
+    color: #e65100;
+}
+
+[data-theme="light"] .time-block.running {
+    border-color: #2e7d36;
+    background-color: rgba(67, 214, 117, 0.1);
+}
+
+[data-theme="light"] .calendar-day.has-timeblocks::after {
+    background-color: #2e7d36;
+}
+
+/* Print styles */
+@media print {
+    .nav,
+    .modal,
+    .custom-dialog-overlay,
+    .context-menu,
+    .timer-notification {
+        display: none !important;
+    }
+    
+    .main {
+        margin-left: 0;
+        padding: 1rem;
+    }
+    
+    .project-actions,
+    .time-block-actions {
+        display: none;
+    }
+    
+    .project-card,
+    .time-block {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}

@@ -170,20 +170,34 @@ class TimeBlocks {
         return `
             <div class="time-block ${isRunning ? 'running' : ''}" data-id="${timeBlock.id}">
                 <div class="time-block-info">
-                    <div class="time-block-project">${Utils.escapeHtml(timeBlock.project_name)}</div>
-                    <div class="time-block-duration">${Utils.formatDuration(duration)}</div>
-                    <div class="time-block-time">${timeRange}</div>
-                    ${timeBlock.description ? `
-                        <div class="time-block-description">${Utils.escapeHtml(timeBlock.description)}</div>
-                    ` : ''}
+                    <div class="time-block-header">
+                        <div class="time-block-content">
+                            <div class="time-block-project">
+                                <i class="fas fa-folder"></i>
+                                <span>${Utils.escapeHtml(timeBlock.project_name)}</span>
+                            </div>
+                            <div class="time-block-duration">
+                                <i class="fas fa-clock"></i>
+                                <span>${Utils.formatDuration(duration)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="time-block-meta">
+                        <div class="time-block-meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>${timeRange}</span>
+                        </div>
+                        ${timeBlock.description ? `
+                            <div class="time-block-meta-item">
+                                <i class="fas fa-sticky-note"></i>
+                                <span>${Utils.escapeHtml(timeBlock.description)}</span>
+                            </div>
+                        ` : ''}
+                    </div>
                 </div>
                 
                 <div class="time-block-actions">
-                    ${isRunning ? `
-                        <button class="time-block-action-btn stop" data-action="stop" data-id="${timeBlock.id}">
-                            <i class="fas fa-stop"></i>
-                        </button>
-                    ` : ''}
                     <button class="time-block-action-btn edit" data-action="edit" data-id="${timeBlock.id}">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -204,9 +218,6 @@ class TimeBlocks {
             }
             
             switch (action) {
-                case 'stop':
-                    await this.stopTimeBlock(numericId);
-                    break;
                 case 'edit':
                     await this.editTimeBlock(numericId);
                     break;
@@ -220,12 +231,6 @@ class TimeBlocks {
             console.error(`Error performing ${action}:`, error);
             Utils.showNotification('Error', `Failed to ${action} time block: ${error.message}`, 'error');
         }
-    }
-
-    async stopTimeBlock(id) {
-        await API.stopRunningTimeBlock(id);
-        await this.loadTimeBlocks();
-        Utils.showNotification('Success', 'Time block stopped successfully!', 'success');
     }
 
     async editTimeBlock(id) {

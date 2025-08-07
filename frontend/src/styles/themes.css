@@ -1,25 +1,44 @@
 /* Themes CSS - Light and Dark theme support */
 
-/* Dark theme */
+/* Dark theme - default colors are already set in main.css */
 [data-theme="dark"] {
-    --bg-primary: #1a202c;
-    --bg-secondary: #2d3748;
-    --bg-tertiary: #4a5568;
-    --text-primary: #f7fafc;
-    --text-secondary: #e2e8f0;
-    --text-muted: #a0aec0;
-    --border-color: #4a5568;
-    --accent-color: #4299e1;
-    --accent-hover: #3182ce;
-    --success-color: #48bb78;
-    --warning-color: #ed8936;
-    --danger-color: #f56565;
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #181818;
+    --bg-tertiary: #232323;
+    --text-primary: #f8f8f8;
+    --text-secondary: #e0e0e0;
+    --text-tertiary: #a0a0a0;
+    --border-color: #444444;
+    --accent-color: #2196f3;
+    --accent-hover: #1565c0;
+    --success-color: #43d675;
+    --warning-color: #ffb300;
+    --error-color: #ff1744;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Dark theme specific adjustments */
+/* Light theme override */
+[data-theme="light"] {
+    --bg-primary: #f7f7f7;
+    --bg-secondary: #e0e0e0;
+    --bg-tertiary: #cccccc;
+    --text-primary: #111111;
+    --text-secondary: #333333;
+    --text-tertiary: #666666;
+    --border-color: #bdbdbd;
+    --accent-color: #1976d2;
+    --accent-hover: #0d47a1;
+    --success-color: #43d675;
+    --warning-color: #ffb300;
+    --error-color: #ff1744;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Theme specific adjustments */
 [data-theme="dark"] .nav {
     border-right-color: var(--border-color);
 }
@@ -30,23 +49,44 @@
 }
 
 [data-theme="dark"] .project-status.active {
-    background-color: #2d5a2d;
-    color: #68d391;
+    background-color: rgba(67, 214, 117, 0.2);
+    color: var(--success-color);
 }
 
 [data-theme="dark"] .project-status.completed {
-    background-color: #2d3748;
-    color: #9f7aea;
+    background-color: rgba(33, 150, 243, 0.2);
+    color: var(--accent-color);
 }
 
 [data-theme="dark"] .project-status.paused {
-    background-color: #744210;
-    color: #f6e05e;
+    background-color: rgba(255, 179, 0, 0.2);
+    color: var(--warning-color);
 }
 
 [data-theme="dark"] .time-block.running {
     border-color: var(--success-color);
-    background-color: #1a2f1a;
+    background-color: rgba(67, 214, 117, 0.1);
+}
+
+/* Light theme specific adjustments */
+[data-theme="light"] .project-status.active {
+    background-color: rgba(67, 214, 117, 0.15);
+    color: #2e7d36;
+}
+
+[data-theme="light"] .project-status.completed {
+    background-color: rgba(25, 118, 210, 0.15);
+    color: #1565c0;
+}
+
+[data-theme="light"] .project-status.paused {
+    background-color: rgba(255, 179, 0, 0.15);
+    color: #e65100;
+}
+
+[data-theme="light"] .time-block.running {
+    border-color: #2e7d36;
+    background-color: rgba(67, 214, 117, 0.1);
 }
 
 [data-theme="dark"] .timer-container.running {

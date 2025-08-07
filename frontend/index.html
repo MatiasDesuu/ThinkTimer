@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./src/styles/main.css">
     <link rel="stylesheet" href="./src/styles/components.css">
+    <link rel="stylesheet" href="./src/styles/components/projects.css">
+    <link rel="stylesheet" href="./src/styles/components/timeblocks.css">
+    <link rel="stylesheet" href="./src/styles/components/dialogs.css">
+    <link rel="stylesheet" href="./src/styles/components/modals.css">
+    <link rel="stylesheet" href="./src/styles/components/calendar.css">
+    <link rel="stylesheet" href="./src/styles/components/settings.css">
     <link rel="stylesheet" href="./src/styles/timer.css">
     <link rel="stylesheet" href="./src/styles/themes.css">
 </head>
@@ -57,33 +63,31 @@
 
                 <!-- Timer Section -->
                 <div class="timer-section">
-                    <div class="timer-container">
-                        <div class="project-selector-container">
-                            <select id="project-selector" class="project-selector">
-                                <option value="">Select a project...</option>
-                            </select>
-                        </div>
-                        <div class="timer-display">
-                            <span id="timer-display">00:00:00</span>
-                        </div>
-                        <div class="timer-controls">
-                            <button id="start-timer" class="timer-btn timer-btn-start">
-                                <i class="fas fa-play"></i>
-                                Start
-                            </button>
-                            <button id="pause-timer" class="timer-btn timer-btn-pause" disabled>
-                                <i class="fas fa-pause"></i>
-                                Pause
-                            </button>
-                            <button id="stop-timer" class="timer-btn timer-btn-stop" disabled>
-                                <i class="fas fa-stop"></i>
-                                Stop
-                            </button>
-                            <button id="reset-timer" class="timer-btn timer-btn-reset" disabled>
-                                <i class="fas fa-redo"></i>
-                                Reset
-                            </button>
-                        </div>
+                    <div class="project-selector-container">
+                        <select id="project-selector" class="project-selector">
+                            <option value="">Select a project...</option>
+                        </select>
+                    </div>
+                    <div class="timer-display">
+                        <span id="timer-display">00:00:00</span>
+                    </div>
+                    <div class="timer-controls">
+                        <button id="start-timer" class="timer-btn timer-btn-start">
+                            <i class="fas fa-play"></i>
+                            Start
+                        </button>
+                        <button id="pause-timer" class="timer-btn timer-btn-pause" disabled>
+                            <i class="fas fa-pause"></i>
+                            Pause
+                        </button>
+                        <button id="stop-timer" class="timer-btn timer-btn-stop" disabled>
+                            <i class="fas fa-stop"></i>
+                            Stop
+                        </button>
+                        <button id="reset-timer" class="timer-btn timer-btn-reset" disabled>
+                            <i class="fas fa-redo"></i>
+                            Reset
+                        </button>
                     </div>
                 </div>
 
@@ -93,7 +97,7 @@
                         <h2><i class="fas fa-list"></i> Time Blocks</h2>
                         <button id="add-manual-block" class="btn btn-secondary">
                             <i class="fas fa-plus"></i>
-                            Add Manual Block
+                            Add Block
                         </button>
                     </div>
                     <div id="time-blocks-list" class="time-blocks-list">
@@ -137,7 +141,7 @@
                 </div>
                 <div class="time-blocks-section">
                     <div class="section-header">
-                        <h2><i class="fas fa-calendar-day"></i> Time Blocks for <span id="selected-calendar-date"></span></h2>
+                        <h2><i class="fas fa-calendar-day"></i> Blocks for <span id="selected-calendar-date"></span></h2>
                     </div>
                     <div id="calendar-time-blocks" class="time-blocks-list">
                         <!-- Time blocks for selected date will be populated here -->
@@ -154,8 +158,8 @@
                     <div class="setting-item">
                         <label for="theme-selector"><i class="fas fa-palette"></i> Theme</label>
                         <select id="theme-selector" class="setting-select">
-                            <option value="light">Light</option>
                             <option value="dark">Dark</option>
+                            <option value="light">Light</option>
                         </select>
                     </div>
                     <div class="setting-item">
@@ -170,97 +174,97 @@
         </main>
     </div>
 
-    <!-- Modals -->
-    <div id="project-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-icon">
-                    <i class="fas fa-folder"></i>
+        <!-- Modals -->
+        <div id="project-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-icon">
+                        <i class="fas fa-folder"></i>
+                    </div>
+                    <h2 id="project-modal-title">Add Project</h2>
                 </div>
-                <h2 id="project-modal-title">Add Project</h2>
+                <form id="project-form">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="project-name">Name *</label>
+                            <input type="text" id="project-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-description">Description</label>
+                            <textarea id="project-description" name="description" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-url">URL</label>
+                            <input type="url" id="project-url" name="url">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-deadline">Deadline</label>
+                            <input type="date" id="project-deadline" name="deadline">
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="modal-btn modal-btn-secondary" id="cancel-project">Cancel</button>
+                        <button type="submit" class="modal-btn modal-btn-primary">Save Project</button>
+                    </div>
+                </form>
             </div>
-            <form id="project-form">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="project-name">Name *</label>
-                        <input type="text" id="project-name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="project-description">Description</label>
-                        <textarea id="project-description" name="description" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="project-url">URL</label>
-                        <input type="url" id="project-url" name="url">
-                    </div>
-                    <div class="form-group">
-                        <label for="project-deadline">Deadline</label>
-                        <input type="date" id="project-deadline" name="deadline">
-                    </div>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="modal-btn modal-btn-secondary" id="cancel-project">Cancel</button>
-                    <button type="submit" class="modal-btn modal-btn-primary">Save Project</button>
-                </div>
-            </form>
         </div>
-    </div>
 
-    <div id="timeblock-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-icon">
-                    <i class="fas fa-clock"></i>
+        <div id="timeblock-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h2>Add Time Block</h2>
                 </div>
-                <h2>Add Manual Time Block</h2>
+                <form id="timeblock-form">
+                    <div class="modal-body">
+                        <div class="form-group has-select">
+                            <label for="timeblock-project">Project *</label>
+                            <select id="timeblock-project" name="project_id" required>
+                                <option value="">Select a project...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeblock-start">Start Time *</label>
+                            <input type="datetime-local" id="timeblock-start" name="start_time" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeblock-end">End Time *</label>
+                            <input type="datetime-local" id="timeblock-end" name="end_time" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeblock-description">Description</label>
+                            <textarea id="timeblock-description" name="description" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="modal-btn modal-btn-secondary" id="cancel-timeblock">Cancel</button>
+                        <button type="submit" class="modal-btn modal-btn-primary">Save Time Block</button>
+                    </div>
+                </form>
             </div>
-            <form id="timeblock-form">
-                <div class="modal-body">
-                    <div class="form-group has-select">
-                        <label for="timeblock-project">Project *</label>
-                        <select id="timeblock-project" name="project_id" required>
-                            <option value="">Select a project...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="timeblock-start">Start Time *</label>
-                        <input type="datetime-local" id="timeblock-start" name="start_time" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="timeblock-end">End Time *</label>
-                        <input type="datetime-local" id="timeblock-end" name="end_time" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="timeblock-description">Description</label>
-                        <textarea id="timeblock-description" name="description" rows="2"></textarea>
-                    </div>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="modal-btn modal-btn-secondary" id="cancel-timeblock">Cancel</button>
-                    <button type="submit" class="modal-btn modal-btn-primary">Save Time Block</button>
-                </div>
-            </form>
         </div>
-    </div>
 
-    <!-- Custom Dialog -->
-    <div id="custom-dialog" class="custom-dialog-overlay">
-        <div class="custom-dialog">
-            <div class="custom-dialog-header">
-                <div class="custom-dialog-icon">
-                    <i id="custom-dialog-icon" class="fas fa-question"></i>
+        <!-- Custom Dialog -->
+        <div id="custom-dialog" class="custom-dialog-overlay">
+            <div class="custom-dialog">
+                <div class="custom-dialog-header">
+                    <div class="custom-dialog-icon">
+                        <i id="custom-dialog-icon" class="fas fa-question"></i>
+                    </div>
+                    <h3 id="custom-dialog-title">Confirm Action</h3>
                 </div>
-                <h3 id="custom-dialog-title">Confirm Action</h3>
-            </div>
-            <div class="custom-dialog-body">
-                <p id="custom-dialog-message">Are you sure you want to perform this action?</p>
-            </div>
-            <div class="custom-dialog-actions">
-                <button id="custom-dialog-cancel" class="custom-dialog-btn custom-dialog-btn-secondary">Cancel</button>
-                <button id="custom-dialog-confirm" class="custom-dialog-btn custom-dialog-btn-primary">Confirm</button>
+                <div class="custom-dialog-body">
+                    <p id="custom-dialog-message">Are you sure you want to perform this action?</p>
+                </div>
+                <div class="custom-dialog-actions">
+                    <button id="custom-dialog-cancel" class="custom-dialog-btn custom-dialog-btn-secondary">Cancel</button>
+                    <button id="custom-dialog-confirm" class="custom-dialog-btn custom-dialog-btn-primary">Confirm</button>
+                </div>
             </div>
         </div>
-    </div>
 
     <script src="./src/main.js" type="module"></script>
 </body>

@@ -99,37 +99,36 @@ class Projects {
         
         return `
             <div class="project-card" data-id="${project.id}">
-                <div class="project-main-info">
-                    <div class="project-details">
-                        <div class="project-header">
-                            <h3 class="project-title">${Utils.escapeHtml(project.name)}</h3>
-                            <span class="project-status ${statusClass}">${statusClass}</span>
-                        </div>
-                        
-                        ${project.description ? `
-                            <p class="project-description">${Utils.escapeHtml(project.description)}</p>
-                        ` : ''}
-                        
-                        <div class="project-meta">
-                            ${project.url ? `
-                                <div class="project-meta-item">
-                                    <i class="fas fa-link"></i>
-                                    <a href="${project.url}" target="_blank" class="project-url">${Utils.escapeHtml(project.url)}</a>
-                                </div>
-                            ` : ''}
-                            
-                            ${deadline ? `
-                                <div class="project-meta-item">
-                                    <i class="fas fa-calendar"></i>
-                                    <span>Deadline: ${deadline}</span>
-                                </div>
-                            ` : ''}
-                            
-                            <div class="project-meta-item">
-                                <i class="fas fa-clock"></i>
-                                <span>Created: ${Utils.formatDate(project.created_at)}</span>
+                <div class="project-info">
+                    <div class="project-header">
+                        <div class="project-title-section">
+                            <div class="project-title-row">
+                                <span class="project-status-badge ${statusClass}">${statusClass}</span>
+                                <h3 class="project-title">${Utils.escapeHtml(project.name)}</h3>
                             </div>
+                            ${project.description ? `
+                                <p class="project-description">${Utils.escapeHtml(project.description)}</p>
+                            ` : ''}
                         </div>
+                    </div>
+                    
+                    <div class="project-meta">
+                        <div class="project-meta-item">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>Created: ${Utils.formatDate(project.created_at)}</span>
+                        </div>
+                        ${deadline ? `
+                            <div class="project-meta-item">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>Deadline: ${deadline}</span>
+                            </div>
+                        ` : ''}
+                        ${project.url ? `
+                            <div class="project-meta-item">
+                                <i class="fas fa-link"></i>
+                                <a href="${project.url}" target="_blank" class="project-url">${Utils.escapeHtml(project.url)}</a>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
                 
