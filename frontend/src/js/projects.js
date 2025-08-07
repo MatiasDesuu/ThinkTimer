@@ -1,0 +1,344 @@
+// Projects Module - Handles project management
+import API from './api.js';
+import Utils from './utils.js';
+import Dialog from './dialog.js';
+
+class Projects {
+    constructor() {
+        this.projects = [];
+        this.currentEditingId = null;
+        
+        this.initializeElements();
+        this.bindEvents();
+        this.loadProjects();
+    }
+
+    initializeElements() {
+        this.activeProjectsList = document.getElementById('active-projects-list');
+        this.completedProjectsList = document.getElementById('completed-projects-list');
+        this.completedProjectsSection = document.getElementById('completed-projects-section');
+        this.addProjectBtn = document.getElementById('add-project');
+        this.projectModal = document.getElementById('project-modal');
+        this.projectForm = document.getElementById('project-form');
+        this.projectModalTitle = document.getElementById('project-modal-title');
+        this.cancelProjectBtn = document.getElementById('cancel-project');
+        
+        // Form fields
+        this.nameField = document.getElementById('project-name');
+        this.descriptionField = document.getElementById('project-description');
+        this.urlField = document.getElementById('project-url');
+        this.deadlineField = document.getElementById('project-deadline');
+    }
+
+    bindEvents() {
+        this.addProjectBtn.addEventListener('click', () => this.openModal());
+        this.cancelProjectBtn.addEventListener('click', () => this.closeModal());
+        this.projectForm.addEventListener('submit', (e) => this.handleSubmit(e));
+        
+        // Close modal when clicking outside
+        this.projectModal.addEventListener('click', (e) => {
+            if (e.target === this.projectModal) {
+                this.closeModal();
+            }
+        });
+
+        // Close modal with escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.projectModal.classList.contains('active')) {
+                this.closeModal();
+            }
+        });
+    }
+
+    async loadProjects() {
+        try {
+            this.projects = await API.getAllProjects() || [];
+            this.renderProjects();
+            this.updateProjectSelectors();
+        } catch (error) {
+            console.error('Error loading projects:', error);
+            Utils.showNotification('Error', 'Failed to load projects', 'error');
+            this.projects = [];
+            this.renderProjects();
+        }
+    }
+
+    renderProjects() {
+        const activeProjects = this.projects.filter(p => p.status !== 'completed');
+        const completedProjects = this.projects.filter(p => p.status === 'completed');
+
+        // Render active projects
+        if (!this.activeProjectsList) return;
+
+        if (activeProjects.length === 0) {
+            this.activeProjectsList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>No Active Projects</h3>
+                    <p>Create your first project to start tracking time</p>
+                </div>
+            `;
+        } else {
+            this.activeProjectsList.innerHTML = activeProjects.map(project => this.createProjectCard(project)).join('');
+        }
+
+        // Render completed projects
+        if (completedProjects.length > 0) {
+            this.completedProjectsSection.style.display = 'block';
+            this.completedProjectsList.innerHTML = completedProjects.map(project => this.createProjectCard(project)).join('');
+        } else {
+            this.completedProjectsSection.style.display = 'none';
+        }
+
+        this.bindProjectEvents();
+    }
+
+    createProjectCard(project) {
+        const statusClass = project.status || 'active';
+        const deadline = project.deadline ? Utils.formatDate(project.deadline) : null;
+        
+        return `
+            <div class="project-card" data-id="${project.id}">
+                <div class="project-main-info">
+                    <div class="project-details">
+                        <div class="project-header">
+                            <h3 class="project-title">${Utils.escapeHtml(project.name)}</h3>
+                            <span class="project-status ${statusClass}">${statusClass}</span>
+                        </div>
+                        
+                        ${project.description ? `
+                            <p class="project-description">${Utils.escapeHtml(project.description)}</p>
+                        ` : ''}
+                        
+                        <div class="project-meta">
+                            ${project.url ? `
+                                <div class="project-meta-item">
+                                    <i class="fas fa-link"></i>
+                                    <a href="${project.url}" target="_blank" class="project-url">${Utils.escapeHtml(project.url)}</a>
+                                </div>
+                            ` : ''}
+                            
+                            ${deadline ? `
+                                <div class="project-meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Deadline: ${deadline}</span>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="project-meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Created: ${Utils.formatDate(project.created_at)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-actions">
+                    <button class="project-action-btn edit" data-action="edit" data-id="${project.id}" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    ${project.status !== 'completed' ? `
+                        <button class="project-action-btn ${project.status === 'active' ? 'pause' : 'resume'}" 
+                                data-action="${project.status === 'active' ? 'pause' : 'resume'}" 
+                                data-id="${project.id}"
+                                title="${project.status === 'active' ? 'Pause' : 'Resume'}">
+                            <i class="fas fa-${project.status === 'active' ? 'pause' : 'play'}"></i>
+                        </button>
+                        <button class="project-action-btn complete" data-action="complete" data-id="${project.id}" title="Complete">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    ` : `
+                        <button class="project-action-btn uncomplete" data-action="uncomplete" data-id="${project.id}" title="Mark as Active">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                    `}
+                    <button class="project-action-btn delete" data-action="delete" data-id="${project.id}" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    bindProjectEvents() {
+        const actionButtons = [
+            ...this.activeProjectsList?.querySelectorAll('.project-action-btn') || [],
+            ...this.completedProjectsList?.querySelectorAll('.project-action-btn') || []
+        ];
+        
+        actionButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const action = btn.dataset.action;
+                const id = parseInt(btn.dataset.id);
+                this.handleProjectAction(action, id);
+            });
+        });
+    }
+
+    async handleProjectAction(action, id) {
+        try {
+            switch (action) {
+                case 'edit':
+                    await this.editProject(id);
+                    break;
+                case 'pause':
+                    await this.updateProjectStatus(id, 'paused');
+                    break;
+                case 'resume':
+                    await this.updateProjectStatus(id, 'active');
+                    break;
+                case 'complete':
+                    await this.updateProjectStatus(id, 'completed');
+                    break;
+                case 'uncomplete':
+                    await this.updateProjectStatus(id, 'active');
+                    break;
+                case 'delete':
+                    await this.deleteProject(id);
+                    break;
+            }
+        } catch (error) {
+            console.error(`Error performing ${action}:`, error);
+            Utils.showNotification('Error', `Failed to ${action} project`, 'error');
+        }
+    }
+
+    async editProject(id) {
+        const project = this.projects.find(p => p.id === id);
+        if (!project) return;
+
+        this.currentEditingId = id;
+        this.projectModalTitle.textContent = 'Edit Project';
+        
+        // Populate form
+        this.nameField.value = project.name;
+        this.descriptionField.value = project.description || '';
+        this.urlField.value = project.url || '';
+        this.deadlineField.value = project.deadline ? Utils.formatDateForInput(project.deadline) : '';
+        
+        this.openModal();
+    }
+
+    async updateProjectStatus(id, status) {
+        const project = await API.updateProject(id, { status });
+        await this.loadProjects();
+        Utils.showNotification('Success', `Project ${status} successfully!`, 'success');
+    }
+
+    async deleteProject(id) {
+        const confirmed = await Dialog.confirm(
+            'Delete Project',
+            'Are you sure you want to delete this project? This action cannot be undone and will delete all associated time blocks.',
+            {
+                confirmText: 'Delete',
+                cancelText: 'Cancel',
+                confirmType: 'danger'
+            }
+        );
+
+        if (!confirmed) return;
+
+        await API.deleteProject(id);
+        await this.loadProjects();
+        Utils.showNotification('Success', 'Project deleted successfully!', 'success');
+    }
+
+    openModal() {
+        this.projectModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        this.nameField.focus();
+    }
+
+    closeModal() {
+        this.projectModal.classList.remove('active');
+        document.body.style.overflow = '';
+        this.currentEditingId = null;
+        this.projectForm.reset();
+        this.projectModalTitle.textContent = 'Add Project';
+    }
+
+    async handleSubmit(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this.projectForm);
+        const projectData = {
+            name: formData.get('name').trim(),
+            description: formData.get('description').trim() || null,
+            url: formData.get('url').trim() || null,
+            deadline: formData.get('deadline') ? new Date(formData.get('deadline')) : null
+        };
+
+        // Validation
+        if (!projectData.name) {
+            Utils.showNotification('Error', 'Project name is required', 'error');
+            return;
+        }
+
+        if (projectData.url && !Utils.isValidURL(projectData.url)) {
+            Utils.showNotification('Error', 'Please enter a valid URL', 'error');
+            return;
+        }
+
+        try {
+            if (this.currentEditingId) {
+                // Update existing project
+                await API.updateProject(this.currentEditingId, projectData);
+                Utils.showNotification('Success', 'Project updated successfully!', 'success');
+            } else {
+                // Create new project
+                await API.createProject(projectData);
+                Utils.showNotification('Success', 'Project created successfully!', 'success');
+            }
+
+            this.closeModal();
+            await this.loadProjects();
+        } catch (error) {
+            console.error('Error saving project:', error);
+            Utils.showNotification('Error', 'Failed to save project', 'error');
+        }
+    }
+
+    updateProjectSelectors() {
+        // Update project selectors in timer and timeblock forms
+        const selectors = [
+            document.getElementById('project-selector'),
+            document.getElementById('timeblock-project')
+        ];
+
+        selectors.forEach(selector => {
+            if (selector) {
+                const currentValue = selector.value;
+                selector.innerHTML = '<option value="">Select a project...</option>';
+                
+                this.projects
+                    .filter(project => project.status === 'active')
+                    .forEach(project => {
+                        const option = document.createElement('option');
+                        option.value = project.id;
+                        option.textContent = project.name;
+                        selector.appendChild(option);
+                    });
+                
+                // Restore previous selection if it still exists
+                if (currentValue && selector.querySelector(`option[value="${currentValue}"]`)) {
+                    selector.value = currentValue;
+                }
+            }
+        });
+    }
+
+    getProjects() {
+        return this.projects;
+    }
+
+    getActiveProjects() {
+        return this.projects.filter(project => project.status === 'active');
+    }
+
+    getProjectById(id) {
+        return this.projects.find(project => project.id === id);
+    }
+}
+
+export default Projects;

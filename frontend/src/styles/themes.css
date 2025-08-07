@@ -1,0 +1,164 @@
+/* Themes CSS - Light and Dark theme support */
+
+/* Dark theme */
+[data-theme="dark"] {
+    --bg-primary: #1a202c;
+    --bg-secondary: #2d3748;
+    --bg-tertiary: #4a5568;
+    --text-primary: #f7fafc;
+    --text-secondary: #e2e8f0;
+    --text-muted: #a0aec0;
+    --border-color: #4a5568;
+    --accent-color: #4299e1;
+    --accent-hover: #3182ce;
+    --success-color: #48bb78;
+    --warning-color: #ed8936;
+    --danger-color: #f56565;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark theme specific adjustments */
+[data-theme="dark"] .nav {
+    border-right-color: var(--border-color);
+}
+
+[data-theme="dark"] .nav-item.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+[data-theme="dark"] .project-status.active {
+    background-color: #2d5a2d;
+    color: #68d391;
+}
+
+[data-theme="dark"] .project-status.completed {
+    background-color: #2d3748;
+    color: #9f7aea;
+}
+
+[data-theme="dark"] .project-status.paused {
+    background-color: #744210;
+    color: #f6e05e;
+}
+
+[data-theme="dark"] .time-block.running {
+    border-color: var(--success-color);
+    background-color: #1a2f1a;
+}
+
+[data-theme="dark"] .timer-container.running {
+    border-color: var(--success-color);
+    background-color: #1a2f1a;
+}
+
+[data-theme="dark"] .timer-container.paused {
+    border-color: var(--warning-color);
+    background-color: #2d1a0a;
+}
+
+[data-theme="dark"] .calendar-day.today {
+    border-color: var(--accent-color);
+}
+
+[data-theme="dark"] .calendar-day.selected {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+[data-theme="dark"] .calendar-day.other-month {
+    background-color: #2d3748;
+    color: var(--text-muted);
+}
+
+[data-theme="dark"] .timer-notification.success {
+    background-color: rgba(72, 187, 120, 0.1);
+}
+
+[data-theme="dark"] .timer-notification.error {
+    background-color: rgba(245, 101, 101, 0.1);
+}
+
+/* Theme transition */
+* {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Theme toggle animation */
+.theme-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+    background-color: var(--bg-tertiary);
+}
+
+.theme-toggle i {
+    font-size: 1.1rem;
+}
+
+.theme-toggle .theme-icon {
+    transition: transform 0.3s ease;
+}
+
+[data-theme="dark"] .theme-toggle .fa-sun {
+    transform: rotate(180deg);
+}
+
+[data-theme="light"] .theme-toggle .fa-moon {
+    transform: rotate(-90deg);
+}
+
+/* Accessibility improvements for dark theme */
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group select:focus,
+[data-theme="dark"] .form-group textarea:focus {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+[data-theme="dark"] .btn:focus {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+[data-theme="dark"] .nav-item:focus {
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+}
+
+/* Print styles (always light) */
+@media print {
+    * {
+        background-color: white !important;
+        color: black !important;
+        border-color: #ccc !important;
+        box-shadow: none !important;
+    }
+    
+    .nav {
+        display: none !important;
+    }
+    
+    .main {
+        margin-left: 0 !important;
+    }
+    
+    .timer-controls {
+        display: none !important;
+    }
+    
+    .project-actions,
+    .time-block-actions {
+        display: none !important;
+    }
+}

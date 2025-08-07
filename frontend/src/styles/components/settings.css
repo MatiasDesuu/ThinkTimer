@@ -1,0 +1,88 @@
+/* Settings Components */
+.settings-container {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+}
+
+.settings-section {
+    max-width: 600px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.setting-item label {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.setting-select {
+    width: auto;
+    min-width: 150px;
+    padding: 0.75rem 2.25rem 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: relative;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+}
+
+.setting-select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.setting-select:hover {
+    border-color: var(--accent-color);
+}
+
+.setting-group:hover::after {
+    color: var(--accent-color);
+}
+
+.setting-select option {
+    padding: 0.5rem;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: none;
+}
+
+.setting-select option:hover,
+.setting-select option:focus {
+    background-color: var(--bg-secondary);
+}
+
+.setting-select option:checked {
+    background-color: var(--accent-color);
+    color: white;
+}

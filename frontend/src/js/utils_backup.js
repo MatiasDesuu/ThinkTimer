@@ -1,0 +1,225 @@
+// Utils Module - Utility functions
+class Utils {
+    // Format duration in seconds to HH:MM:SS
+    static formatDuration(seconds) {
+        if (!seconds) return '00:00:00';
+        
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Format date to readable string
+    static formatDate(date) {
+        if (!date) return '';
+        
+        const d = new Date(date);
+        const options = { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        };
+        
+        return d.toLocaleDateString('en-US', options);
+    }
+
+    // Format time based on settings
+    static formatTime(date, format = '24') {
+        if (!date) return '';
+        
+        const d = new Date(date);
+        
+        if (format === '12') {
+            return d.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        } else {
+            return d.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        }
+    }
+
+    // Format date and time
+    static formatDateTime(date, timeFormat = '24') {
+        if (!date) return '';
+        
+        const d = new Date(date);
+        const dateStr = this.formatDate(d);
+        const timeStr = this.formatTime(d, timeFormat);
+        
+        return `${dateStr} at ${timeStr}`;
+    }
+
+    // Get current date string
+    static getCurrentDateString() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');
+        const day = today.getDate().toString().padStart(2, '0');
+        
+        return `${year}-${month}-${day}`;
+    }
+
+    // Get date string from date object
+    static getDateString(date) {
+        if (!date) return this.getCurrentDateString();
+        
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = (d.getMonth() + 1).toString().padStart(2, '0');
+        const day = d.getDate().toString().padStart(2, '0');
+        
+        return `${year}-${month}-${day}`;
+    }
+
+    // Get readable date
+    static getReadableDate(dateStr) {
+        if (!dateStr) return this.formatDate(new Date());
+        
+        const date = new Date(dateStr + 'T00:00:00');
+        return this.formatDate(date);
+    }
+
+    // Calculate duration between two dates
+    static calculateDuration(startTime, endTime) {
+        if (!startTime || !endTime) return 0;
+        
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+        
+        return Math.floor((end.getTime() - start.getTime()) / 1000);
+    }
+
+    // Debounce function
+    static debounce(func, wait, immediate) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                timeout = null;
+                if (!immediate) func(...args);
+            };
+            const callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func(...args);
+        };
+    }
+
+    // Throttle function
+    static throttle(func, limit) {
+        let inThrottle;
+        return function(...args) {
+            if (!inThrottle) {
+                func.apply(this, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        };
+    }
+
+    // Show notification with limit of 2 notifications
+    static showNotification(title, message, type = 'success', duration = 3000) {
+        // Check existing notifications and remove oldest if there are 2 or more
+        const existingNotifications = document.querySelectorAll('.timer-notification');
+        if (existingNotifications.length >= 2) {
+            // Remove the oldest notification (first in the list)
+            existingNotifications[0].remove();
+        }
+
+        const notification = document.createElement('div');
+        notification.className = `timer-notification ${type}`;
+        
+        const iconClass = type === 'success' ? 'fas fa-check' : 'fas fa-exclamation-triangle';
+        
+        notification.innerHTML = `
+            <div class="timer-notification-header">
+                <div class="timer-notification-icon">
+                    <i class="${iconClass}"></i>
+                </div>
+                <div class="timer-notification-title">${title}</div>
+                <button class="timer-notification-close">&times;</button>
+            </div>
+            <div class="timer-notification-body">${message}</div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Close button functionality
+        const closeBtn = notification.querySelector('.timer-notification-close');
+        closeBtn.addEventListener('click', () => {
+            notification.remove();
+        });
+
+        // Auto remove after duration
+        if (duration > 0) {
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, duration);
+        }
+
+        return notification;
+    }
+
+    // Validate email
+    static isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    // Validate URL
+    static isValidURL(string) {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+
+    // Escape HTML
+    static escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Generate random ID
+    static generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    // Deep clone object
+    static deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    }
+
+    // Check if object is empty
+    static isEmpty(obj) {
+        return Object.keys(obj).length === 0 && obj.constructor === Object;
+    }
+
+    // Get query parameter
+    static getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    // Set query parameter
+    static setQueryParam(name, value) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set(name, value);
+        const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+        window.history.replaceState({}, '', newUrl);
+    }
+}
+
+export default Utils;
