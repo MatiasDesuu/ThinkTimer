@@ -1,103 +1,4 @@
-/* Components CSS - Modals, projects, calendar, and other components */
-
-/* Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 1000;
-    animation: fadeIn 0.3s ease;
-}
-
-.modal.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-content {
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    width: 90%;
-    max-width: 500px;
-    max-height: 90vh;
-    overflow-y: auto;
-    animation: slideIn 0.3s ease;
-}
-
-.modal-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.modal-icon {
-    width: 2rem;
-    height: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--accent-color);
-    color: white;
-    border-radius: 50%;
-    font-size: 0.9rem;
-}
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: var(--text-primary);
-}
-
-.modal-body {
-    padding: 1rem;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: flex-end;
-    padding: 1rem;
-    border-top: 1px solid var(--border-color);
-}
-
-.modal-btn {
-    padding: 0.6rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    background-color: var(--bg-tertiary);
-    color: var(--text-primary);
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.modal-btn:hover {
-    transform: translateY(-1px);
-}
-
-.modal-btn-primary {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-    color: white;
-}
-
-.modal-btn-primary:hover {
-    background-color: var(--accent-hover);
-}
-
-.modal-btn-secondary {
-    background-color: var(--bg-tertiary);
-    border-color: var(--border-color);
-}
+/* Components CSS - Projects, calendar, and other components */
 
 /* Projects Styles */
 .projects-list,
@@ -133,8 +34,7 @@
 }
 
 .project-icon {
-    width: 2rem;
-    height: 2rem;
+     height: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;

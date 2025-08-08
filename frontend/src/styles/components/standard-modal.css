@@ -13,7 +13,7 @@
     justify-content: center;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.15s ease, visibility 0.15s ease;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
 .standard-modal.active {
@@ -30,45 +30,47 @@
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
-    transform: translateY(-10px);
-    transition: transform 0.15s ease;
+    transform: scale(0.95);
+    opacity: 0.8;
+    transition: transform 0.2s ease, opacity 0.2s ease;
     display: flex;
     flex-direction: column;
 }
 
 .standard-modal.active .standard-modal-content {
-    transform: translateY(0);
+    transform: scale(1);
+    opacity: 1;
 }
 
 /* Header Section */
 .standard-modal-header {
     display: flex;
-    align-items: center;
-    padding: 1rem;
+    gap: 0.75rem;
+    padding: 1.25rem 1.25rem 0.75rem 1.25rem;
     border-bottom: 1px solid var(--border-color);
+    align-items: baseline;
     flex-shrink: 0;
 }
 
 .standard-modal-icon {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: center;
-    font-size: 1.5rem;
-    width: 2.5rem;
-    height: 2.5rem;
-    color: var(--text-primary);
-    transition: all 0.2s ease;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.standard-modal-icon i {
+    font-size: inherit;
 }
 
 .standard-modal-title {
+    margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--text-primary);
     flex: 1;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    height: 100%;
 }
 
 .standard-modal-close {
@@ -90,7 +92,7 @@
 
 /* Body Section */
 .standard-modal-body {
-    padding: 1.5rem;
+    padding: 0.75rem 1.25rem;
     flex: 1;
     overflow-y: auto;
 }
@@ -109,13 +111,11 @@
     text-align: center;
 }
 
-
-
 /* Actions Section */
 .standard-modal-actions {
     display: flex;
-    gap: 0.75rem;
-    padding: 1.5rem;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem 1.25rem 1.25rem;
     border-top: 1px solid var(--border-color);
     flex-shrink: 0;
 }
@@ -123,13 +123,13 @@
 /* Modal Buttons */
 .standard-modal-btn {
     flex: 1;
-    padding: 0.75rem 1.5rem;
+    padding: 0.6rem 1.25rem;
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     text-align: center;
     text-decoration: none;
     display: inline-flex;
@@ -152,6 +152,7 @@
 .standard-modal-btn-secondary:hover {
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
+    border-color: var(--text-tertiary);
 }
 
 .standard-modal-btn-primary {
@@ -205,13 +206,16 @@
         max-height: 95vh;
     }
     
-    .standard-modal-header,
-    .standard-modal-body,
-    .standard-modal-actions {
-        padding: 1rem;
+    .standard-modal-header {
+        padding: 1.25rem 1rem 0.75rem 1rem;
+    }
+    
+    .standard-modal-body {
+        padding: 0.75rem 1rem;
     }
     
     .standard-modal-actions {
+        padding: 0.75rem 1rem 1.25rem 1rem;
         flex-direction: column;
     }
     

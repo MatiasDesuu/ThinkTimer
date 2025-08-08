@@ -9,13 +9,23 @@
     <link rel="stylesheet" href="./src/styles/components.css">
     <link rel="stylesheet" href="./src/styles/components/projects.css">
     <link rel="stylesheet" href="./src/styles/components/timeblocks.css">
+    <link rel="stylesheet" href="./src/styles/components/navbar.css">
+    <link rel="stylesheet" href="./src/styles/components/tooltip.css">
     <link rel="stylesheet" href="./src/styles/components/dialogs.css">
-    <link rel="stylesheet" href="./src/styles/components/modals.css">
     <link rel="stylesheet" href="./src/styles/components/standard-modal.css">
     <link rel="stylesheet" href="./src/styles/components/calendar.css">
     <link rel="stylesheet" href="./src/styles/components/settings.css">
     <link rel="stylesheet" href="./src/styles/timer.css">
     <link rel="stylesheet" href="./src/styles/themes.css">
+    <script>
+        // Apply navigation state immediately to prevent flash
+        (function() {
+            const isCollapsed = localStorage.getItem('navCollapsed') === 'true';
+            if (isCollapsed) {
+                document.documentElement.classList.add('nav-collapsed-init');
+            }
+        })();
+    </script>
 </head>
 <body autocomplete="off">
     <div id="app">
@@ -26,21 +36,26 @@
                 <span>ThinkTimer</span>
             </div>
             <div class="nav-items">
-                <button class="nav-item active" data-page="home">
+                <button class="nav-item active" data-page="home" data-tooltip="Home" data-tooltip-position="right">
                     <i class="fas fa-home"></i>
                     <span>Home</span>
                 </button>
-                <button class="nav-item" data-page="projects">
+                <button class="nav-item" data-page="projects" data-tooltip="Projects" data-tooltip-position="right">
                     <i class="fas fa-folder"></i>
                     <span>Projects</span>
                 </button>
-                <button class="nav-item" data-page="calendar">
+                <button class="nav-item" data-page="calendar" data-tooltip="Calendar" data-tooltip-position="right">
                     <i class="fas fa-calendar"></i>
                     <span>Calendar</span>
                 </button>
-                <button class="nav-item" data-page="settings">
+                <button class="nav-item" data-page="settings" data-tooltip="Settings" data-tooltip-position="right">
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>
+                </button>
+            </div>
+            <div class="nav-footer">
+                <button id="nav-toggle" class="nav-toggle" data-tooltip="Collapse/Expand Navigation" data-tooltip-position="right">
+                    <i class="fas fa-chevron-left"></i>
                 </button>
             </div>
         </nav>
@@ -73,19 +88,19 @@
                         <span id="timer-display">00:00:00</span>
                     </div>
                     <div class="timer-controls">
-                        <button id="start-timer" class="timer-btn timer-btn-start">
+                        <button id="start-timer" class="timer-btn timer-btn-start" data-tooltip="Start the timer" data-tooltip-position="top">
                             <i class="fas fa-play"></i>
                             Start
                         </button>
-                        <button id="pause-timer" class="timer-btn timer-btn-pause" disabled>
+                        <button id="pause-timer" class="timer-btn timer-btn-pause" disabled data-tooltip="Pause the timer" data-tooltip-position="top">
                             <i class="fas fa-pause"></i>
                             Pause
                         </button>
-                        <button id="stop-timer" class="timer-btn timer-btn-stop" disabled>
+                        <button id="stop-timer" class="timer-btn timer-btn-stop" disabled data-tooltip="Stop and save the timer" data-tooltip-position="top">
                             <i class="fas fa-stop"></i>
                             Stop
                         </button>
-                        <button id="reset-timer" class="timer-btn timer-btn-reset" disabled>
+                        <button id="reset-timer" class="timer-btn timer-btn-reset" disabled data-tooltip="Reset timer to 00:00:00" data-tooltip-position="top">
                             <i class="fas fa-redo"></i>
                             Reset
                         </button>
@@ -96,7 +111,7 @@
                 <div class="time-blocks-section">
                     <div class="section-header">
                         <h2><i class="fas fa-list"></i>Time Blocks</h2>
-                        <button id="add-manual-block" class="btn btn-secondary">
+                        <button id="add-manual-block" class="btn btn-secondary" data-tooltip="Add a manual time block" data-tooltip-position="left">
                             <i class="fas fa-plus"></i>
                             Add Block
                         </button>
@@ -111,7 +126,7 @@
             <div id="projects-page" class="page">
                 <div class="page-header">
                     <h1><i class="fas fa-folder-open"></i>Projects</h1>
-                    <button id="add-project" class="btn btn-primary">
+                    <button id="add-project" class="btn btn-primary" data-tooltip="Create a new project" data-tooltip-position="bottom">
                         <i class="fas fa-plus"></i>
                         Add Project
                     </button>

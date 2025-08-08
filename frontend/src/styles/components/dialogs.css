@@ -12,7 +12,7 @@
     z-index: 10000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.15s ease;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
 .custom-dialog-overlay.show {
@@ -28,29 +28,35 @@
     max-width: 450px;
     width: 90%;
     margin: 1rem;
-    transform: translateY(-10px);
-    transition: transform 0.15s ease;
+    transform: scale(0.95);
+    opacity: 0.8;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .custom-dialog-overlay.show .custom-dialog {
-    transform: translateY(0);
+    transform: scale(1);
+    opacity: 1;
 }
 
 .custom-dialog-header {
     display: flex;
-    align-items: center;
     gap: 0.75rem;
     padding: 1.25rem 1.25rem 0.75rem 1.25rem;
     border-bottom: 1px solid var(--border-color);
+    align-items: baseline;
 }
 
 .custom-dialog-icon {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     flex-shrink: 0;
     background-color:rgba(0, 0, 0, 0)
+}
+
+.custom-dialog-icon i {
+    font-size: inherit;
 }
 
 .custom-dialog-icon.warning {
@@ -71,7 +77,7 @@
 
 .custom-dialog h3 {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     font-weight: 600;
     color: var(--text-primary);
 }

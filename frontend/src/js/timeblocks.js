@@ -465,16 +465,19 @@ class TimeBlocks {
         this.timeBlockModal?.classList.remove('active');
         document.body.style.overflow = '';
         this.currentEditingId = null;
-        this.timeBlockForm?.reset();
         
-        // Reset icon to add mode
-        if (this.timeBlockModalIcon) {
-            this.timeBlockModalIcon.className = 'standard-modal-icon timeblock';
-            const iconElement = this.timeBlockModalIcon.querySelector('i');
-            if (iconElement) {
-                iconElement.className = 'fas fa-plus-circle';
+        // Reset form and icon after animation completes
+        setTimeout(() => {
+            this.timeBlockForm?.reset();
+            
+            if (this.timeBlockModalIcon) {
+                this.timeBlockModalIcon.className = 'standard-modal-icon timeblock';
+                const iconElement = this.timeBlockModalIcon.querySelector('i');
+                if (iconElement) {
+                    iconElement.className = 'fas fa-plus-circle';
+                }
             }
-        }
+        }, 200); // Wait for modal close animation to complete
     }
 
     async handleSubmit(e) {

@@ -103,9 +103,15 @@ class Dialog {
     }
 
     hide() {
-        this.overlay?.classList.remove('show');
-        this.onConfirm = null;
-        this.onCancel = null;
+        if (!this.overlay) return;
+        
+        this.overlay.classList.remove('show');
+        
+        // Wait for animation to complete before cleaning up
+        setTimeout(() => {
+            this.onConfirm = null;
+            this.onCancel = null;
+        }, 200); // Match the CSS transition duration
     }
 
     isVisible() {

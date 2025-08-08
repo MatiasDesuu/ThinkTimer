@@ -1,0 +1,227 @@
+/* Navigation Bar Component */
+
+/* Main Navigation Container */
+.nav {
+    width: 200px;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    transition: width 0.3s ease;
+}
+
+.nav.collapsed,
+html.nav-collapsed-init .nav {
+    width: 60px;
+}
+
+/* Navigation Brand */
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    white-space: nowrap;
+    overflow: hidden;
+    min-height: 2rem;
+    transition: padding 0.3s ease;
+}
+
+.nav.collapsed-centered .nav-brand,
+html.nav-collapsed-init .nav .nav-brand {
+    padding: 0 1rem;
+    justify-content: center;
+    gap: 0;
+    transition: justify-content 0.3s ease;
+}
+
+.nav-brand i {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* Navigation Items Container */
+.nav-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0 0.5rem;
+    flex: 1;
+}
+
+/* Navigation Items */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    text-align: left;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    transition: padding 0.3s ease;
+}
+
+.nav.collapsed-centered .nav-item,
+html.nav-collapsed-init .nav .nav-item {
+    padding: 0.6rem;
+    justify-content: center;
+    gap: 0;
+    transition: justify-content 0.3s ease;
+}
+
+.nav-item:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.nav-item.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.nav-item i {
+    width: 1rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.nav.collapsed-centered .nav-item i,
+html.nav-collapsed-init .nav .nav-item i {
+    width: auto;
+}
+
+/* Text Transitions */
+/* For expanding: text appears after positioning is done */
+.nav-brand span,
+.nav-item span {
+    transition: opacity 0.2s ease 0.3s, width 0.2s ease 0.3s;
+}
+
+.nav.collapsed .nav-item span,
+.nav.collapsed .nav-brand span,
+html.nav-collapsed-init .nav .nav-item span,
+html.nav-collapsed-init .nav .nav-brand span {
+    opacity: 0;
+    width: 0;
+    transition: opacity 0.2s ease, width 0.2s ease;
+}
+
+/* Navigation Footer */
+.nav-footer {
+    padding: 0 0.5rem;
+    margin-top: auto;
+}
+
+.nav.collapsed .nav-footer,
+html.nav-collapsed-init .nav .nav-footer {
+    padding: 0 0.25rem;
+}
+
+/* Navigation Toggle Button */
+.nav-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.nav-toggle:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.nav.collapsed .nav-toggle i,
+html.nav-collapsed-init .nav .nav-toggle i {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+.nav-toggle i {
+    transition: transform 0.3s ease;
+}
+
+/* Remove any default positioning for tooltip elements */
+.nav.collapsed-centered .nav-item,
+html.nav-collapsed-init .nav .nav-item {
+    position: relative;
+}
+
+/* Main Content Adjustment */
+.main {
+    flex: 1;
+    margin-left: 200px;
+    padding: 1.5rem;
+    overflow-y: auto;
+    min-height: 100vh;
+    transition: margin-left 0.3s ease;
+}
+
+.main.nav-collapsed,
+html.nav-collapsed-init .main {
+    margin-left: 60px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav {
+        width: 50px;
+        padding: 0.75rem 0;
+    }
+    
+    .nav.collapsed,
+    html.nav-collapsed-init .nav {
+        width: 50px;
+    }
+    
+    .nav-brand span,
+    .nav-item span {
+        display: none;
+    }
+    
+    .nav-brand {
+        justify-content: center;
+        padding: 0 0.75rem;
+    }
+    
+    .nav-item {
+        padding: 0.6rem;
+        justify-content: center;
+    }
+    
+    .nav-toggle {
+        display: none;
+    }
+    
+    .main {
+        margin-left: 50px;
+        padding: 1rem;
+    }
+    
+    .main.nav-collapsed,
+    html.nav-collapsed-init .main {
+        margin-left: 50px;
+    }
+}

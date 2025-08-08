@@ -4,8 +4,10 @@ import Projects from './js/projects.js';
 import TimeBlocks from './js/timeblocks.js';
 import Calendar from './js/calendar.js';
 import Settings from './js/settings.js';
+import NavBar from './js/navbar.js';
 import Utils from './js/utils.js';
 import Dialog from './js/dialog.js';
+import tooltipManager from './js/tooltip.js';
 
 class App {
     constructor() {
@@ -15,6 +17,7 @@ class App {
         this.timeBlocks = null;
         this.calendar = null;
         this.settings = null;
+        this.navbar = null;
         
         this.init();
     }
@@ -29,6 +32,9 @@ class App {
         
         // Make settings available globally for Utils
         window.appSettings = this.settings;
+        
+        // Initialize navbar (singleton, auto-initialized)
+        this.navbar = NavBar.getInstance();
         
         // Initialize modules
         this.projects = new Projects();
