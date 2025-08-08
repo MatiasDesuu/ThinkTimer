@@ -81,9 +81,7 @@ class Settings {
         document.documentElement.removeAttribute('data-theme');
         
         // Apply new theme
-        if (theme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
+        document.documentElement.setAttribute('data-theme', theme);
         
         // Store in localStorage for persistence
         localStorage.setItem('theme', theme);
@@ -144,10 +142,9 @@ class Settings {
 
     // Initialize theme from localStorage on app start
     initializeTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            this.setTheme(savedTheme);
-        }
+        const savedTheme = localStorage.getItem('theme') || this.settings.theme || 'light';
+        this.settings.theme = savedTheme;
+        this.setTheme(savedTheme);
     }
 
     // Get current settings

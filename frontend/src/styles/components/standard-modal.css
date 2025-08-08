@@ -1,0 +1,243 @@
+/* Standard Modal System - Reusable modal component */
+
+.standard-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+.standard-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.standard-modal-content {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(-10px);
+    transition: transform 0.15s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.standard-modal.active .standard-modal-content {
+    transform: translateY(0);
+}
+
+/* Header Section */
+.standard-modal-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.standard-modal-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.standard-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.standard-modal-close {
+    border: none;
+    background: none;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.standard-modal-close:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Body Section */
+.standard-modal-body {
+    padding: 1.5rem;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Quita el margen inferior solo al último elemento dentro del body del modal */
+.standard-modal-body > *:last-child {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Label icons styling */
+.standard-modal-body label i {
+    margin-right: 0.5rem;
+    color: var(--text-muted);
+    width: 1rem;
+    text-align: center;
+}
+
+
+
+/* Actions Section */
+.standard-modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+/* Modal Buttons */
+.standard-modal-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.standard-modal-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.standard-modal-btn-secondary {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
+.standard-modal-btn-secondary:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.standard-modal-btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.standard-modal-btn-primary:hover {
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
+.standard-modal-btn-success {
+    background-color: var(--success-color);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.standard-modal-btn-success:hover {
+    background-color: #33c763;
+    border-color: #33c763;
+}
+
+.standard-modal-btn-danger {
+    background-color: var(--error-color);
+    color: white;
+    border-color: var(--error-color);
+}
+
+.standard-modal-btn-danger:hover {
+    background-color: #e60032;
+    border-color: #e60032;
+}
+
+/* Form Integration */
+.standard-modal form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.standard-modal form .standard-modal-body {
+    flex: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .standard-modal-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .standard-modal-header,
+    .standard-modal-body,
+    .standard-modal-actions {
+        padding: 1rem;
+    }
+    
+    .standard-modal-actions {
+        flex-direction: column;
+    }
+    
+    .standard-modal-btn {
+        width: 100%;
+    }
+}
+
+/* Animation for form elements inside modal */
+.standard-modal .form-group {
+    animation: slideInUp 0.3s ease-out;
+    animation-fill-mode: both;
+}
+
+.standard-modal .form-group:nth-child(1) { animation-delay: 0.1s; }
+.standard-modal .form-group:nth-child(2) { animation-delay: 0.15s; }
+.standard-modal .form-group:nth-child(3) { animation-delay: 0.2s; }
+.standard-modal .form-group:nth-child(4) { animation-delay: 0.25s; }
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

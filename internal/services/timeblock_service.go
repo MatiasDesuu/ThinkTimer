@@ -25,10 +25,19 @@ func (s *TimeBlockService) CreateTimeBlock(req models.CreateTimeBlockRequest) (*
 		RETURNING id
 	`
 
-	now := time.Now()
+	now := time.Now().In(time.Local) // Ensure we use local timezone
+
+	// Convert start_time to local timezone if it's not already
+	startTime := req.StartTime.In(time.Local)
+
+	var endTime *time.Time
+	if req.EndTime != nil {
+		localEndTime := req.EndTime.In(time.Local)
+		endTime = &localEndTime
+	}
 
 	var id int
-	err := s.db.QueryRow(query, req.ProjectID, req.StartTime, req.EndTime, req.Duration, req.IsManual, req.Description, now, now).Scan(&id)
+	err := s.db.QueryRow(query, req.ProjectID, startTime, endTime, req.Duration, req.IsManual, req.Description, now, now).Scan(&id)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +71,9 @@ func (s *TimeBlockService) GetTimeBlockByID(id int) (*models.TimeBlock, error) {
 
 // GetTimeBlocksByDate returns time blocks for a specific date
 func (s *TimeBlockService) GetTimeBlocksByDate(date time.Time) ([]models.TimeBlock, error) {
-	startOfDay := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
+	// Convert the received date to local timezone to ensure correct day boundaries
+	localDate := date.In(time.Local)
+	startOfDay := time.Date(localDate.Year(), localDate.Month(), localDate.Day(), 0, 0, 0, 0, time.Local)
 	endOfDay := startOfDay.Add(24 * time.Hour)
 
 	query := `
@@ -99,6 +110,10 @@ func (s *TimeBlockService) GetTimeBlocksByDate(date time.Time) ([]models.TimeBlo
 
 // GetTimeBlocksByDateRange returns time blocks for a date range
 func (s *TimeBlockService) GetTimeBlocksByDateRange(startDate, endDate time.Time) ([]models.TimeBlock, error) {
+	// Convert dates to local timezone
+	localStartDate := startDate.In(time.Local)
+	localEndDate := endDate.In(time.Local)
+
 	query := `
 		SELECT tb.id, tb.project_id, p.name as project_name, tb.start_time, tb.end_time, 
 		       tb.duration, tb.is_manual, tb.description, tb.created_at, tb.updated_at
@@ -108,7 +123,7 @@ func (s *TimeBlockService) GetTimeBlocksByDateRange(startDate, endDate time.Time
 		ORDER BY tb.start_time DESC
 	`
 
-	rows, err := s.db.Query(query, startDate, endDate)
+	rows, err := s.db.Query(query, localStartDate, localEndDate)
 	if err != nil {
 		return nil, err
 	}
@@ -138,11 +153,13 @@ func (s *TimeBlockService) UpdateTimeBlock(id int, req models.UpdateTimeBlockReq
 
 	if req.StartTime != nil {
 		setParts = append(setParts, "start_time = ?")
-		args = append(args, *req.StartTime)
+		localStartTime := req.StartTime.In(time.Local)
+		args = append(args, localStartTime)
 	}
 	if req.EndTime != nil {
 		setParts = append(setParts, "end_time = ?")
-		args = append(args, *req.EndTime)
+		localEndTime := req.EndTime.In(time.Local)
+		args = append(args, localEndTime)
 	}
 	if req.Duration != nil {
 		setParts = append(setParts, "duration = ?")
@@ -154,7 +171,7 @@ func (s *TimeBlockService) UpdateTimeBlock(id int, req models.UpdateTimeBlockReq
 	}
 
 	setParts = append(setParts, "updated_at = ?")
-	args = append(args, time.Now())
+	args = append(args, time.Now().In(time.Local))
 	args = append(args, id)
 
 	query := "UPDATE time_blocks SET " + setParts[0]
@@ -214,7 +231,7 @@ func (s *TimeBlockService) GetTimeBlocksByDateRangeString(startDateStr, endDateS
 
 // StopRunningTimeBlock stops a running time block by setting end time and calculating duration
 func (s *TimeBlockService) StopRunningTimeBlock(id int) (*models.TimeBlock, error) {
-	endTime := time.Now()
+	endTime := time.Now().In(time.Local)
 
 	// Get the current time block to calculate duration
 	timeBlock, err := s.GetTimeBlockByID(id)
@@ -225,7 +242,7 @@ func (s *TimeBlockService) StopRunningTimeBlock(id int) (*models.TimeBlock, erro
 	duration := int(endTime.Sub(timeBlock.StartTime).Seconds())
 
 	query := "UPDATE time_blocks SET end_time = ?, duration = ?, updated_at = ? WHERE id = ?"
-	_, err = s.db.Exec(query, endTime, duration, time.Now(), id)
+	_, err = s.db.Exec(query, endTime, duration, endTime, id)
 	if err != nil {
 		return nil, err
 	}
@@ -235,10 +252,10 @@ func (s *TimeBlockService) StopRunningTimeBlock(id int) (*models.TimeBlock, erro
 
 // StopTimeBlockWithDuration stops a time block with a specific duration (used for paused timers)
 func (s *TimeBlockService) StopTimeBlockWithDuration(id int, duration int) (*models.TimeBlock, error) {
-	endTime := time.Now()
+	endTime := time.Now().In(time.Local) // Use local timezone
 
 	query := "UPDATE time_blocks SET end_time = ?, duration = ?, updated_at = ? WHERE id = ?"
-	_, err := s.db.Exec(query, endTime, duration, time.Now(), id)
+	_, err := s.db.Exec(query, endTime, duration, endTime, id)
 	if err != nil {
 		return nil, err
 	}

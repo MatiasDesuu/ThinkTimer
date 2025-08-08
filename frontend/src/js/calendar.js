@@ -9,6 +9,7 @@ class Calendar {
         this.currentDate = new Date();
         this.selectedDate = new Date();
         this.monthTimeBlocks = [];
+        this.timer = null; // Will be set by main app
         
         this.initializeElements();
         this.bindEvents();
@@ -19,6 +20,7 @@ class Calendar {
         this.calendarContainer = document.getElementById('calendar-container');
         this.selectedDateDisplay = document.getElementById('selected-calendar-date');
         this.calendarTimeBlocks = document.getElementById('calendar-time-blocks');
+        this.addCalendarManualBlockBtn = document.getElementById('add-calendar-manual-block');
     }
 
     bindEvents() {
@@ -26,6 +28,32 @@ class Calendar {
         window.addEventListener('projectsUpdated', () => {
             this.render();
         });
+
+        // Listen for time block updates
+        window.addEventListener('timeBlockUpdated', () => {
+            this.loadSelectedDateTimeBlocks();
+            this.render(); // Update calendar indicators
+        });
+
+        // Listen for timer state changes (pause/resume)
+        window.addEventListener('timerStateChanged', () => {
+            this.updateRunningTimers();
+        });
+
+        // Add manual time block button
+        this.addCalendarManualBlockBtn?.addEventListener('click', () => {
+            this.openAddTimeBlockModal();
+        });
+
+        // Auto-refresh running timers every minute
+        setInterval(() => {
+            this.updateRunningTimers();
+        }, 60000);
+    }
+
+    // Set timer reference for pause state checking
+    setTimer(timer) {
+        this.timer = timer;
     }
 
     async render() {
@@ -147,6 +175,8 @@ class Calendar {
             dayElement.addEventListener('click', () => {
                 this.selectedDate = new Date(dayElement.dataset.date);
                 this.render();
+                // Load time blocks for the newly selected date
+                this.loadSelectedDateTimeBlocks();
             });
         });
     }
@@ -198,6 +228,9 @@ class Calendar {
                 .map(timeBlock => this.createTimeBlockCard(timeBlock))
                 .join('');
                 
+            // Bind events for the time block actions
+            this.bindCalendarTimeBlockEvents();
+                
         } catch (error) {
             console.error('Error loading calendar time blocks:', error);
             this.calendarTimeBlocks.innerHTML = `
@@ -212,26 +245,237 @@ class Calendar {
 
     createTimeBlockCard(timeBlock) {
         const isRunning = !timeBlock.end_time;
-        const duration = isRunning ? 
-            Utils.calculateDuration(timeBlock.start_time, new Date()) : 
-            timeBlock.duration;
+        
+        // Check if this time block is paused by checking timer state
+        const isTimerPaused = this.timer && this.timer.currentTimeBlockId === timeBlock.id && this.timer.isPaused;
+        const isCurrentlyRunning = isRunning && !isTimerPaused;
+        
+        let duration;
+        if (isRunning) {
+            if (isTimerPaused && this.timer && this.timer.currentTimeBlockId === timeBlock.id) {
+                // Use timer's elapsed seconds when paused
+                duration = this.timer.elapsedSeconds;
+            } else if (isCurrentlyRunning) {
+                // Calculate current duration for running timer
+                duration = Utils.calculateDuration(timeBlock.start_time, new Date());
+            } else {
+                // Fallback calculation
+                duration = Utils.calculateDuration(timeBlock.start_time, new Date());
+            }
+        } else {
+            duration = timeBlock.duration;
+        }
         
         const timeRange = `${Utils.formatTime(timeBlock.start_time)}${
-            timeBlock.end_time ? ` - ${Utils.formatTime(timeBlock.end_time)}` : ' - Running'
+            timeBlock.end_time ? ` - ${Utils.formatTime(timeBlock.end_time)}` : 
+            (isTimerPaused ? ' - Paused' : ' - Running')
         }`;
 
         return `
-            <div class="time-block ${isRunning ? 'running' : ''}" data-id="${timeBlock.id}">
+            <div class="time-block ${isCurrentlyRunning ? 'running' : ''} ${isTimerPaused ? 'paused' : ''}" data-id="${timeBlock.id}">
                 <div class="time-block-info">
-                    <div class="time-block-project">${Utils.escapeHtml(timeBlock.project_name)}</div>
-                    <div class="time-block-duration">${Utils.formatDuration(duration)}</div>
-                    <div class="time-block-time">${timeRange}</div>
-                    ${timeBlock.description ? `
-                        <div class="time-block-description">${Utils.escapeHtml(timeBlock.description)}</div>
-                    ` : ''}
+                    <div class="time-block-header">
+                        <div class="time-block-content">
+                            <div class="time-block-project">
+                                <i class="fas fa-folder"></i>
+                                <span>${Utils.escapeHtml(timeBlock.project_name)}</span>
+                            </div>
+                            <div class="time-block-duration">
+                                <i class="fas fa-clock"></i>
+                                <span>${Utils.formatDuration(duration)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="time-block-meta">
+                        <div class="time-block-meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>${timeRange}</span>
+                        </div>
+                        ${timeBlock.description ? `
+                            <div class="time-block-meta-item">
+                                <i class="fas fa-sticky-note"></i>
+                                <span>${Utils.escapeHtml(timeBlock.description)}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                <div class="time-block-actions">
+                    <button class="time-block-action-btn edit" data-action="edit" data-id="${timeBlock.id}" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="time-block-action-btn delete" data-action="delete" data-id="${timeBlock.id}" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
             </div>
         `;
+    }
+
+    bindCalendarTimeBlockEvents() {
+        if (!this.calendarTimeBlocks) return;
+
+        // Event delegation for action buttons
+        const actionButtons = this.calendarTimeBlocks.querySelectorAll('.time-block-action-btn');
+        
+        actionButtons.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const action = btn.dataset.action;
+                const id = parseInt(btn.dataset.id);
+                
+                await this.handleCalendarTimeBlockAction(action, id);
+            });
+        });
+    }
+
+    async handleCalendarTimeBlockAction(action, id) {
+        try {
+            switch (action) {
+                case 'edit':
+                    // Open the time block edit modal
+                    await this.timeBlocks.editTimeBlock(id);
+                    break;
+                case 'delete':
+                    // Delete the time block
+                    await this.timeBlocks.deleteTimeBlock(id);
+                    // Reload calendar time blocks after deletion
+                    await this.loadSelectedDateTimeBlocks();
+                    // Reload the calendar to update indicators
+                    await this.render();
+                    break;
+                default:
+                    console.warn('Unknown action:', action);
+            }
+        } catch (error) {
+            console.error(`Error performing ${action}:`, error);
+            Utils.showNotification('Error', `Failed to ${action} time block`, 'error');
+        }
+    }
+
+    updateRunningTimers() {
+        if (!this.calendarTimeBlocks) return;
+        
+        const runningBlocks = this.calendarTimeBlocks.querySelectorAll('.time-block.running');
+        runningBlocks?.forEach(blockElement => {
+            const id = parseInt(blockElement.dataset.id);
+            
+            // Find the time block in the current data
+            this.timeBlocks.getTimeBlocksForDate(this.selectedDate).then(timeBlocks => {
+                const timeBlock = timeBlocks.find(tb => tb.id === id);
+                
+                if (timeBlock && !timeBlock.end_time) {
+                    // Check if this timer is paused
+                    const isTimerPaused = this.timer && this.timer.currentTimeBlockId === timeBlock.id && this.timer.isPaused;
+                    
+                    let duration;
+                    if (isTimerPaused) {
+                        // Use timer's elapsed seconds when paused (don't calculate from current time)
+                        duration = this.timer.elapsedSeconds;
+                    } else {
+                        // Calculate current duration for actually running timer
+                        duration = Utils.calculateDuration(timeBlock.start_time, new Date());
+                    }
+                    
+                    const durationElement = blockElement.querySelector('.time-block-duration span');
+                    if (durationElement) {
+                        durationElement.textContent = Utils.formatDuration(duration);
+                    }
+                    
+                    // Update visual state based on pause status
+                    if (isTimerPaused) {
+                        blockElement.classList.remove('running');
+                        blockElement.classList.add('paused');
+                        
+                        // Update time range text
+                        const timeRangeElement = blockElement.querySelector('.time-block-meta-item span');
+                        if (timeRangeElement) {
+                            const startTime = Utils.formatTime(timeBlock.start_time);
+                            timeRangeElement.textContent = `${startTime} - Paused`;
+                        }
+                    } else {
+                        blockElement.classList.remove('paused');
+                        blockElement.classList.add('running');
+                        
+                        // Update time range text
+                        const timeRangeElement = blockElement.querySelector('.time-block-meta-item span');
+                        if (timeRangeElement) {
+                            const startTime = Utils.formatTime(timeBlock.start_time);
+                            timeRangeElement.textContent = `${startTime} - Running`;
+                        }
+                    }
+                }
+            }).catch(error => {
+                console.error('Error updating running timer:', error);
+            });
+        });
+        
+        // Also update paused blocks
+        const pausedBlocks = this.calendarTimeBlocks?.querySelectorAll('.time-block.paused');
+        pausedBlocks?.forEach(blockElement => {
+            const id = parseInt(blockElement.dataset.id);
+            
+            // Find the time block in the current data
+            this.timeBlocks.getTimeBlocksForDate(this.selectedDate).then(timeBlocks => {
+                const timeBlock = timeBlocks.find(tb => tb.id === id);
+                
+                if (timeBlock && !timeBlock.end_time) {
+                    const isTimerPaused = this.timer && this.timer.currentTimeBlockId === timeBlock.id && this.timer.isPaused;
+                    
+                    if (!isTimerPaused) {
+                        // Timer is no longer paused, update to running state
+                        blockElement.classList.remove('paused');
+                        blockElement.classList.add('running');
+                        
+                        // Update time range text
+                        const timeRangeElement = blockElement.querySelector('.time-block-meta-item span');
+                        if (timeRangeElement) {
+                            const startTime = Utils.formatTime(timeBlock.start_time);
+                            timeRangeElement.textContent = `${startTime} - Running`;
+                        }
+                    }
+                }
+            }).catch(error => {
+                console.error('Error updating paused timer:', error);
+            });
+        });
+    }
+
+    openAddTimeBlockModal() {
+        // Open the standard timeblock modal but with calendar's selected date
+        // Don't modify the timeBlocks instance date - just use it temporarily
+        const originalDate = this.timeBlocks.currentDate;
+        
+        // Temporarily set the date for the modal
+        this.timeBlocks.currentDate = new Date(this.selectedDate);
+        this.timeBlocks.currentEditingId = null;
+        
+        // Open the timeblock modal with the selected date context
+        this.timeBlocks.openModal('add');
+        
+        // Set default times for the selected date
+        setTimeout(() => {
+            const startTimeField = document.getElementById('timeblock-start');
+            const endTimeField = document.getElementById('timeblock-end');
+            
+            if (startTimeField && endTimeField) {
+                const selectedDate = new Date(this.selectedDate);
+                const startTime = new Date(selectedDate);
+                startTime.setHours(new Date().getHours() - 1, 0, 0, 0); // 1 hour ago
+                
+                const endTime = new Date(selectedDate);
+                endTime.setHours(new Date().getHours(), 0, 0, 0); // Current hour
+                
+                startTimeField.value = Utils.formatDateTimeForInput(startTime);
+                endTimeField.value = Utils.formatDateTimeForInput(endTime);
+            }
+            
+            // Restore original date after modal setup
+            this.timeBlocks.currentDate = originalDate;
+        }, 100);
     }
 
     // Get summary data for the current month

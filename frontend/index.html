@@ -11,12 +11,13 @@
     <link rel="stylesheet" href="./src/styles/components/timeblocks.css">
     <link rel="stylesheet" href="./src/styles/components/dialogs.css">
     <link rel="stylesheet" href="./src/styles/components/modals.css">
+    <link rel="stylesheet" href="./src/styles/components/standard-modal.css">
     <link rel="stylesheet" href="./src/styles/components/calendar.css">
     <link rel="stylesheet" href="./src/styles/components/settings.css">
     <link rel="stylesheet" href="./src/styles/timer.css">
     <link rel="stylesheet" href="./src/styles/themes.css">
 </head>
-<body>
+<body autocomplete="off">
     <div id="app">
         <!-- Navigation -->
         <nav class="nav">
@@ -49,7 +50,7 @@
             <!-- Home Page -->
             <div id="home-page" class="page active">
                 <div class="page-header">
-                    <h1><i class="fas fa-clock"></i> Time Tracking</h1>
+                    <h1><i class="fas fa-clock"></i>Time Tracking</h1>
                     <div class="date-selector">
                         <button id="prev-day" class="date-nav-btn">
                             <i class="fas fa-chevron-left"></i>
@@ -94,7 +95,7 @@
                 <!-- Time Blocks -->
                 <div class="time-blocks-section">
                     <div class="section-header">
-                        <h2><i class="fas fa-list"></i> Time Blocks</h2>
+                        <h2><i class="fas fa-list"></i>Time Blocks</h2>
                         <button id="add-manual-block" class="btn btn-secondary">
                             <i class="fas fa-plus"></i>
                             Add Block
@@ -109,7 +110,7 @@
             <!-- Projects Page -->
             <div id="projects-page" class="page">
                 <div class="page-header">
-                    <h1><i class="fas fa-folder-open"></i> Projects</h1>
+                    <h1><i class="fas fa-folder-open"></i>Projects</h1>
                     <button id="add-project" class="btn btn-primary">
                         <i class="fas fa-plus"></i>
                         Add Project
@@ -121,7 +122,7 @@
                 
                 <div id="completed-projects-section" class="completed-projects-section" style="display: none;">
                     <div class="section-header">
-                        <h2><i class="fas fa-check-circle"></i> Completed Projects</h2>
+                        <h2><i class="fas fa-check-circle"></i>Completed Projects</h2>
                     </div>
                     <div id="completed-projects-list" class="completed-projects-list">
                         <!-- Completed projects will be populated here -->
@@ -132,7 +133,7 @@
             <!-- Calendar Page -->
             <div id="calendar-page" class="page">
                 <div class="page-header">
-                    <h1><i class="fas fa-calendar-alt"></i> Calendar</h1>
+                    <h1><i class="fas fa-calendar-alt"></i>Calendar</h1>
                 </div>
                 <div class="calendar-section">
                     <div id="calendar-container" class="calendar-container">
@@ -141,7 +142,10 @@
                 </div>
                 <div class="time-blocks-section">
                     <div class="section-header">
-                        <h2><i class="fas fa-calendar-day"></i> Blocks for <span id="selected-calendar-date"></span></h2>
+                        <h2><i class="fas fa-calendar-day"></i>Blocks for <span id="selected-calendar-date"></span></h2>
+                        <button id="add-calendar-manual-block" class="btn-primary">
+                            <i class="fas fa-plus"></i>Add Block
+                        </button>
                     </div>
                     <div id="calendar-time-blocks" class="time-blocks-list">
                         <!-- Time blocks for selected date will be populated here -->
@@ -152,18 +156,18 @@
             <!-- Settings Page -->
             <div id="settings-page" class="page">
                 <div class="page-header">
-                    <h1><i class="fas fa-cog"></i> Settings</h1>
+                    <h1><i class="fas fa-cog"></i>Settings</h1>
                 </div>
                 <div class="settings-container">
                     <div class="setting-item">
-                        <label for="theme-selector"><i class="fas fa-palette"></i> Theme</label>
+                        <label for="theme-selector"><i class="fas fa-palette"></i>Theme</label>
                         <select id="theme-selector" class="setting-select">
                             <option value="dark">Dark</option>
                             <option value="light">Light</option>
                         </select>
                     </div>
                     <div class="setting-item">
-                        <label for="time-format-selector"><i class="fas fa-clock"></i> Time Format</label>
+                        <label for="time-format-selector"><i class="fas fa-clock"></i>Time Format</label>
                         <select id="time-format-selector" class="setting-select">
                             <option value="24">24 Hours</option>
                             <option value="12">12 Hours (AM/PM)</option>
@@ -174,74 +178,78 @@
         </main>
     </div>
 
-        <!-- Modals -->
-        <div id="project-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-icon">
-                        <i class="fas fa-folder"></i>
+        <!-- Standard Modals -->
+        <!-- Project Modal -->
+        <div id="project-modal" class="standard-modal">
+            <div class="standard-modal-content">
+                <div class="standard-modal-header">
+                    <div class="standard-modal-icon project">
+                        <i class="fas fa-folder-plus"></i>
                     </div>
-                    <h2 id="project-modal-title">Add Project</h2>
+                    <h2 class="standard-modal-title" id="project-modal-title">Add Project</h2>
+                    <button type="button" class="standard-modal-close">&times;</button>
                 </div>
                 <form id="project-form">
-                    <div class="modal-body">
+                    <div class="standard-modal-body">
                         <div class="form-group">
-                            <label for="project-name">Name *</label>
-                            <input type="text" id="project-name" name="name" required>
+                            <label for="project-name"><i class="fas fa-tag"></i>Name</label>
+                            <input type="text" id="project-name" name="name" required autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label for="project-description">Description</label>
-                            <textarea id="project-description" name="description" rows="2"></textarea>
+                            <label for="project-description"><i class="fas fa-align-left"></i>Description (optional)</label>
+                            <textarea id="project-description" name="description" rows="2" autocomplete="off"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="project-url">URL</label>
-                            <input type="url" id="project-url" name="url">
+                            <label for="project-url"><i class="fas fa-link"></i>URL (optional)</label>
+                            <input type="url" id="project-url" name="url" autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label for="project-deadline">Deadline</label>
-                            <input type="date" id="project-deadline" name="deadline">
+                            <label for="project-deadline"><i class="fas fa-calendar-alt"></i>Deadline (optional)</label>
+                            <input type="date" id="project-deadline" name="deadline" autocomplete="off">
                         </div>
                     </div>
-                    <div class="modal-actions">
-                        <button type="button" class="modal-btn modal-btn-secondary" id="cancel-project">Cancel</button>
-                        <button type="submit" class="modal-btn modal-btn-primary">Save Project</button>
+                    <div class="standard-modal-actions">
+                        <button type="button" class="standard-modal-btn standard-modal-btn-secondary" id="cancel-project">Cancel</button>
+                        <button type="submit" class="standard-modal-btn standard-modal-btn-primary">Save Project</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div id="timeblock-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-icon">
-                        <i class="fas fa-clock"></i>
+        <!-- Time Block Modal -->
+        <div id="timeblock-modal" class="standard-modal">
+            <div class="standard-modal-content">
+                <div class="standard-modal-header">
+                    <div class="standard-modal-icon timeblock">
+                        <i class="fas fa-plus-circle"></i>
                     </div>
-                    <h2>Add Time Block</h2>
+                    <h2 class="standard-modal-title" id="timeblock-modal-title">Add Time Block</h2>
+                    <button type="button" class="standard-modal-close">&times;</button>
                 </div>
                 <form id="timeblock-form">
-                    <div class="modal-body">
+                    <div class="standard-modal-body">
                         <div class="form-group has-select">
-                            <label for="timeblock-project">Project *</label>
+                            <label for="timeblock-project"><i class="fas fa-folder"></i>Project</label>
                             <select id="timeblock-project" name="project_id" required>
                                 <option value="">Select a project...</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="timeblock-start">Start Time *</label>
-                            <input type="datetime-local" id="timeblock-start" name="start_time" required>
+                            <label for="timeblock-start"><i class="fas fa-play"></i>Start Time</label>
+                            <input type="datetime-local" id="timeblock-start" name="start_time" required autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label for="timeblock-end">End Time *</label>
-                            <input type="datetime-local" id="timeblock-end" name="end_time" required>
+                            <label for="timeblock-end"><i class="fas fa-stop"></i>End Time</label>
+                            <input type="datetime-local" id="timeblock-end" name="end_time" required autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label for="timeblock-description">Description</label>
-                            <textarea id="timeblock-description" name="description" rows="2"></textarea>
+                            <label for="timeblock-description"><i class="fas fa-align-left"></i>Description (optional)</label>
+                            <textarea id="timeblock-description" name="description" rows="2" autocomplete="off"></textarea>
                         </div>
                     </div>
-                    <div class="modal-actions">
-                        <button type="button" class="modal-btn modal-btn-secondary" id="cancel-timeblock">Cancel</button>
-                        <button type="submit" class="modal-btn modal-btn-primary">Save Time Block</button>
+                    <div class="standard-modal-actions">
+                        <button type="button" class="standard-modal-btn standard-modal-btn-secondary" id="cancel-timeblock">Cancel</button>
+                        <button type="submit" class="standard-modal-btn standard-modal-btn-primary">Save Time Block</button>
                     </div>
                 </form>
             </div>

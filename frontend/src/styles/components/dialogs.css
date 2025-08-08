@@ -45,33 +45,27 @@
 }
 
 .custom-dialog-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: var(--radius);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     flex-shrink: 0;
+    background-color:rgba(0, 0, 0, 0)
 }
 
 .custom-dialog-icon.warning {
-    background-color: rgba(255, 179, 0, 0.2);
     color: var(--warning-color);
 }
 
 .custom-dialog-icon.danger {
-    background-color: rgba(255, 23, 68, 0.2);
     color: var(--error-color);
 }
 
 .custom-dialog-icon.info {
-    background-color: rgba(33, 150, 243, 0.2);
     color: var(--accent-color);
 }
 
 .custom-dialog-icon.success {
-    background-color: rgba(67, 214, 117, 0.2);
     color: var(--success-color);
 }
 

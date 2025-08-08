@@ -243,13 +243,6 @@
     border-color: #388e3c;
 }
 
-/* Completed Projects Section */
-.completed-projects-section {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border-color);
-}
-
 .completed-projects-list {
     display: flex;
     flex-direction: column;

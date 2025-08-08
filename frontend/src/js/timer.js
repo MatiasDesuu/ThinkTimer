@@ -69,6 +69,12 @@ class Timer {
                 this.startTime = new Date();
                 
                 console.log('Creating time block with project ID:', this.currentProjectId, 'start time:', this.startTime);
+                console.log('Start time details:', {
+                    localString: this.startTime.toLocaleDateString(),
+                    utcString: this.startTime.toUTCString(),
+                    isoString: this.startTime.toISOString(),
+                    timezoneOffset: this.startTime.getTimezoneOffset()
+                });
                 
                 // Create new time block
                 const timeBlockData = {
@@ -109,6 +115,11 @@ class Timer {
             this.updateContainerClass();
             this.startInterval();
             
+            // Dispatch timer state change event
+            window.dispatchEvent(new CustomEvent('timerStateChanged', {
+                detail: { isRunning: this.isRunning, isPaused: this.isPaused }
+            }));
+            
         } catch (error) {
             console.error('Error starting timer:', error);
             Utils.showNotification('Error', 'Failed to start timer', 'error');
@@ -133,6 +144,11 @@ class Timer {
             
             console.log('Timer paused successfully');
             Utils.showNotification('Timer Paused', 'Time tracking paused', 'warning');
+            
+            // Dispatch timer state change event
+            window.dispatchEvent(new CustomEvent('timerStateChanged', {
+                detail: { isRunning: this.isRunning, isPaused: this.isPaused }
+            }));
         } catch (error) {
             console.error('Error pausing timer:', error);
             Utils.showNotification('Error', 'Failed to pause timer', 'error');
@@ -177,6 +193,11 @@ class Timer {
 
             this.resetTimer();
             Utils.showNotification('Timer Reset', 'Timer has been reset', 'success');
+            
+            // Dispatch timer state change event
+            window.dispatchEvent(new CustomEvent('timerStateChanged', {
+                detail: { isRunning: this.isRunning, isPaused: this.isPaused }
+            }));
         } catch (error) {
             console.error('Error resetting timer:', error);
             Utils.showNotification('Error', 'Failed to reset timer', 'error');
@@ -197,6 +218,11 @@ class Timer {
         this.updateDisplay();
         this.updateButtons();
         this.updateContainerClass();
+        
+        // Dispatch timer state change event when resetting
+        window.dispatchEvent(new CustomEvent('timerStateChanged', {
+            detail: { isRunning: this.isRunning, isPaused: this.isPaused }
+        }));
     }
 
     startInterval() {

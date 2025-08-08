@@ -10,6 +10,7 @@ class TimeBlocks {
         this.timeBlocks = [];
         this.currentDate = new Date();
         this.currentEditingId = null;
+        this.timer = null; // Will be set by main app
         
         this.initializeElements();
         this.bindEvents();
@@ -21,8 +22,11 @@ class TimeBlocks {
         this.timeBlocksList = document.getElementById('time-blocks-list');
         this.addManualBlockBtn = document.getElementById('add-manual-block');
         this.timeBlockModal = document.getElementById('timeblock-modal');
+        this.timeBlockModalTitle = document.getElementById('timeblock-modal-title');
+        this.timeBlockModalIcon = this.timeBlockModal?.querySelector('.standard-modal-icon');
         this.timeBlockForm = document.getElementById('timeblock-form');
         this.cancelTimeBlockBtn = document.getElementById('cancel-timeblock');
+        this.closeTimeBlockBtn = this.timeBlockModal?.querySelector('.standard-modal-close');
         this.currentDateDisplay = document.getElementById('current-date');
         this.prevDayBtn = document.getElementById('prev-day');
         this.nextDayBtn = document.getElementById('next-day');
@@ -40,8 +44,12 @@ class TimeBlocks {
         this.nextDayBtn?.addEventListener('click', () => this.changeDate(1));
         
         // Manual time block modal
-        this.addManualBlockBtn?.addEventListener('click', () => this.openModal());
+        this.addManualBlockBtn?.addEventListener('click', () => {
+            this.currentEditingId = null; // Reset editing ID
+            this.openModal('add');
+        });
         this.cancelTimeBlockBtn?.addEventListener('click', () => this.closeModal());
+        this.closeTimeBlockBtn?.addEventListener('click', () => this.closeModal());
         this.timeBlockForm?.addEventListener('submit', (e) => this.handleSubmit(e));
         
         // Close modal when clicking outside
@@ -70,6 +78,11 @@ class TimeBlocks {
             this.loadTimeBlocks();
         });
         
+        // Listen for timer state changes (pause/resume)
+        window.addEventListener('timerStateChanged', () => {
+            this.updateRunningTimers();
+        });
+        
         // Listen for time format changes
         window.addEventListener('timeFormatChanged', () => {
             this.loadTimeBlocks(); // Reload to update time display
@@ -84,6 +97,11 @@ class TimeBlocks {
         setInterval(() => {
             this.updateRunningTimers();
         }, 60000);
+    }
+
+    // Set timer reference for pause state checking
+    setTimer(timer) {
+        this.timer = timer;
     }
 
     async loadProjectsIntoSelector() {
@@ -159,16 +177,34 @@ class TimeBlocks {
 
     createTimeBlockCard(timeBlock) {
         const isRunning = !timeBlock.end_time;
-        const duration = isRunning ? 
-            Utils.calculateDuration(timeBlock.start_time, new Date()) : 
-            timeBlock.duration;
+        
+        // Check if this time block is paused by checking timer state
+        const isTimerPaused = this.timer && this.timer.currentTimeBlockId === timeBlock.id && this.timer.isPaused;
+        const isCurrentlyRunning = isRunning && !isTimerPaused;
+        
+        let duration;
+        if (isRunning) {
+            if (isTimerPaused && this.timer && this.timer.currentTimeBlockId === timeBlock.id) {
+                // Use timer's elapsed seconds when paused
+                duration = this.timer.elapsedSeconds;
+            } else if (isCurrentlyRunning) {
+                // Calculate current duration for running timer
+                duration = Utils.calculateDuration(timeBlock.start_time, new Date());
+            } else {
+                // Fallback calculation
+                duration = Utils.calculateDuration(timeBlock.start_time, new Date());
+            }
+        } else {
+            duration = timeBlock.duration;
+        }
         
         const timeRange = `${Utils.formatTime(timeBlock.start_time)}${
-            timeBlock.end_time ? ` - ${Utils.formatTime(timeBlock.end_time)}` : ' - Running'
+            timeBlock.end_time ? ` - ${Utils.formatTime(timeBlock.end_time)}` : 
+            (isTimerPaused ? ' - Paused' : ' - Running')
         }`;
 
         return `
-            <div class="time-block ${isRunning ? 'running' : ''}" data-id="${timeBlock.id}">
+            <div class="time-block ${isCurrentlyRunning ? 'running' : ''} ${isTimerPaused ? 'paused' : ''}" data-id="${timeBlock.id}">
                 <div class="time-block-info">
                     <div class="time-block-header">
                         <div class="time-block-content">
@@ -256,7 +292,7 @@ class TimeBlocks {
             this.endTimeField.value = timeBlock.end_time ? Utils.formatDateTimeForInput(timeBlock.end_time) : '';
             this.descriptionField.value = timeBlock.description || '';
             
-            this.openModal();
+            this.openModal('edit');
         } catch (error) {
             console.error('Error editing time block:', error);
             Utils.showNotification('Error', `Failed to edit time block: ${error.message}`, 'error');
@@ -299,6 +335,9 @@ class TimeBlocks {
             await this.loadTimeBlocks();
             
             Utils.showNotification('Success', 'Time block deleted successfully!', 'success');
+            
+            // Dispatch event to notify other components
+            window.dispatchEvent(new CustomEvent('timeBlockUpdated'));
         } catch (error) {
             console.error('Error deleting time block:', error);
             Utils.showNotification('Error', 'Failed to delete time block: ' + error.message, 'error');
@@ -312,19 +351,99 @@ class TimeBlocks {
             const timeBlock = this.timeBlocks.find(tb => tb.id === id);
             
             if (timeBlock && !timeBlock.end_time) {
-                const duration = Utils.calculateDuration(timeBlock.start_time, new Date());
-                const durationElement = blockElement.querySelector('.time-block-duration');
+                // Check if this timer is paused
+                const isTimerPaused = this.timer && this.timer.currentTimeBlockId === timeBlock.id && this.timer.isPaused;
+                
+                let duration;
+                if (isTimerPaused) {
+                    // Use timer's elapsed seconds when paused (don't calculate from current time)
+                    duration = this.timer.elapsedSeconds;
+                } else {
+                    // Calculate current duration for actually running timer
+                    duration = Utils.calculateDuration(timeBlock.start_time, new Date());
+                }
+                
+                const durationElement = blockElement.querySelector('.time-block-duration span');
                 if (durationElement) {
                     durationElement.textContent = Utils.formatDuration(duration);
+                }
+                
+                // Update visual state based on pause status
+                if (isTimerPaused) {
+                    blockElement.classList.remove('running');
+                    blockElement.classList.add('paused');
+                    
+                    // Update time range text
+                    const timeRangeElement = blockElement.querySelector('.time-block-meta-item span');
+                    if (timeRangeElement) {
+                        const startTime = Utils.formatTime(timeBlock.start_time);
+                        timeRangeElement.textContent = `${startTime} - Paused`;
+                    }
+                } else {
+                    blockElement.classList.remove('paused');
+                    blockElement.classList.add('running');
+                    
+                    // Update time range text
+                    const timeRangeElement = blockElement.querySelector('.time-block-meta-item span');
+                    if (timeRangeElement) {
+                        const startTime = Utils.formatTime(timeBlock.start_time);
+                        timeRangeElement.textContent = `${startTime} - Running`;
+                    }
+                }
+            }
+        });
+        
+        // Also update paused blocks
+        const pausedBlocks = this.timeBlocksList?.querySelectorAll('.time-block.paused');
+        pausedBlocks?.forEach(blockElement => {
+            const id = parseInt(blockElement.dataset.id);
+            const timeBlock = this.timeBlocks.find(tb => tb.id === id);
+            
+            if (timeBlock && !timeBlock.end_time) {
+                const isTimerPaused = this.timer && this.timer.currentTimeBlockId === timeBlock.id && this.timer.isPaused;
+                
+                if (!isTimerPaused) {
+                    // Timer is no longer paused, update to running state
+                    blockElement.classList.remove('paused');
+                    blockElement.classList.add('running');
+                    
+                    // Update time range text
+                    const timeRangeElement = blockElement.querySelector('.time-block-meta-item span');
+                    if (timeRangeElement) {
+                        const startTime = Utils.formatTime(timeBlock.start_time);
+                        timeRangeElement.textContent = `${startTime} - Running`;
+                    }
                 }
             }
         });
     }
 
-    openModal() {
+    openModal(mode = 'add') {
         if (!this.timeBlockModal) {
             Utils.showNotification('Error', 'Modal not found', 'error');
             return;
+        }
+        
+        // Update modal title based on mode
+        if (this.timeBlockModalTitle) {
+            this.timeBlockModalTitle.textContent = mode === 'edit' ? 'Edit Time Block' : 'Add Time Block';
+        }
+        
+        // Update icon based on mode
+        if (this.timeBlockModalIcon) {
+            if (mode === 'edit') {
+                this.timeBlockModalIcon.className = 'standard-modal-icon timeblock-edit';
+                const iconElement = this.timeBlockModalIcon.querySelector('i');
+                if (iconElement) {
+                    iconElement.className = 'fas fa-edit';
+                }
+            } else {
+                this.timeBlockModalIcon.className = 'standard-modal-icon timeblock';
+                const iconElement = this.timeBlockModalIcon.querySelector('i');
+                if (iconElement) {
+                    iconElement.className = 'fas fa-plus-circle';
+                }
+            }
         }
         
         this.timeBlockModal.classList.add('active');
@@ -347,6 +466,15 @@ class TimeBlocks {
         document.body.style.overflow = '';
         this.currentEditingId = null;
         this.timeBlockForm?.reset();
+        
+        // Reset icon to add mode
+        if (this.timeBlockModalIcon) {
+            this.timeBlockModalIcon.className = 'standard-modal-icon timeblock';
+            const iconElement = this.timeBlockModalIcon.querySelector('i');
+            if (iconElement) {
+                iconElement.className = 'fas fa-plus-circle';
+            }
+        }
     }
 
     async handleSubmit(e) {
@@ -425,6 +553,9 @@ class TimeBlocks {
 
             this.closeModal();
             await this.loadTimeBlocks();
+            
+            // Dispatch event to notify other components
+            window.dispatchEvent(new CustomEvent('timeBlockUpdated'));
         } catch (error) {
             console.error('Error saving time block:', error);
             Utils.showNotification('Error', `Failed to save time block: ${error.message}`, 'error');

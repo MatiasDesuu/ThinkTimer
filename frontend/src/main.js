@@ -36,12 +36,17 @@ class App {
         this.timer = new Timer();
         this.calendar = new Calendar(this.projects, this.timeBlocks);
         
+        // Connect timer to timeblocks for pause state awareness
+        this.timeBlocks.setTimer(this.timer);
+        this.calendar.setTimer(this.timer);
+        
         // Initialize dialog system
         Dialog.instance = new Dialog();
         
         // Initialize UI
         this.initializeNavigation();
         this.initializeKeyboardShortcuts();
+        this.disableNativeContextMenu();
         this.showPage('home');
         
         // Show initial date
@@ -181,6 +186,67 @@ class App {
                         break;
                 }
             }
+        });
+    }
+
+    disableNativeContextMenu() {
+        // Disable right-click context menu globally
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            return false;
+        });
+
+        // Also disable on window
+        window.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            return false;
+        });
+
+        // Ensure all current and future input/textarea elements have autocomplete="off"
+        this.disableAutocomplete();
+        
+        // Monitor for dynamically added inputs
+        this.observeForNewInputs();
+    }
+
+    disableAutocomplete() {
+        // Apply to existing inputs and textareas
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            if (!input.hasAttribute('autocomplete')) {
+                input.setAttribute('autocomplete', 'off');
+            }
+        });
+    }
+
+    observeForNewInputs() {
+        // Create a MutationObserver to watch for new input elements
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        // Check if the added node is an input or textarea
+                        if (node.tagName === 'INPUT' || node.tagName === 'TEXTAREA') {
+                            if (!node.hasAttribute('autocomplete')) {
+                                node.setAttribute('autocomplete', 'off');
+                            }
+                        }
+                        // Check for inputs/textareas within the added node
+                        const inputs = node.querySelectorAll ? node.querySelectorAll('input, textarea') : [];
+                        inputs.forEach(input => {
+                            if (!input.hasAttribute('autocomplete')) {
+                                input.setAttribute('autocomplete', 'off');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+        // Start observing
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
         });
     }
 

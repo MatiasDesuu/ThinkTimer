@@ -27,12 +27,15 @@ class Utils {
     }
 
     // Format time based on settings
-    static formatTime(date, format = '24') {
+    static formatTime(date, format = null) {
         if (!date) return '';
         
         const d = new Date(date);
         
-        if (format === '12') {
+        // Get format from global settings if not provided
+        const timeFormat = format || (window.appSettings?.settings?.timeFormat) || '24';
+        
+        if (timeFormat === '12') {
             return d.toLocaleTimeString('en-US', {
                 hour: 'numeric',
                 minute: '2-digit',

@@ -21,7 +21,9 @@ class Projects {
         this.projectModal = document.getElementById('project-modal');
         this.projectForm = document.getElementById('project-form');
         this.projectModalTitle = document.getElementById('project-modal-title');
+        this.projectModalIcon = this.projectModal?.querySelector('.standard-modal-icon');
         this.cancelProjectBtn = document.getElementById('cancel-project');
+        this.closeProjectBtn = this.projectModal?.querySelector('.standard-modal-close');
         
         // Form fields
         this.nameField = document.getElementById('project-name');
@@ -33,6 +35,7 @@ class Projects {
     bindEvents() {
         this.addProjectBtn.addEventListener('click', () => this.openModal());
         this.cancelProjectBtn.addEventListener('click', () => this.closeModal());
+        this.closeProjectBtn?.addEventListener('click', () => this.closeModal());
         this.projectForm.addEventListener('submit', (e) => this.handleSubmit(e));
         
         // Close modal when clicking outside
@@ -96,14 +99,18 @@ class Projects {
     createProjectCard(project) {
         const statusClass = project.status || 'active';
         const deadline = project.deadline ? Utils.formatDate(project.deadline) : null;
-        
+        let statusIcon = '';
+        if (statusClass === 'active') statusIcon = '<i class="fas fa-play-circle"></i>';
+        else if (statusClass === 'paused') statusIcon = '<i class="fas fa-pause-circle"></i>';
+        else if (statusClass === 'completed') statusIcon = '<i class="fas fa-check-circle"></i>';
+
         return `
             <div class="project-card" data-id="${project.id}">
                 <div class="project-info">
                     <div class="project-header">
                         <div class="project-title-section">
                             <div class="project-title-row">
-                                <span class="project-status-badge ${statusClass}">${statusClass}</span>
+                                <span class="project-status-badge ${statusClass}">${statusIcon} ${statusClass.charAt(0).toUpperCase() + statusClass.slice(1)}</span>
                                 <h3 class="project-title">${Utils.escapeHtml(project.name)}</h3>
                             </div>
                             ${project.description ? `
@@ -210,6 +217,15 @@ class Projects {
         this.currentEditingId = id;
         this.projectModalTitle.textContent = 'Edit Project';
         
+        // Update icon for edit mode
+        if (this.projectModalIcon) {
+            this.projectModalIcon.className = 'standard-modal-icon project-edit';
+            const iconElement = this.projectModalIcon.querySelector('i');
+            if (iconElement) {
+                iconElement.className = 'fas fa-edit';
+            }
+        }
+        
         // Populate form
         this.nameField.value = project.name;
         this.descriptionField.value = project.description || '';
@@ -255,6 +271,15 @@ class Projects {
         this.currentEditingId = null;
         this.projectForm.reset();
         this.projectModalTitle.textContent = 'Add Project';
+        
+        // Reset icon to add mode
+        if (this.projectModalIcon) {
+            this.projectModalIcon.className = 'standard-modal-icon project';
+            const iconElement = this.projectModalIcon.querySelector('i');
+            if (iconElement) {
+                iconElement.className = 'fas fa-folder-plus';
+            }
+        }
     }
 
     async handleSubmit(e) {

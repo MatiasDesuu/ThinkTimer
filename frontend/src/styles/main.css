@@ -3,26 +3,66 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* Disable native context menu globally */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Disable right-click context menu globally */
+html, body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Allow text selection for editable elements */
+input, textarea, [contenteditable="true"] {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+/* Disable autocomplete for all input fields */
+input {
+    -webkit-autocomplete: off;
+}
+
+/* Disable autofill styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--bg-primary) inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
 }
 
 :root {
-    /* Dark theme colors - primary theme */
-    --bg-primary: #0a0a0a;
-    --bg-secondary: #181818;
-    --bg-tertiary: #232323;
-    --text-primary: #f8f8f8;
-    --text-secondary: #e0e0e0;
-    --text-tertiary: #a0a0a0;
+    /* Light theme colors - default theme */
+    --bg-primary: #f7f7f7;
+    --bg-secondary: #e0e0e0;
+    --bg-tertiary: #cccccc;
+    --text-primary: #111111;
+    --text-secondary: #333333;
+    --text-tertiary: #666666;
     --text-quaternary: #808080;
-    --border-color: #444444;
-    --accent-color: #2196f3;
-    --accent-hover: #1565c0;
+    --border-color: #bdbdbd;
+    --accent-color: #1976d2;
+    --accent-hover: #0d47a1;
     --success-color: #43d675;
     --warning-color: #ffb300;
     --error-color: #ff1744;
-    --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
     --radius: 6px;
     --radius-sm: 3px;
     --radius-lg: 8px;
@@ -81,14 +121,15 @@ body {
     align-items: center;
     gap: 0.5rem;
     padding: 0 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     font-size: 1.1rem;
     font-weight: 600;
     color: var(--accent-color);
+    align-items: baseline;
 }
 
 .nav-brand i {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 .nav-items {
@@ -179,16 +220,17 @@ body {
 }
 
 .page-header h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 600;
     color: var(--text-primary);
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 0.5rem;
 }
 
 .page-header h1 i {
     color: var(--accent-color);
+    font-size: 1.5rem;
 }
 
 /* Date Selector */
@@ -295,10 +337,6 @@ body {
     margin-bottom: 1rem;
 }
 
-.form-group:last-child {
-    margin-bottom: 0;
-}
-
 .form-group label {
     display: block;
     margin-bottom: 0.4rem;
@@ -318,6 +356,45 @@ body {
     color: var(--text-primary);
     font-size: 0.85rem;
     transition: border-color 0.2s ease;
+}
+
+.form-group textarea {
+    resize: none;
+    min-height: 60px;
+    max-height: 120px;
+    font-family: inherit;
+}
+
+/* DateTime input styles */
+.form-group input[type="datetime-local"] {
+    position: relative;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    padding-right: 2.5rem;
+    color-scheme: light;
+}
+
+[data-theme="dark"] .form-group input[type="datetime-local"] {
+    color-scheme: dark;
+}
+
+/* Ensure calendar icon is visible and properly positioned */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="%23666666" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>') no-repeat center;
+    background-size: 16px 16px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    opacity: 1;
+    position: absolute;
+    right: 0.75rem;
+    margin: 0;
+}
+
+/* Dark theme calendar icon */
+[data-theme="dark"] input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="%23cccccc" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>') no-repeat center;
+    background-size: 16px 16px;
 }
 
 .form-group select {
