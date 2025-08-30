@@ -3,6 +3,14 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    /* allow hovered items to rise above and not be clipped */
+    overflow: visible;
+}
+
+/* Override page-specific rules (higher specificity in main.css) so children can overflow when hovered */
+#home-page .time-blocks-list,
+#calendar-page .time-blocks-list {
+    overflow: visible;
 }
 
 .time-block {
@@ -17,11 +25,17 @@
     transition: all 0.2s ease;
     gap: 1rem;
     text-align: left !important;
+    /* create a stacking context and allow z-index manipulation */
+    position: relative;
+    z-index: 0;
 }
 
 .time-block:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-1px);
+    /* raise above nearby headers/overlays; promote to its own layer for stacking */
+    z-index: 9000;
+    will-change: transform, z-index;
 }
 
 .time-block.running {
@@ -226,4 +240,27 @@
 .time-block-action-btn.resume:hover {
     background-color: #388e3c;
     border-color: #388e3c;
+}
+
+/* Strong, page-scoped overrides to fix stacking/clipping when hovering a time-block.
+   These are intentionally high-specificity and scoped to #home-page and #calendar-page
+   so they don't affect global stacking for modals/tooltips. Use !important to counter
+   any inline or compiled CSS that may still be active in runtime builds. */
+#home-page #time-blocks-list,
+#calendar-page #calendar-time-blocks {
+    overflow: visible !important; /* allow children to render outside their container */
+}
+
+#home-page #time-blocks-list .time-block,
+#calendar-page #calendar-time-blocks .time-block {
+    position: relative !important; /* ensure we can control z-index */
+    z-index: 0 !important;
+}
+
+#home-page #time-blocks-list .time-block:hover,
+#calendar-page #calendar-time-blocks .time-block:hover {
+    z-index: 9000 !important; /* below modals (9999) but above headers/notifications */
+    transform: translateY(-1px) !important;
+    box-shadow: var(--shadow-md) !important;
+    will-change: transform, z-index;
 }

@@ -91,13 +91,17 @@ class Calendar {
         
         let html = `
             <div class="calendar-header">
-                <h2 class="calendar-title">${monthName}</h2>
+                <h2 class="calendar-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    <button id="month-year-btn" class="calendar-month-btn" type="button" data-tooltip="Go to current month" data-tooltip-position="top">${monthName}</button>
+                </h2>
                 <div class="calendar-nav">
                     <button class="calendar-nav-btn" id="prev-month">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <button class="calendar-nav-btn" id="next-month">
                         <i class="fas fa-chevron-right"></i>
+                    </button>
                     </button>
                 </div>
             </div>
@@ -132,16 +136,46 @@ class Calendar {
                 const projectsForDate = this.getProjectsForDate(currentDate);
                 const timeBlocksForDate = this.getTimeBlocksForDate(currentDate);
                 
+                // Create modern indicators
+                let projectIndicators = '';
+                
+                // Add deadline indicators (project dots)
+                if (projectsForDate.length > 0) {
+                    if (projectsForDate.length <= 3) {
+                        // Show individual dots for few projects
+                        projectIndicators += projectsForDate.map(project => 
+                            `<div class="calendar-project-dot" data-tooltip="Deadline: ${project.name}" data-tooltip-position="top"></div>`
+                        ).join('');
+                    } else {
+                        // Show count indicator for many projects
+                        projectIndicators += `<div class="calendar-project-indicator multiple" data-tooltip="${projectsForDate.length} project deadlines" data-tooltip-position="top">${projectsForDate.length}</div>`;
+                    }
+                }
+                
+                // Add time blocks indicator
+                if (timeBlocksForDate.length > 0) {
+                    const blockCount = timeBlocksForDate.length;
+                    const totalHours = timeBlocksForDate.reduce((sum, block) => {
+                        if (block.end_time) {
+                            const start = new Date(block.start_time);
+                            const end = new Date(block.end_time);
+                            return sum + (end - start) / (1000 * 60 * 60); // Convert to hours
+                        }
+                        return sum;
+                    }, 0);
+                    
+                    const tooltipText = blockCount === 1 
+                        ? `1 time block (${totalHours.toFixed(1)}h)`
+                        : `${blockCount} time blocks (${totalHours.toFixed(1)}h)`;
+                    
+                    projectIndicators += `<div class="calendar-project-indicator" data-tooltip="${tooltipText}" data-tooltip-position="top">${blockCount}</div>`;
+                }
+                
                 html += `
                     <div class="${dayClasses}" data-date="${currentDate.toISOString()}">
                         <div class="calendar-day-number">${currentDate.getDate()}</div>
                         <div class="calendar-day-projects">
-                            ${projectsForDate.map(project => 
-                                `<div class="calendar-project-indicator" title="Deadline: ${project.name}"></div>`
-                            ).join('')}
-                            ${timeBlocksForDate.length > 0 ? 
-                                `<div class="calendar-project-indicator" style="background-color: var(--success-color);" title="${timeBlocksForDate.length} time block(s)"></div>`
-                            : ''}
+                            ${projectIndicators}
                         </div>
                     </div>
                 `;
@@ -166,6 +200,16 @@ class Calendar {
         
         nextBtn?.addEventListener('click', () => {
             this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+            this.render();
+        });
+
+        // Clickable month/year title -> go to current month
+        const monthYearBtn = this.calendarContainer?.querySelector('#month-year-btn');
+        monthYearBtn?.addEventListener('click', () => {
+            const today = new Date();
+            // Navigate calendar to current month and select today
+            this.currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
+            this.selectedDate = new Date(today);
             this.render();
         });
         

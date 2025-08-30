@@ -281,98 +281,6 @@
     font-size: 0.9rem;
 }
 
-/* Timer notifications */
-.timer-notification {
-    position: fixed;
-    top: 2rem;
-    right: 2rem;
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 1rem;
-    box-shadow: var(--shadow-lg);
-    z-index: 1000;
-    max-width: 320px;
-    animation: slideInRight 0.3s ease;
-}
-
-.timer-notification.success {
-    border-left: 3px solid var(--success-color);
-}
-
-.timer-notification.error {
-    border-left: 3px solid var(--error-color);
-}
-
-.timer-notification-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-}
-
-.timer-notification-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-size: 0.8rem;
-}
-
-.timer-notification.success .timer-notification-icon {
-    background-color: var(--success-color);
-    color: white;
-}
-
-.timer-notification.error .timer-notification-icon {
-    background-color: var(--error-color);
-    color: white;
-}
-
-.timer-notification-title {
-    font-weight: 600;
-    color: var(--text-primary);
-    flex: 1;
-    margin: 0;
-    font-size: 0.9rem;
-}
-
-.timer-notification-close {
-    border: none;
-    background: none;
-    color: var(--text-tertiary);
-    cursor: pointer;
-    padding: 0.25rem;
-    border-radius: var(--radius-sm);
-    transition: all 0.2s ease;
-    font-size: 0.8rem;
-}
-
-.timer-notification-close:hover {
-    background-color: var(--bg-tertiary);
-    color: var(--text-primary);
-}
-
-.timer-notification-body {
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    margin: 0;
-    line-height: 1.4;
-}
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
 /* Responsive timer */
 @media (max-width: 768px) {
     #timer-display {
@@ -399,13 +307,6 @@
     
     .project-selector-container::after {
         right: calc(50% - 115px);
-    }
-    
-    .timer-notification {
-        top: 1rem;
-        right: 1rem;
-        left: 1rem;
-        max-width: none;
     }
 }
 

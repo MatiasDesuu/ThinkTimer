@@ -126,13 +126,95 @@ html.nav-collapsed-init .main {
     display: block;
 }
 
+/* Page layout: Full-height flexbox for main pages */
+#home-page,
+#projects-page,
+#calendar-page,
+#settings-page {
+    display: none;
+    flex-direction: column;
+    min-height: calc(100vh - 3rem); /* Full height minus main padding */
+}
+
+#home-page.active,
+#projects-page.active,
+#calendar-page.active,
+#settings-page.active {
+    display: flex;
+}
+
+/* Home page specific layout */
+#home-page .time-blocks-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0; /* Remove bottom margin for last section */
+}
+
+#home-page .time-blocks-list {
+    flex: 1;
+    overflow-y: auto; /* Add scroll if content overflows */
+    padding-bottom: 1rem; /* Ensure space at bottom */
+    min-height: 200px; /* Minimum height for the time blocks area */
+}
+
+/* Projects page specific layout */
+#projects-page .page-header {
+    flex-shrink: 0; /* Header doesn't shrink */
+}
+
+#projects-page .projects-list {
+    flex: 1; /* Takes remaining space */
+    overflow-y: auto; /* Scrollable if content exceeds */
+    padding-bottom: 1rem; /* Ensure space at bottom */
+    margin-bottom: 0; /* Remove extra bottom margin */
+}
+
+#projects-page .completed-projects-section {
+    margin-bottom: 0; /* Remove extra bottom margin */
+}
+
+/* Calendar page specific layout */
+#calendar-page .page-header {
+    flex-shrink: 0; /* Header doesn't shrink */
+}
+
+#calendar-page .calendar-section {
+    flex-shrink: 0; /* Calendar doesn't shrink */
+}
+
+#calendar-page .time-blocks-section {
+    flex: 1; /* Takes remaining space */
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0; /* Remove bottom margin for last section */
+}
+
+#calendar-page .time-blocks-list {
+    flex: 1; /* Takes remaining space in section */
+    overflow-y: auto; /* Scrollable if content exceeds */
+    padding-bottom: 1rem; /* Ensure space at bottom */
+    min-height: 200px; /* Minimum height for the time blocks area */
+}
+
+/* Settings page specific layout */
+#settings-page .page-header {
+    flex-shrink: 0; /* Header doesn't shrink */
+}
+
+#settings-page .settings-list {
+    flex: 1; /* Takes remaining space */
+    overflow-y: auto; /* Scrollable if content exceeds */
+    margin-bottom: 0; /* Remove extra bottom margin */
+}
+
 /* Page sections - simplified containers */
 .timer-section,
 .time-blocks-section,
 .calendar-section,
 .projects-list,
 .completed-projects-section,
-.settings-container {
+.settings-list {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
@@ -146,7 +228,7 @@ html.nav-collapsed-init .main {
 .calendar-section:hover,
 .projects-list:hover,
 .completed-projects-section:hover,
-.settings-container:hover {
+.settings-list:hover {
     box-shadow: var(--shadow-md);
 }
 
@@ -204,6 +286,16 @@ html.nav-collapsed-init .main {
     min-width: 100px;
     text-align: center;
     font-size: 0.9rem;
+}
+
+/* Make current date clearly interactive: pointer cursor and subtle hover */
+#current-date {
+    cursor: pointer;
+}
+
+.date-selector #current-date:hover {
+    filter: brightness(0.98);
+    transform: translateY(-1px);
 }
 
 /* Buttons */
@@ -330,6 +422,38 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     margin: 0;
 }
 
+/* Date input should match datetime-local styling to keep UI consistent */
+.form-group input[type="date"] {
+    position: relative;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    padding-right: 2.5rem;
+    color-scheme: light;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.75rem;
+}
+
+[data-theme="dark"] .form-group input[type="date"] {
+    color-scheme: dark;
+}
+
+/* Ensure date picker icon aligns and matches size like datetime-local */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background-size: 16px 16px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    opacity: 1;
+    position: absolute;
+    right: 0.75rem;
+    margin: 0;
+}
+
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+    background-size: 16px 16px;
+}
+
 /* Dark theme calendar icon */
 [data-theme="dark"] input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     background-size: 16px 16px;
@@ -446,7 +570,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 /* Page Sections */
 .timer-section, 
 .time-blocks-section, 
-.projects-section,
 .calendar-section {
     margin-bottom: 2rem;
 }
@@ -460,6 +583,19 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     
     .main.nav-collapsed {
         margin-left: 50px;
+    }
+    
+    /* Adjust page heights for mobile */
+    #home-page,
+    #projects-page,
+    #calendar-page,
+    #settings-page {
+        min-height: calc(100vh - 2rem); /* Reduced padding for mobile */
+    }
+    
+    #home-page .time-blocks-list,
+    #calendar-page .time-blocks-list {
+        min-height: 150px; /* Smaller minimum height on mobile */
     }
     
     .page-header {

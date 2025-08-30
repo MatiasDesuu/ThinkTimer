@@ -417,44 +417,6 @@
     text-transform: uppercase;
 }
 
-/* Settings Styles */
-.setting-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.setting-item:last-child {
-    border-bottom: none;
-}
-
-.setting-item label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 500;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-}
-
-.setting-item label i {
-    color: var(--accent-color);
-    width: 1rem;
-}
-
-.setting-select {
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    font-size: 0.85rem;
-    cursor: pointer;
-    min-width: 120px;
-}
-
 /* Custom Dialog */
 .custom-dialog-overlay {
     display: none;
@@ -821,12 +783,6 @@
     
     .calendar-stats {
         flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .setting-item {
-        flex-direction: column;
-        align-items: flex-start;
         gap: 0.5rem;
     }
     

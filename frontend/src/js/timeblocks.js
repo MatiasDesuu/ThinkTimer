@@ -42,6 +42,8 @@ class TimeBlocks {
         // Date navigation
         this.prevDayBtn?.addEventListener('click', () => this.changeDate(-1));
         this.nextDayBtn?.addEventListener('click', () => this.changeDate(1));
+    // Click current date to go to today
+    this.currentDateDisplay?.addEventListener('click', () => this.goToToday());
         
         // Manual time block modal
         this.addManualBlockBtn?.addEventListener('click', () => {
@@ -97,6 +99,15 @@ class TimeBlocks {
         setInterval(() => {
             this.updateRunningTimers();
         }, 60000);
+    }
+
+    // Jump to today's date
+    goToToday() {
+        const today = new Date();
+        // Clear time portion to match how dates are compared/loaded
+        this.currentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        this.updateDateDisplay();
+        this.loadTimeBlocks();
     }
 
     // Set timer reference for pause state checking
@@ -332,10 +343,24 @@ class TimeBlocks {
 
             const result = await API.deleteTimeBlock(numericId);
             
+            // If the deleted time block is the one currently tracked by the timer,
+            // reset the timer to avoid leaving it in a running/paused state.
+            if (this.timer && this.timer.currentTimeBlockId === numericId) {
+                try {
+                    this.timer.resetTimer();
+                    // ensure any UI depending on timer state updates
+                    window.dispatchEvent(new CustomEvent('timerStateChanged', {
+                        detail: { isRunning: this.timer.isRunning, isPaused: this.timer.isPaused }
+                    }));
+                } catch (err) {
+                    console.error('Error resetting timer after time block deletion:', err);
+                }
+            }
+
             await this.loadTimeBlocks();
-            
+
             Utils.showNotification('Success', 'Time block deleted successfully!', 'success');
-            
+
             // Dispatch event to notify other components
             window.dispatchEvent(new CustomEvent('timeBlockUpdated'));
         } catch (error) {

@@ -12,10 +12,16 @@ class TooltipManager {
     }
 
     init() {
-        document.addEventListener('DOMContentLoaded', () => {
+        // If DOM is already loaded, initialize immediately, otherwise wait for DOMContentLoaded
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
             this.createGlobalContainer();
             this.initializeGlobalTooltips();
-        });
+        } else {
+            document.addEventListener('DOMContentLoaded', () => {
+                this.createGlobalContainer();
+                this.initializeGlobalTooltips();
+            });
+        }
     }
 
     createGlobalContainer() {
@@ -27,27 +33,40 @@ class TooltipManager {
 
     initializeGlobalTooltips() {
         // Use event delegation to handle all tooltips globally
+        // Use closest to allow child elements inside the tooltip target to trigger tooltips
         document.addEventListener('mouseenter', (e) => {
-            if (e.target && e.target.nodeType === Node.ELEMENT_NODE && e.target.hasAttribute && e.target.hasAttribute('data-tooltip')) {
-                this.showTooltip(e.target);
+            try {
+                const el = e.target && e.target.closest ? e.target.closest('[data-tooltip]') : null;
+                if (el) this.showTooltip(el);
+            } catch (err) {
+                // ignore
             }
         }, true);
 
         document.addEventListener('mouseleave', (e) => {
-            if (e.target && e.target.nodeType === Node.ELEMENT_NODE && e.target.hasAttribute && e.target.hasAttribute('data-tooltip')) {
-                this.hideTooltip();
+            try {
+                const el = e.target && e.target.closest ? e.target.closest('[data-tooltip]') : null;
+                if (el) this.hideTooltip();
+            } catch (err) {
+                // ignore
             }
         }, true);
 
         document.addEventListener('focus', (e) => {
-            if (e.target && e.target.nodeType === Node.ELEMENT_NODE && e.target.hasAttribute && e.target.hasAttribute('data-tooltip')) {
-                this.showTooltip(e.target);
+            try {
+                const el = e.target && e.target.closest ? e.target.closest('[data-tooltip]') : null;
+                if (el) this.showTooltip(el);
+            } catch (err) {
+                // ignore
             }
         }, true);
 
         document.addEventListener('blur', (e) => {
-            if (e.target && e.target.nodeType === Node.ELEMENT_NODE && e.target.hasAttribute && e.target.hasAttribute('data-tooltip')) {
-                this.hideTooltip();
+            try {
+                const el = e.target && e.target.closest ? e.target.closest('[data-tooltip]') : null;
+                if (el) this.hideTooltip();
+            } catch (err) {
+                // ignore
             }
         }, true);
 

@@ -174,34 +174,41 @@ class Utils {
 
     // Show notification with limit of 2 notifications
     static showNotification(title, message, type = 'success', duration = 3000) {
-        // Check existing notifications and remove oldest if there are 2 or more
-        const existingNotifications = document.querySelectorAll('.timer-notification');
-        if (existingNotifications.length >= 2) {
-            // Remove the oldest notification (first in the list)
-            existingNotifications[0].remove();
+        // Respect user's notifications setting (localStorage takes precedence)
+        const stored = localStorage.getItem('notificationsEnabled');
+        if (stored !== null) {
+            if (stored === '0') return null; // notifications disabled
+        } else if (window.appSettings && window.appSettings.settings && window.appSettings.settings.notificationsEnabled === false) {
+            return null;
         }
+
+        // Ensure only one notification is visible at a time by removing any existing ones
+        const existingNotifications = document.querySelectorAll('.timer-notification');
+        existingNotifications.forEach(n => n.remove());
 
         const notification = document.createElement('div');
         notification.className = `timer-notification ${type}`;
-        
-        const iconClass = type === 'success' ? 'fas fa-check' : 'fas fa-exclamation-triangle';
-        
+
+        const iconClass = type === 'success' ? 'fas fa-check' : (type === 'warning' ? 'fas fa-exclamation' : 'fas fa-exclamation-triangle');
+
+        // Structure: icon on the left, text block (title above body) on the right.
         notification.innerHTML = `
-            <div class="timer-notification-header">
-                <div class="timer-notification-icon">
-                    <i class="${iconClass}"></i>
+            <div class="timer-notification-body-wrapper">
+                <div class="timer-notification-icon"><i class="${iconClass}"></i></div>
+                <div class="timer-notification-text">
+                    <div class="timer-notification-title">${title}</div>
+                    <div class="timer-notification-body">${message}</div>
                 </div>
-                <div class="timer-notification-title">${title}</div>
-                <button class="timer-notification-close">&times;</button>
             </div>
-            <div class="timer-notification-body">${message}</div>
         `;
 
         document.body.appendChild(notification);
 
-        // Close button functionality
-        const closeBtn = notification.querySelector('.timer-notification-close');
-        closeBtn.addEventListener('click', () => {
+        // Allow clicking anywhere on the notification to dismiss it (except interactive children)
+        notification.addEventListener('click', (e) => {
+            // If the click originated from a link, button, or form control, ignore
+            const interactive = e.target.closest('a, button, input, textarea, select');
+            if (interactive) return;
             notification.remove();
         });
 

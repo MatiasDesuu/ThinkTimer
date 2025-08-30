@@ -18,6 +18,8 @@ class Settings {
     initializeElements() {
         this.themeSelector = document.getElementById('theme-selector');
         this.timeFormatSelector = document.getElementById('time-format-selector');
+    this.notificationsToggle = document.getElementById('notifications-toggle');
+    this.notificationsToggleLabel = document.getElementById('notifications-toggle-label');
     }
 
     bindEvents() {
@@ -27,6 +29,9 @@ class Settings {
         
         this.timeFormatSelector?.addEventListener('change', (e) => {
             this.updateTimeFormat(e.target.value);
+        });
+        this.notificationsToggle?.addEventListener('change', (e) => {
+            this.updateNotificationsEnabled(!!e.target.checked);
         });
     }
 
@@ -55,6 +60,19 @@ class Settings {
         
         if (this.timeFormatSelector) {
             this.timeFormatSelector.value = this.settings.timeFormat || '24';
+        }
+
+        // Notifications
+        if (typeof this.settings.notificationsEnabled === 'undefined') {
+            // default to enabled
+            this.settings.notificationsEnabled = true;
+        }
+
+        if (this.notificationsToggle) {
+            this.notificationsToggle.checked = !!this.settings.notificationsEnabled;
+            if (this.notificationsToggleLabel) {
+                this.notificationsToggleLabel.textContent = this.notificationsToggle.checked ? 'Enabled' : 'Disabled';
+            }
         }
     }
 
@@ -119,6 +137,31 @@ class Settings {
         } catch (error) {
             console.error('Error updating time format:', error);
             Utils.showNotification('Error', 'Failed to update time format', 'error');
+        }
+    }
+
+    async updateNotificationsEnabled(enabled) {
+        try {
+            this.settings.notificationsEnabled = !!enabled;
+            // Persist locally first
+            localStorage.setItem('notificationsEnabled', this.settings.notificationsEnabled ? '1' : '0');
+
+            // Optionally persist to backend if API supports it
+            try {
+                await API.updateSettings({ notificationsEnabled: this.settings.notificationsEnabled });
+            } catch (e) {
+                // ignore backend errors for now, local persistence is primary
+                console.warn('Failed to persist notifications setting to backend:', e);
+            }
+
+            if (this.notificationsToggleLabel) {
+                this.notificationsToggleLabel.textContent = this.settings.notificationsEnabled ? 'Enabled' : 'Disabled';
+            }
+
+            Utils.showNotification('Success', `Notifications ${this.settings.notificationsEnabled ? 'enabled' : 'disabled'}`, 'success');
+        } catch (error) {
+            console.error('Error updating notifications setting:', error);
+            Utils.showNotification('Error', 'Failed to update notifications setting', 'error');
         }
     }
     
