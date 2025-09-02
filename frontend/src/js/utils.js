@@ -97,6 +97,12 @@ class Utils {
         return `${year}-${month}-${day}`;
     }
 
+    // Format date for HTML date input (YYYY-MM-DD)
+    static formatDateForInput(date) {
+        if (!date) return '';
+        return this.getDateString(date);
+    }
+
     // Get readable date
     static getReadableDate(dateStr) {
         if (!dateStr) return this.formatDate(new Date());

@@ -1,0 +1,309 @@
+/* Tags Page Styles */
+.tags-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.tag-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-default);
+    box-shadow: var(--shadow-sm);
+}
+
+.tag-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
+}
+
+.tag-card .tag-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    flex: 1;
+}
+
+.tag-color-display {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.tag-color-display .tag-icon {
+    color: white;
+    font-size: 1.5rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.tag-details {
+    flex: 1;
+}
+
+.tag-name {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.tag-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.tag-meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.tag-meta-item i {
+    width: 14px;
+    color: var(--text-muted);
+}
+
+.tag-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.tag-action-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: var(--border-radius-md);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-default);
+    font-size: 0.875rem;
+}
+
+.tag-action-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.tag-action-btn.delete:hover {
+    background: var(--danger-bg);
+    color: var(--danger-color);
+}
+
+/* Tag Modal Styles */
+.color-picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.color-picker input[type="color"] {
+    width: 60px;
+    height: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background: none;
+    cursor: pointer;
+}
+
+.color-presets {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.color-preset {
+    width: 32px;
+    height: 32px;
+    border: 2px solid transparent;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-default);
+}
+
+.color-preset:hover {
+    transform: scale(1.1);
+    border-color: var(--text-primary);
+}
+
+/* Project Tags in Forms */
+.tag-selector {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background: var(--input-bg);
+    min-height: 80px;
+    padding: var(--spacing-sm);
+}
+
+.selected-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    min-height: 32px;
+}
+
+.selected-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.selected-tag .remove-tag {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-sm);
+    opacity: 0.8;
+    transition: opacity var(--transition-default);
+}
+
+.selected-tag .remove-tag:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.no-tags {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    height: 32px;
+}
+
+.tag-input-container {
+    position: relative;
+}
+
+.tag-input-container input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    padding: var(--spacing-xs) 0;
+    outline: none;
+}
+
+.tag-input-container input::placeholder {
+    color: var(--text-muted);
+}
+
+.tag-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--dropdown-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.tag-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    cursor: pointer;
+    transition: background-color var(--transition-default);
+    font-size: 0.875rem;
+}
+
+.tag-dropdown-item:hover {
+    background: var(--bg-hover);
+}
+
+.tag-dropdown-item.create-new {
+    border-top: 1px solid var(--border-color);
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.tag-dropdown-item .tag-color {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--border-radius-sm);
+    flex-shrink: 0;
+}
+
+/* Project Tags Display */
+.project-tags {
+    margin-top: var(--spacing-sm);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+}
+
+.project-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 2px var(--spacing-xs);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.project-tag i {
+    font-size: 0.625rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .tag-card .tag-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+    
+    .tag-color-display {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .tag-color-display .tag-icon {
+        font-size: 1.25rem;
+    }
+    
+    .color-presets {
+        justify-content: center;
+    }
+    
+    .selected-tags {
+        justify-content: center;
+    }
+}

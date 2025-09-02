@@ -5,6 +5,7 @@ export namespace models {
 	    description?: string;
 	    url?: string;
 	    deadline?: time.Time;
+	    tag_ids?: number[];
 	
 	    static createFrom(source: any = {}) {
 	        return new CreateProjectRequest(source);
@@ -16,6 +17,7 @@ export namespace models {
 	        this.description = source["description"];
 	        this.url = source["url"];
 	        this.deadline = this.convertValues(source["deadline"], time.Time);
+	        this.tag_ids = source["tag_ids"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -35,6 +37,20 @@ export namespace models {
 		    }
 		    return a;
 		}
+	}
+	export class CreateTagRequest {
+	    name: string;
+	    color: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new CreateTagRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.color = source["color"];
+	    }
 	}
 	export class CreateTimeBlockRequest {
 	    project_id: number;
@@ -76,6 +92,44 @@ export namespace models {
 		    return a;
 		}
 	}
+	export class Tag {
+	    id: number;
+	    name: string;
+	    color: string;
+	    created_at: time.Time;
+	    updated_at: time.Time;
+	
+	    static createFrom(source: any = {}) {
+	        return new Tag(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.name = source["name"];
+	        this.color = source["color"];
+	        this.created_at = this.convertValues(source["created_at"], time.Time);
+	        this.updated_at = this.convertValues(source["updated_at"], time.Time);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class Project {
 	    id: number;
 	    name: string;
@@ -85,6 +139,7 @@ export namespace models {
 	    status: string;
 	    created_at: time.Time;
 	    updated_at: time.Time;
+	    tags?: Tag[];
 	
 	    static createFrom(source: any = {}) {
 	        return new Project(source);
@@ -100,6 +155,7 @@ export namespace models {
 	        this.status = source["status"];
 	        this.created_at = this.convertValues(source["created_at"], time.Time);
 	        this.updated_at = this.convertValues(source["updated_at"], time.Time);
+	        this.tags = this.convertValues(source["tags"], Tag);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -138,6 +194,7 @@ export namespace models {
 	        this.timeFormat = source["timeFormat"];
 	    }
 	}
+	
 	export class TimeBlock {
 	    id: number;
 	    project_id: number;
@@ -192,6 +249,7 @@ export namespace models {
 	    url?: string;
 	    deadline?: time.Time;
 	    status?: string;
+	    tag_ids?: number[];
 	
 	    static createFrom(source: any = {}) {
 	        return new UpdateProjectRequest(source);
@@ -204,6 +262,7 @@ export namespace models {
 	        this.url = source["url"];
 	        this.deadline = this.convertValues(source["deadline"], time.Time);
 	        this.status = source["status"];
+	        this.tag_ids = source["tag_ids"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -238,6 +297,20 @@ export namespace models {
 	        this.theme = source["theme"];
 	        this.language = source["language"];
 	        this.timeFormat = source["timeFormat"];
+	    }
+	}
+	export class UpdateTagRequest {
+	    name?: string;
+	    color?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new UpdateTagRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.color = source["color"];
 	    }
 	}
 	export class UpdateTimeBlockRequest {
