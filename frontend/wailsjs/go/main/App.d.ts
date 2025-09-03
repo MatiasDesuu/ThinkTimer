@@ -3,31 +3,19 @@
 import {models} from '../models';
 import {time} from '../models';
 
-export function AssignTagsToProject(arg1:number,arg2:Array<number>):Promise<void>;
-
 export function CreateProject(arg1:models.CreateProjectRequest):Promise<models.Project>;
-
-export function CreateTag(arg1:models.CreateTagRequest):Promise<models.Tag>;
 
 export function CreateTimeBlock(arg1:models.CreateTimeBlockRequest):Promise<models.TimeBlock>;
 
 export function DeleteProject(arg1:number):Promise<void>;
 
-export function DeleteTag(arg1:number):Promise<void>;
-
 export function DeleteTimeBlock(arg1:number):Promise<void>;
 
 export function GetAllProjects():Promise<Array<models.Project>>;
 
-export function GetAllTags():Promise<Array<models.Tag>>;
-
 export function GetProjectByID(arg1:number):Promise<models.Project>;
 
 export function GetSettings():Promise<models.Settings>;
-
-export function GetTagByID(arg1:number):Promise<models.Tag>;
-
-export function GetTagsByProjectID(arg1:number):Promise<Array<models.Tag>>;
 
 export function GetTimeBlocksByDate(arg1:time.Time):Promise<Array<models.TimeBlock>>;
 
@@ -40,7 +28,5 @@ export function StopTimeBlockWithDuration(arg1:number,arg2:number):Promise<model
 export function UpdateProject(arg1:number,arg2:models.UpdateProjectRequest):Promise<models.Project>;
 
 export function UpdateSettings(arg1:models.UpdateSettingsRequest):Promise<models.Settings>;
-
-export function UpdateTag(arg1:number,arg2:models.UpdateTagRequest):Promise<models.Tag>;
 
 export function UpdateTimeBlock(arg1:number,arg2:models.UpdateTimeBlockRequest):Promise<models.TimeBlock>;
