@@ -7,7 +7,8 @@ class Settings {
         this.settings = {
             theme: 'light',
             language: 'en',
-            timeFormat: '24'
+            timeFormat: '24',
+            customUrl: ''
         };
         
         this.initializeElements();
@@ -18,8 +19,9 @@ class Settings {
     initializeElements() {
         this.themeSelector = document.getElementById('theme-selector');
         this.timeFormatSelector = document.getElementById('time-format-selector');
-    this.notificationsToggle = document.getElementById('notifications-toggle');
-    this.notificationsToggleLabel = document.getElementById('notifications-toggle-label');
+        this.notificationsToggle = document.getElementById('notifications-toggle');
+        this.notificationsToggleLabel = document.getElementById('notifications-toggle-label');
+        this.customUrlInput = document.getElementById('custom-url-input');
     }
 
     bindEvents() {
@@ -30,8 +32,17 @@ class Settings {
         this.timeFormatSelector?.addEventListener('change', (e) => {
             this.updateTimeFormat(e.target.value);
         });
+        
         this.notificationsToggle?.addEventListener('change', (e) => {
             this.updateNotificationsEnabled(!!e.target.checked);
+        });
+
+        this.customUrlInput?.addEventListener('change', (e) => {
+            this.updateCustomUrl(e.target.value);
+        });
+
+        this.customUrlInput?.addEventListener('blur', (e) => {
+            this.updateCustomUrl(e.target.value);
         });
     }
 
@@ -61,6 +72,13 @@ class Settings {
         if (this.timeFormatSelector) {
             this.timeFormatSelector.value = this.settings.timeFormat || '24';
         }
+
+        if (this.customUrlInput) {
+            this.customUrlInput.value = this.settings.customUrl || '';
+        }
+
+        // Update the URL button visibility and dispatch event
+        this.updateUrlButtonVisibility();
 
         // Notifications
         if (typeof this.settings.notificationsEnabled === 'undefined') {
@@ -162,6 +180,40 @@ class Settings {
         } catch (error) {
             console.error('Error updating notifications setting:', error);
             Utils.showNotification('Error', 'Failed to update notifications setting', 'error');
+        }
+    }
+
+    async updateCustomUrl(url) {
+        try {
+            // Update local settings
+            this.settings.customUrl = url || '';
+            
+            // Save to backend
+            await API.updateSettings({ customUrl: this.settings.customUrl });
+            
+            // Update the URL button visibility
+            this.updateUrlButtonVisibility();
+            
+            // Dispatch event for other components
+            window.dispatchEvent(new CustomEvent('customUrlChanged', { 
+                detail: { customUrl: this.settings.customUrl } 
+            }));
+            
+            Utils.showNotification('Success', 'Custom URL updated successfully!', 'success');
+        } catch (error) {
+            console.error('Error updating custom URL:', error);
+            Utils.showNotification('Error', 'Failed to update custom URL', 'error');
+        }
+    }
+
+    updateUrlButtonVisibility() {
+        const urlButton = document.getElementById('open-custom-url');
+        if (urlButton) {
+            if (this.settings.customUrl && this.settings.customUrl.trim()) {
+                urlButton.style.display = 'inline-flex';
+            } else {
+                urlButton.style.display = 'none';
+            }
         }
     }
     

@@ -6,6 +6,7 @@ type Settings struct {
 	Theme      string `json:"theme" db:"theme"` // "light" or "dark"
 	Language   string `json:"language" db:"language"`
 	TimeFormat string `json:"timeFormat" db:"timeformat"` // "12" or "24"
+	CustomURL  string `json:"customUrl" db:"custom_url"`
 }
 
 // UpdateSettingsRequest represents the request to update settings
@@ -13,4 +14,5 @@ type UpdateSettingsRequest struct {
 	Theme      *string `json:"theme"`
 	Language   *string `json:"language"`
 	TimeFormat *string `json:"timeFormat"`
+	CustomURL  *string `json:"customUrl"`
 }

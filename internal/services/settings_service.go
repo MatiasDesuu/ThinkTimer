@@ -18,10 +18,10 @@ func NewSettingsService(db *sql.DB) *SettingsService {
 
 // GetSettings returns the current settings
 func (s *SettingsService) GetSettings() (*models.Settings, error) {
-	query := "SELECT id, theme, language, COALESCE(timeformat, '24') FROM settings WHERE id = 1"
+	query := "SELECT id, theme, language, COALESCE(timeformat, '24'), COALESCE(custom_url, '') FROM settings WHERE id = 1"
 
 	var settings models.Settings
-	err := s.db.QueryRow(query).Scan(&settings.ID, &settings.Theme, &settings.Language, &settings.TimeFormat)
+	err := s.db.QueryRow(query).Scan(&settings.ID, &settings.Theme, &settings.Language, &settings.TimeFormat, &settings.CustomURL)
 	if err != nil {
 		return nil, err
 	}
@@ -45,6 +45,10 @@ func (s *SettingsService) UpdateSettings(req models.UpdateSettingsRequest) (*mod
 	if req.TimeFormat != nil {
 		setParts = append(setParts, "timeformat = ?")
 		args = append(args, *req.TimeFormat)
+	}
+	if req.CustomURL != nil {
+		setParts = append(setParts, "custom_url = ?")
+		args = append(args, *req.CustomURL)
 	}
 
 	if len(setParts) > 0 {

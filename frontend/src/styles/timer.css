@@ -287,26 +287,34 @@
         font-size: 2.5rem;
     }
     
+    .project-selector-container {
+        width: 100%;
+        max-width: none;
+    }
+    
+    .project-selector {
+        width: 100%;
+        max-width: none;
+        font-size: 0.85rem;
+    }
+    
+    .project-selector-container::after {
+        right: 1rem;
+    }
+    
     .timer-controls {
         flex-direction: column;
-        align-items: center;
-        max-width: 200px;
-        margin: 1.5rem auto 0;
+        align-items: stretch;
+        max-width: none;
+        margin: 1.5rem 0 0;
+        width: 100%;
     }
     
     .timer-btn {
         width: 100%;
         padding: 0.75rem 1rem;
         font-size: 0.9rem;
-    }
-    
-    .project-selector {
-        font-size: 0.85rem;
-        max-width: 250px;
-    }
-    
-    .project-selector-container::after {
-        right: calc(50% - 115px);
+        min-width: none;
     }
 }
 
@@ -315,12 +323,22 @@
         font-size: 2rem;
     }
     
+    .timer-section {
+        padding: 1rem;
+    }
+    
     .project-selector {
-        max-width: 200px;
+        font-size: 0.8rem;
+        padding: 0.6rem 2rem 0.6rem 0.8rem;
     }
     
     .project-selector-container::after {
-        right: calc(50% - 90px);
+        right: 0.8rem;
+    }
+    
+    .timer-btn {
+        padding: 0.7rem 0.8rem;
+        font-size: 0.85rem;
     }
 }
 

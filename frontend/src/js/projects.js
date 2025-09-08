@@ -2,6 +2,7 @@
 import API from './api.js';
 import Utils from './utils.js';
 import Dialog from './dialog.js';
+import * as Runtime from '../../wailsjs/runtime/runtime.js';
 
 class Projects {
     constructor() {
@@ -180,6 +181,26 @@ class Projects {
                 this.handleProjectAction(action, id);
             });
         });
+
+        // Open project URLs in the system default browser (not inside the app webview)
+        const urlLinks = [
+            ...this.activeProjectsList?.querySelectorAll('.project-url') || [],
+            ...this.completedProjectsList?.querySelectorAll('.project-url') || []
+        ];
+
+        urlLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = link.getAttribute('href');
+                if (!href) return;
+                try {
+                    Runtime.BrowserOpenURL(href);
+                } catch (err) {
+                    // Fallback: attempt to open via window.open if runtime fails
+                    window.open(href, '_blank');
+                }
+            });
+        });
     }
 
     async handleProjectAction(action, id) {
@@ -284,13 +305,37 @@ class Projects {
 
     async handleSubmit(e) {
         e.preventDefault();
-        
+
         const formData = new FormData(this.projectForm);
+
+        // Handle URL: when updating we must send an explicit empty string
+        // so the backend receives a non-nil value and will clear the column.
+        const rawUrl = formData.get('url');
+        let urlValue = null;
+        if (this.currentEditingId) {
+            // For updates, send empty string when the user cleared the field
+            urlValue = rawUrl === null ? '' : rawUrl.trim();
+        } else {
+            // For creates, prefer null when empty
+            urlValue = rawUrl && rawUrl.trim() !== '' ? rawUrl.trim() : null;
+        }
+
+        // Handle deadline: create a local-midnight Date to avoid UTC shifts
+        const rawDeadline = formData.get('deadline');
+        let deadlineValue = null;
+        if (rawDeadline) {
+            // rawDeadline may be YYYY-MM-DD or YYYY-MM-DDTHH:MM (for datetime-local)
+            const datePart = String(rawDeadline).split('T')[0];
+            const [y, m, d] = datePart.split('-').map(n => parseInt(n, 10));
+            // Construct as local date midnight
+            deadlineValue = new Date(y, (m || 1) - 1, d || 1);
+        }
+
         const projectData = {
             name: formData.get('name').trim(),
             description: formData.get('description').trim() || null,
-            url: formData.get('url').trim() || null,
-            deadline: formData.get('deadline') ? new Date(formData.get('deadline')) : null
+            url: urlValue,
+            deadline: deadlineValue
         };
 
         // Validation
@@ -299,7 +344,8 @@ class Projects {
             return;
         }
 
-        if (projectData.url && !Utils.isValidURL(projectData.url)) {
+        // Validate URL only when non-empty ('' should be allowed to clear the URL)
+        if (projectData.url && projectData.url.length > 0 && !Utils.isValidURL(projectData.url)) {
             Utils.showNotification('Error', 'Please enter a valid URL', 'error');
             return;
         }

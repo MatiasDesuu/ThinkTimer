@@ -188,6 +188,51 @@
     padding: 0.5rem;
 }
 
+.setting-input {
+    min-width: 200px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-weight: 400;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.setting-input:hover {
+    border-color: var(--accent-color);
+    background-color: var(--bg-primary);
+    box-shadow: var(--shadow);
+}
+
+.setting-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+    background-color: var(--bg-primary);
+}
+
+.setting-input:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.setting-input::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.7;
+}
+
+.setting-control .form-group {
+    margin-bottom: 0;
+    min-width: 200px;
+}
+
+.setting-control .form-group input {
+    margin: 0;
+}
+
 /* Responsive design for settings */
 @media (max-width: 768px) {
     .setting-card {
@@ -205,6 +250,16 @@
     }
     
     .setting-select {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .setting-input {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .setting-control .form-group {
         width: 100%;
         min-width: unset;
     }

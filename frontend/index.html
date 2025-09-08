@@ -67,14 +67,19 @@
             <div id="home-page" class="page active">
                 <div class="page-header">
                     <h1><i class="fas fa-clock"></i>Time Tracking</h1>
-                    <div class="date-selector">
-                        <button id="prev-day" class="date-nav-btn">
-                            <i class="fas fa-chevron-left"></i>
+                    <div class="page-header-right">
+                        <button id="open-custom-url" data-tooltip="Open custom URL" data-tooltip-position="bottom" style="display: none;">
+                            <i class="fas fa-external-link-alt"></i>
                         </button>
-                        <span id="current-date"></span>
-                        <button id="next-day" class="date-nav-btn">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+                        <div class="date-selector">
+                            <button id="prev-day" class="date-nav-btn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="current-date"></span>
+                            <button id="next-day" class="date-nav-btn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -204,6 +209,21 @@
                                 <option value="24">24 Hours</option>
                                 <option value="12">12 Hours (AM/PM)</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-card">
+                        <div class="setting-info">
+                            <div class="setting-title">
+                                <i class="fas fa-external-link-alt"></i>
+                                <h3>Custom URL</h3>
+                            </div>
+                            <p class="setting-description">Set a custom URL to open from the home page button</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="form-group">
+                                <input type="url" id="custom-url-input" placeholder="https://example.com">
+                            </div>
                         </div>
                     </div>
                 

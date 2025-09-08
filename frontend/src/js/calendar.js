@@ -138,16 +138,21 @@ class Calendar {
                 
                 // Create modern indicators
                 let projectIndicators = '';
+                // Aggregate tooltip texts for the whole day container
+                const dayTooltips = [];
                 
                 // Add deadline indicators (project dots)
                 if (projectsForDate.length > 0) {
                     if (projectsForDate.length <= 3) {
                         // Show individual dots for few projects
-                        projectIndicators += projectsForDate.map(project => 
-                            `<div class="calendar-project-dot" data-tooltip="Deadline: ${project.name}" data-tooltip-position="top"></div>`
-                        ).join('');
+                        projectIndicators += projectsForDate.map(project => {
+                            // add to day-level tooltip list
+                            dayTooltips.push(`Deadline: ${project.name}`);
+                            return `<div class="calendar-project-dot" data-tooltip="Deadline: ${project.name}" data-tooltip-position="top"></div>`;
+                        }).join('');
                     } else {
                         // Show count indicator for many projects
+                        dayTooltips.push(`${projectsForDate.length} project deadlines`);
                         projectIndicators += `<div class="calendar-project-indicator multiple" data-tooltip="${projectsForDate.length} project deadlines" data-tooltip-position="top">${projectsForDate.length}</div>`;
                     }
                 }
@@ -168,11 +173,16 @@ class Calendar {
                         ? `1 time block (${totalHours.toFixed(1)}h)`
                         : `${blockCount} time blocks (${totalHours.toFixed(1)}h)`;
                     
+                    // add time block tooltip summary to day-level tooltips
+                    dayTooltips.push(tooltipText);
                     projectIndicators += `<div class="calendar-project-indicator" data-tooltip="${tooltipText}" data-tooltip-position="top">${blockCount}</div>`;
                 }
-                
+
+                // If we have aggregated tooltips, join them into one text for the day container
+                const dayTooltipAttr = dayTooltips.length > 0 ? ` data-tooltip="${dayTooltips.map(t => t.replace(/"/g, '\\"')).join('\n')}" data-tooltip-position="top"` : '';
+
                 html += `
-                    <div class="${dayClasses}" data-date="${currentDate.toISOString()}">
+                    <div class="${dayClasses}" data-date="${currentDate.toISOString()}"${dayTooltipAttr}>
                         <div class="calendar-day-number">${currentDate.getDate()}</div>
                         <div class="calendar-day-projects">
                             ${projectIndicators}
@@ -221,6 +231,40 @@ class Calendar {
                 this.render();
                 // Load time blocks for the newly selected date
                 this.loadSelectedDateTimeBlocks();
+            });
+            
+            // Show tooltip immediately when hovering the whole day (fix intermittent missing tooltips)
+            dayElement.addEventListener('mouseenter', (e) => {
+                try {
+                    // Use global tooltip manager to show immediately
+                    if (dayElement.hasAttribute('data-tooltip')) {
+                        // show() displays immediately
+                        window.tooltipManager?.show(dayElement);
+                    }
+                } catch (err) {
+                    // ignore
+                }
+            });
+
+            dayElement.addEventListener('mouseleave', (e) => {
+                try {
+                    window.tooltipManager?.hide();
+                } catch (err) {
+                    // ignore
+                }
+            });
+
+            // Right-click (contextmenu) should show the tooltip for the day
+            dayElement.addEventListener('contextmenu', (e) => {
+                // Only act if there is tooltip content
+                if (!dayElement.hasAttribute('data-tooltip')) return;
+                e.preventDefault();
+                try {
+                    // Show immediately
+                    window.tooltipManager?.show(dayElement);
+                } catch (err) {
+                    // ignore
+                }
             });
         });
     }

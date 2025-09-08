@@ -125,6 +125,7 @@ export namespace models {
 	    theme: string;
 	    language: string;
 	    timeFormat: string;
+	    customUrl: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Settings(source);
@@ -136,6 +137,7 @@ export namespace models {
 	        this.theme = source["theme"];
 	        this.language = source["language"];
 	        this.timeFormat = source["timeFormat"];
+	        this.customUrl = source["customUrl"];
 	    }
 	}
 	export class TimeBlock {
@@ -228,6 +230,7 @@ export namespace models {
 	    theme?: string;
 	    language?: string;
 	    timeFormat?: string;
+	    customUrl?: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new UpdateSettingsRequest(source);
@@ -238,6 +241,7 @@ export namespace models {
 	        this.theme = source["theme"];
 	        this.language = source["language"];
 	        this.timeFormat = source["timeFormat"];
+	        this.customUrl = source["customUrl"];
 	    }
 	}
 	export class UpdateTimeBlockRequest {

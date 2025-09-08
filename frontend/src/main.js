@@ -52,6 +52,7 @@ class App {
         // Initialize UI
         this.initializeNavigation();
         this.initializeKeyboardShortcuts();
+        this.initializeCustomURLButton();
         this.disableNativeContextMenu();
         this.showPage('home');
         
@@ -88,6 +89,41 @@ class App {
                 this.showPage(page);
             });
         });
+    }
+
+    initializeCustomURLButton() {
+        const urlButton = document.getElementById('open-custom-url');
+        if (urlButton) {
+            urlButton.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await this.openCustomURL();
+            });
+        }
+
+        // Listen for custom URL changes
+        window.addEventListener('customUrlChanged', () => {
+            this.settings.updateUrlButtonVisibility();
+        });
+    }
+
+    async openCustomURL() {
+        try {
+            const settings = window.appSettings?.settings || {};
+            const customUrl = settings.customUrl;
+            
+            if (customUrl && customUrl.trim()) {
+                // Import BrowserOpenURL from Wails runtime
+                const { BrowserOpenURL } = await import('../wailsjs/runtime/runtime.js');
+                BrowserOpenURL(customUrl);
+                
+                Utils.showNotification('Success', 'Opening URL in browser...', 'success');
+            } else {
+                Utils.showNotification('Warning', 'No custom URL configured. Please set it in Settings.', 'warning');
+            }
+        } catch (error) {
+            console.error('Error opening custom URL:', error);
+            Utils.showNotification('Error', 'Failed to open custom URL', 'error');
+        }
     }
 
     showPage(pageName) {
