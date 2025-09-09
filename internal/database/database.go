@@ -57,6 +57,7 @@ func (db *DB) migrate() error {
 			name TEXT NOT NULL,
 			description TEXT,
 			url TEXT,
+			directory TEXT,
 			deadline DATETIME,
 			status TEXT DEFAULT 'active',
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -97,6 +98,47 @@ func (db *DB) migrate() error {
 	// Handle custom_url column migration safely
 	if err := db.addCustomURLColumn(); err != nil {
 		return err
+	}
+
+	// Handle directory column migration for projects
+	if err := db.addProjectDirectoryColumn(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// addProjectDirectoryColumn adds the directory column to projects if it doesn't exist
+func (db *DB) addProjectDirectoryColumn() error {
+	query := "PRAGMA table_info(projects)"
+	rows, err := db.conn.Query(query)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	hasDirectory := false
+	for rows.Next() {
+		var cid int
+		var name, dataType string
+		var notNull, dfltValue, pk interface{}
+
+		if err := rows.Scan(&cid, &name, &dataType, &notNull, &dfltValue, &pk); err != nil {
+			continue
+		}
+
+		if name == "directory" {
+			hasDirectory = true
+			break
+		}
+	}
+
+	if !hasDirectory {
+		_, err := db.conn.Exec("ALTER TABLE projects ADD COLUMN directory TEXT DEFAULT ''")
+		if err != nil {
+			return err
+		}
+		// No further update needed; default empty string is fine
 	}
 
 	return nil

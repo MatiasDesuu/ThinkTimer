@@ -31,6 +31,7 @@ class Projects {
         this.nameField = document.getElementById('project-name');
         this.descriptionField = document.getElementById('project-description');
         this.urlField = document.getElementById('project-url');
+    this.directoryField = document.getElementById('project-directory');
         this.deadlineField = document.getElementById('project-deadline');
 
         // Add tooltip to Add Project button via TooltipManager if available
@@ -152,6 +153,12 @@ class Projects {
                                 <a href="${project.url}" target="_blank" class="project-url">${Utils.escapeHtml(project.url)}</a>
                             </div>
                         ` : ''}
+                        ${project.directory ? `
+                            <div class="project-meta-item">
+                                <i class="fas fa-folder-open"></i>
+                                <a href="#" class="project-directory" data-path="${Utils.escapeHtml(project.directory)}">${Utils.escapeHtml(project.directory)}</a>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
                 
@@ -227,6 +234,36 @@ class Projects {
                 }
             });
         });
+
+        // Directory links - open folder in OS file explorer using backend
+        const dirLinks = [
+            ...this.activeProjectsList?.querySelectorAll('.project-directory') || [],
+            ...this.completedProjectsList?.querySelectorAll('.project-directory') || []
+        ];
+
+        dirLinks.forEach(link => {
+            link.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const path = link.dataset.path;
+                if (!path) return;
+                try {
+                    // Call the Go backend method exposed by Wails
+                    if (window.go && window.go.main && window.go.main.App && typeof window.go.main.App.OpenDirectory === 'function') {
+                        await window.go.main.App.OpenDirectory(path);
+                        return;
+                    }
+                } catch (err) {
+                    console.error('Error calling OpenDirectory:', err);
+                }
+
+                // Fallback: try opening with runtime BrowserOpenURL using file:// scheme
+                try {
+                    Runtime.BrowserOpenURL('file://' + path);
+                } catch (err) {
+                    try { window.open('file://' + path); } catch (e) { /* ignore */ }
+                }
+            });
+        });
     }
 
     async handleProjectAction(action, id) {
@@ -277,6 +314,7 @@ class Projects {
         this.nameField.value = project.name;
         this.descriptionField.value = project.description || '';
         this.urlField.value = project.url || '';
+    this.directoryField.value = project.directory || '';
         this.deadlineField.value = project.deadline ? Utils.formatDateForInput(project.deadline) : '';
         
         this.openModal();
@@ -357,10 +395,20 @@ class Projects {
             deadlineValue = new Date(y, (m || 1) - 1, d || 1);
         }
 
+        // Handle Directory similar to URL: allow empty string on update to clear
+        const rawDirectory = formData.get('directory');
+        let directoryValue = null;
+        if (this.currentEditingId) {
+            directoryValue = rawDirectory === null ? '' : rawDirectory.trim();
+        } else {
+            directoryValue = rawDirectory && rawDirectory.trim() !== '' ? rawDirectory.trim() : null;
+        }
+
         const projectData = {
             name: formData.get('name').trim(),
             description: formData.get('description').trim() || null,
             url: urlValue,
+            directory: directoryValue,
             deadline: deadlineValue
         };
 
@@ -413,6 +461,12 @@ class Projects {
                         const option = document.createElement('option');
                         option.value = project.id;
                         option.textContent = project.name;
+                        // Store the project url and directory on the option for quick access from other modules
+                        if (project.url) option.setAttribute('data-url', project.url);
+                        else option.removeAttribute('data-url');
+
+                        if (project.directory) option.setAttribute('data-directory', project.directory);
+                        else option.removeAttribute('data-directory');
                         selector.appendChild(option);
                     });
                 

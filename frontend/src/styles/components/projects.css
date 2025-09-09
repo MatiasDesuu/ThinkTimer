@@ -176,6 +176,25 @@
     text-decoration: underline;
 }
 
+.project-card .project-directory {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    text-align: left !important;
+    font-size: 0.75rem;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-wrap: anywhere;
+}
+
+.project-card .project-directory:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
 .project-actions {
     display: flex;
     gap: 0.5rem;

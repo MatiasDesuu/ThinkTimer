@@ -19,6 +19,7 @@ type Project struct {
 	Name        string        `json:"name" db:"name"`
 	Description *string       `json:"description" db:"description"`
 	URL         *string       `json:"url" db:"url"`
+	Directory   *string       `json:"directory" db:"directory"`
 	Deadline    *time.Time    `json:"deadline" db:"deadline"`
 	Status      ProjectStatus `json:"status" db:"status"`
 	CreatedAt   time.Time     `json:"created_at" db:"created_at"`
@@ -30,6 +31,7 @@ type CreateProjectRequest struct {
 	Name        string     `json:"name"`
 	Description *string    `json:"description"`
 	URL         *string    `json:"url"`
+	Directory   *string    `json:"directory"`
 	Deadline    *time.Time `json:"deadline"`
 }
 
@@ -38,6 +40,7 @@ type UpdateProjectRequest struct {
 	Name        *string        `json:"name"`
 	Description *string        `json:"description"`
 	URL         *string        `json:"url"`
+	Directory   *string        `json:"directory"`
 	Deadline    *time.Time     `json:"deadline"`
 	Status      *ProjectStatus `json:"status"`
 }

@@ -4,6 +4,7 @@ export namespace models {
 	    name: string;
 	    description?: string;
 	    url?: string;
+	    directory?: string;
 	    deadline?: time.Time;
 	
 	    static createFrom(source: any = {}) {
@@ -15,6 +16,7 @@ export namespace models {
 	        this.name = source["name"];
 	        this.description = source["description"];
 	        this.url = source["url"];
+	        this.directory = source["directory"];
 	        this.deadline = this.convertValues(source["deadline"], time.Time);
 	    }
 	
@@ -81,6 +83,7 @@ export namespace models {
 	    name: string;
 	    description?: string;
 	    url?: string;
+	    directory?: string;
 	    deadline?: time.Time;
 	    status: string;
 	    created_at: time.Time;
@@ -96,6 +99,7 @@ export namespace models {
 	        this.name = source["name"];
 	        this.description = source["description"];
 	        this.url = source["url"];
+	        this.directory = source["directory"];
 	        this.deadline = this.convertValues(source["deadline"], time.Time);
 	        this.status = source["status"];
 	        this.created_at = this.convertValues(source["created_at"], time.Time);
@@ -192,6 +196,7 @@ export namespace models {
 	    name?: string;
 	    description?: string;
 	    url?: string;
+	    directory?: string;
 	    deadline?: time.Time;
 	    status?: string;
 	
@@ -204,6 +209,7 @@ export namespace models {
 	        this.name = source["name"];
 	        this.description = source["description"];
 	        this.url = source["url"];
+	        this.directory = source["directory"];
 	        this.deadline = this.convertValues(source["deadline"], time.Time);
 	        this.status = source["status"];
 	    }

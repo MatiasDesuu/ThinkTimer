@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"os/exec"
+	"runtime"
 	"time"
 
 	"ThinkTimerV2/internal/database"
@@ -101,4 +103,26 @@ func (a *App) GetSettings() (*models.Settings, error) {
 
 func (a *App) UpdateSettings(req models.UpdateSettingsRequest) (*models.Settings, error) {
 	return a.settingsService.UpdateSettings(req)
+}
+
+// OpenDirectory opens the given filesystem directory in the OS file explorer.
+// It chooses the correct command depending on the platform.
+func (a *App) OpenDirectory(path string) error {
+	if path == "" {
+		return nil
+	}
+
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("explorer", path)
+	case "darwin":
+		cmd = exec.Command("open", path)
+	default:
+		// Assume Linux / BSD with xdg-open available
+		cmd = exec.Command("xdg-open", path)
+	}
+
+	// Start the command and don't wait for it to finish to avoid blocking the app
+	return cmd.Start()
 }

@@ -17,12 +17,25 @@
     position: relative;
     display: flex;
     justify-content: center;
+    gap: 0.5rem; 
+}
+
+.project-selector-container .btn {
+    align-self: center;
+    display: inline-flex;
+    padding: 0.75rem 0.8rem; /* match select vertical padding */
+    align-items: center;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    cursor: pointer;
 }
 
 .project-selector {
     width: 100%;
     max-width: 300px;
-    padding: 0.75rem 2rem 0.75rem 1rem;
+    padding: 0.85rem 2rem 0.85rem 1rem; /* slightly increased vertical padding to avoid clipping */
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     background-color: var(--bg-primary);
@@ -37,17 +50,82 @@
     -moz-appearance: none;
 }
 
-.project-selector-container::after {
-    content: '\f078';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
+/* Ensure button and select share a compatible minimum height for visual parity */
+.project-selector,
+.project-selector-container .btn {
+    min-height: calc(2.25rem + 2px);
+}
+
+/* Force exact matched control height, box-sizing and vertical alignment so
+   the select and the open-project button render the same visual height. */
+.project-selector,
+.project-selector-container .btn,
+ #open-project-url {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(2.5rem + 2px); /* slightly larger min-height so select text doesn't get clipped */
+    line-height: normal; /* avoid inherited line-height differences */
+}
+
+/* Explicit control height to prevent any inherited padding/line-height from
+   making the controls appear different. Uses a local CSS variable so it can
+   be tweaked per layout or breakpoint if needed. */
+.timer-section {
+    --timer-control-height: calc(2.5rem + 2px);
+}
+
+/* Force exact height for the project selector and right-side button */
+#project-selector,
+.project-selector {
+    height: var(--timer-control-height);
+    padding-top: 0; /* vertical padding handled by fixed height */
+    padding-bottom: 0;
+    line-height: normal;
+}
+
+#open-project-url,
+.project-selector-container .btn {
+    height: var(--timer-control-height);
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#open-project-url:hover, #open-project-dir:hover {
+    transform: none !important;
+    border-color: var(--accent-color) !important;
+}
+
+/* Move chevron inside the select so adjacent buttons don't overlap it */
+.project-selector-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.project-selector {
+    /* leave space on the right for the chevron */
+    padding-right: 2.6rem;
+}
+
+.select-chevron {
     position: absolute;
-    right: calc(50% - 140px);
+    right: 0.6rem;
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-tertiary);
     pointer-events: none;
-    transition: color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3; /* ensure it's above the select control */
+    font-size: 0.95rem;
+}
+
+.select-chevron i {
+    font-size: 0.95rem;
+    line-height: 1;
 }
 
 .project-selector:focus {
@@ -60,8 +138,24 @@
     border-color: var(--accent-color);
 }
 
-.project-selector-container:hover::after {
+.project-selector-wrapper:hover .select-chevron {
     color: var(--accent-color);
+}
+
+/* Make the small action buttons next to the selector behave like the select on hover
+   (no translateY movement). Use the same border-color and subtle focus ring. */
+.project-selector-container .btn:hover,
+.project-selector-container .btn:active {
+    transform: none !important; /* override global button hover translate */
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.08) !important;
+}
+
+/* When focused via keyboard, match select focus styling */
+.project-selector-container .btn:focus {
+    outline: none;
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2) !important;
 }
 
 /* Timer Display */
@@ -287,19 +381,58 @@
         font-size: 2.5rem;
     }
     
+    /* Keep selector and button on one row for compact mobile layout
+       Selector flexes to fill available space, button stays compact on the right */
     .project-selector-container {
         width: 100%;
         max-width: none;
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: flex-start;
     }
-    
+
+    .project-selector-wrapper {
+        flex: 1 1 auto;
+        min-width: 0; /* allow shrinking inside flex */
+    }
+
     .project-selector {
         width: 100%;
         max-width: none;
         font-size: 0.85rem;
     }
+    /* ensure space for chevron */
+    .project-selector {
+        padding-right: 2.2rem;
+        padding-top: 0.85rem; /* match increased desktop padding */
+        padding-bottom: 0.85rem;
+    }
+
+    .project-selector-container .btn {
+    width: auto;
+    flex: 0 0 auto;
+    /* keep same vertical sizing as the select so button doesn't change size */
+    padding: 0.85rem 0.8rem;
+    min-height: calc(2.5rem + 2px);
+    align-self: center;
+    }
+
+    /* Match the compact header icon button sizing so open-project-url stays small */
+    #open-project-url {
+        flex-shrink: 0;
+        min-width: 40px;
+        /* match select/button vertical sizing */
+    padding: 0.85rem 0.8rem;
+    min-height: calc(2.5rem + 2px);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
     
-    .project-selector-container::after {
-        right: 1rem;
+    .select-chevron {
+        right: 0.8rem;
     }
     
     .timer-controls {
@@ -329,11 +462,19 @@
     
     .project-selector {
         font-size: 0.8rem;
-        padding: 0.6rem 2rem 0.6rem 0.8rem;
+        padding: 0.6rem 1.8rem 0.6rem 0.8rem;
     }
-    
-    .project-selector-container::after {
-        right: 0.8rem;
+
+    .select-chevron {
+        right: 0.6rem;
+    }
+
+    /* Extra-small screens: keep same vertical sizing but allow slightly narrower min-width */
+    #open-project-url {
+        min-width: 36px;
+        padding: 0.6rem 0.6rem;
+        min-height: calc(2.5rem + 2px);
+        height: auto; /* allow flexbox centering while keeping min-height */
     }
     
     .timer-btn {

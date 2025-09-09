@@ -28,6 +28,8 @@ class Timer {
     initializeElements() {
         console.log('Initializing timer elements...');
         this.projectSelector = document.getElementById('project-selector');
+    this.openProjectUrlBtn = document.getElementById('open-project-url');
+    this.openProjectDirBtn = document.getElementById('open-project-dir');
         this.timerDisplay = document.getElementById('timer-display');
         this.startBtn = document.getElementById('start-timer');
         this.pauseBtn = document.getElementById('pause-timer');
@@ -51,6 +53,29 @@ class Timer {
         this.pauseBtn.addEventListener('click', () => this.pause());
         this.stopBtn.addEventListener('click', () => this.stop());
         this.resetBtn.addEventListener('click', () => this.reset());
+        // When project selection changes, update the project-URL button visibility
+        if (this.projectSelector) {
+            this.projectSelector.addEventListener('change', () => this.updateProjectUrlButton());
+        }
+
+        // Open project URL when the button is clicked
+        if (this.openProjectUrlBtn) {
+            this.openProjectUrlBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await this.openSelectedProjectUrl();
+            });
+        }
+
+        // Open project directory when the button is clicked
+        if (this.openProjectDirBtn) {
+            this.openProjectDirBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await this.openSelectedProjectDir();
+            });
+        }
+
+        // Listen for project list updates so option data-urls are available/updated
+        window.addEventListener('projectsUpdated', () => this.updateProjectUrlButton());
     }
 
     async start() {
@@ -315,6 +340,90 @@ class Timer {
             elapsedSeconds: this.elapsedSeconds,
             startTime: this.startTime
         };
+    }
+
+    updateProjectUrlButton() {
+        try {
+            if (!this.projectSelector || !this.openProjectUrlBtn) return;
+            const selectedOption = this.projectSelector.options[this.projectSelector.selectedIndex];
+            const url = selectedOption ? selectedOption.getAttribute('data-url') : null;
+            if (url && url.trim()) {
+                this.openProjectUrlBtn.style.display = 'inline-flex';
+                this.openProjectUrlBtn.title = '';
+                this.openProjectUrlBtn.setAttribute('aria-label', 'Open project URL');
+            } else {
+                this.openProjectUrlBtn.style.display = 'none';
+            }
+            // Also handle directory button
+            if (this.openProjectDirBtn) {
+                const dir = selectedOption ? selectedOption.getAttribute('data-directory') : null;
+                if (dir && dir.trim()) {
+                    this.openProjectDirBtn.style.display = 'inline-flex';
+                    this.openProjectDirBtn.title = '';
+                    this.openProjectDirBtn.setAttribute('aria-label', 'Open project folder');
+                } else {
+                    this.openProjectDirBtn.style.display = 'none';
+                }
+            }
+        } catch (err) {
+            console.warn('Failed to update project URL button:', err);
+        }
+    }
+
+    async openSelectedProjectUrl() {
+        try {
+            if (!this.projectSelector) return;
+            const selectedOption = this.projectSelector.options[this.projectSelector.selectedIndex];
+            const url = selectedOption ? selectedOption.getAttribute('data-url') : null;
+            if (!url) {
+                Utils.showNotification('Warning', 'Selected project has no URL', 'warning');
+                return;
+            }
+
+            // Use Wails runtime to open in default browser
+            try {
+                const { BrowserOpenURL } = await import('../../wailsjs/runtime/runtime.js');
+                BrowserOpenURL(url);
+            } catch (err) {
+                // Fallback
+                window.open(url, '_blank');
+            }
+
+            Utils.showNotification('Opening URL', 'Opening project URL in browser...', 'success');
+        } catch (err) {
+            console.error('Error opening project URL:', err);
+            Utils.showNotification('Error', 'Failed to open project URL', 'error');
+        }
+    }
+
+    async openSelectedProjectDir() {
+        try {
+            if (!this.projectSelector) return;
+            const selectedOption = this.projectSelector.options[this.projectSelector.selectedIndex];
+            const dir = selectedOption ? selectedOption.getAttribute('data-directory') : null;
+            if (!dir) {
+                Utils.showNotification('Warning', 'Selected project has no directory', 'warning');
+                return;
+            }
+
+            // Prefer calling backend OpenDirectory exposed by Wails
+            try {
+                if (window.go && window.go.main && window.go.main.App && typeof window.go.main.App.OpenDirectory === 'function') {
+                    await window.go.main.App.OpenDirectory(dir);
+                } else {
+                    // Fallback to runtime open
+                    const { BrowserOpenURL } = await import('../../wailsjs/runtime/runtime.js');
+                    try { BrowserOpenURL('file://' + dir); } catch (e) { window.open('file://' + dir); }
+                }
+                Utils.showNotification('Opening folder', 'Opening project folder in file explorer...', 'success');
+            } catch (err) {
+                console.error('Error opening project directory:', err);
+                Utils.showNotification('Error', 'Failed to open project folder', 'error');
+            }
+        } catch (err) {
+            console.error('Error in openSelectedProjectDir:', err);
+            Utils.showNotification('Error', 'Failed to open project folder', 'error');
+        }
     }
 
     // Clean up when page unloads
