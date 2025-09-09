@@ -238,14 +238,14 @@
 }
 
 .project-action-btn.uncomplete {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
     color: white;
 }
 
 .project-action-btn.uncomplete:hover {
-    background-color: #1976d2;
-    border-color: #1976d2;
+    background-color: #f57c00;
+    border-color: #f57c00;
 }
 
 .project-action-btn.pause {
@@ -260,25 +260,25 @@
 }
 
 .project-action-btn.resume {
-    background-color: var(--success-color);
-    border-color: var(--success-color);
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
     color: white;
 }
 
 .project-action-btn.resume:hover {
-    background-color: #388e3c;
-    border-color: #388e3c;
+    background-color: #f57c00;
+    border-color: #f57c00;
 }
 
 .project-action-btn.uncomplete {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
     color: white;
 }
 
 .project-action-btn.uncomplete:hover {
-    background-color: #1976d2;
-    border-color: #1976d2;
+    background-color: #f57c00;
+    border-color: #f57c00;
 }
 
 .project-action-btn.pause {
@@ -293,14 +293,14 @@
 }
 
 .project-action-btn.resume {
-    background-color: var(--success-color);
-    border-color: var(--success-color);
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
     color: white;
 }
 
 .project-action-btn.resume:hover {
-    background-color: #388e3c;
-    border-color: #388e3c;
+    background-color: #f57c00;
+    border-color: #f57c00;
 }
 
 .completed-projects-list {
@@ -469,5 +469,15 @@
         font-size: 0.8rem;
         flex: 1;
         gap: 0.25rem;
+    }
+}
+/* Responsive: Add Project button should span its header/container width and keep normal height/padding */
+@media (max-width: 768px) {
+    #add-project {
+        display: block;
+        width: 100%; /* fill parent (.page-header) which on mobile is full-width */
+        box-sizing: border-box;
+    margin: 0 0 0 0; /* remove extra bottom gap so header spacing is controlled by .page-header */
+        /* do not override padding/height so it matches .btn in normal mode */
     }
 }

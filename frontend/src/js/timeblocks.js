@@ -3,6 +3,7 @@ import API from './api.js';
 import Utils from './utils.js';
 import Settings from './settings.js';
 import Dialog from './dialog.js';
+import Tooltip from './tooltip.js';
 
 class TimeBlocks {
     constructor(projectsInstance) {
@@ -28,6 +29,18 @@ class TimeBlocks {
         this.cancelTimeBlockBtn = document.getElementById('cancel-timeblock');
         this.closeTimeBlockBtn = this.timeBlockModal?.querySelector('.standard-modal-close');
         this.currentDateDisplay = document.getElementById('current-date');
+        if (this.currentDateDisplay) {
+            // Use the app's custom tooltip system instead of native title
+            // Keep an accessible label for screen readers
+            this.currentDateDisplay.setAttribute('aria-label', 'Go to today');
+            // Register tooltip via TooltipManager API
+            try {
+                Tooltip.addTooltip(this.currentDateDisplay, 'Go to today', { position: 'bottom' });
+            } catch (err) {
+                // Fallback to native title if tooltip system isn't available
+                this.currentDateDisplay.title = 'Go to today';
+            }
+        }
         this.prevDayBtn = document.getElementById('prev-day');
         this.nextDayBtn = document.getElementById('next-day');
         
@@ -151,7 +164,8 @@ class TimeBlocks {
 
     updateDateDisplay() {
         if (this.currentDateDisplay) {
-            this.currentDateDisplay.textContent = Utils.getRelativeDate(this.currentDate);
+            // Always show the formatted date instead of relative labels (Today/Yesterday/Tomorrow)
+            this.currentDateDisplay.textContent = Utils.formatDate(this.currentDate);
         }
     }
 

@@ -32,10 +32,7 @@
     <div id="app">
         <!-- Navigation -->
         <nav class="nav">
-            <div class="nav-brand">
-                <i class="fas fa-clock"></i>
-                <span>ThinkTimer</span>
-            </div>
+            <div class="nav-brand" aria-hidden="true"></div>
             <div class="nav-items">
                 <button class="nav-item active" data-page="home" data-tooltip="Home" data-tooltip-position="right">
                     <i class="fas fa-home"></i>
@@ -71,6 +68,15 @@
                         <button id="open-custom-url" data-tooltip="Open custom URL" data-tooltip-position="bottom" style="display: none;">
                             <i class="fas fa-external-link-alt"></i>
                         </button>
+                        <!-- Mini calendar button (opens small date picker) -->
+                        <div class="mini-calendar-wrapper" style="display: inline-block; position: relative;">
+                            <button id="open-mini-calendar" class="btn" data-tooltip="Quick calendar" data-tooltip-position="bottom">
+                                <i class="fas fa-calendar-day"></i>
+                            </button>
+                            <div id="mini-calendar-popup" class="mini-calendar-popup">
+                                <div id="mini-calendar-container"></div>
+                            </div>
+                        </div>
                         <div class="date-selector">
                             <button id="prev-day" class="date-nav-btn">
                                 <i class="fas fa-chevron-left"></i>
@@ -231,9 +237,9 @@
                         <div class="setting-info">
                             <div class="setting-title">
                                 <i class="fas fa-bell"></i>
-                                <h3>Notifications</h3>
+                                <h3>In-app Notifications</h3>
                             </div>
-                            <p class="setting-description">Toggle application notifications on or off</p>
+                            <p class="setting-description">Toggle in-app notifications on or off</p>
                         </div>
                         <div class="setting-control">
                             <label class="switch" for="notifications-toggle">

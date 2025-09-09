@@ -3,13 +3,17 @@ import API from './api.js';
 import Utils from './utils.js';
 
 class Calendar {
-    constructor(projectsInstance, timeBlocksInstance) {
+    constructor(projectsInstance, timeBlocksInstance, options = {}) {
         this.projects = projectsInstance;
         this.timeBlocks = timeBlocksInstance;
+        this.options = options || {};
+        this.isMini = !!this.options.mini;
         this.currentDate = new Date();
         this.selectedDate = new Date();
         this.monthTimeBlocks = [];
         this.timer = null; // Will be set by main app
+    // Debounce timer id for hiding tooltips in calendar to avoid flicker
+    this._tooltipHideTimer = null;
         
         this.initializeElements();
         this.bindEvents();
@@ -17,7 +21,12 @@ class Calendar {
     }
 
     initializeElements() {
-        this.calendarContainer = document.getElementById('calendar-container');
+        // Allow overriding the container for mini calendar instances
+        if (this.options.containerId) {
+            this.calendarContainer = document.getElementById(this.options.containerId);
+        } else {
+            this.calendarContainer = document.getElementById('calendar-container');
+        }
         this.selectedDateDisplay = document.getElementById('selected-calendar-date');
         this.calendarTimeBlocks = document.getElementById('calendar-time-blocks');
         this.addCalendarManualBlockBtn = document.getElementById('add-calendar-manual-block');
@@ -148,12 +157,12 @@ class Calendar {
                         projectIndicators += projectsForDate.map(project => {
                             // add to day-level tooltip list
                             dayTooltips.push(`Deadline: ${project.name}`);
-                            return `<div class="calendar-project-dot" data-tooltip="Deadline: ${project.name}" data-tooltip-position="top"></div>`;
+                            return `<div class="calendar-project-dot"></div>`;
                         }).join('');
                     } else {
                         // Show count indicator for many projects
                         dayTooltips.push(`${projectsForDate.length} project deadlines`);
-                        projectIndicators += `<div class="calendar-project-indicator multiple" data-tooltip="${projectsForDate.length} project deadlines" data-tooltip-position="top">${projectsForDate.length}</div>`;
+                        projectIndicators += `<div class="calendar-project-indicator multiple">${projectsForDate.length}</div>`;
                     }
                 }
                 
@@ -175,15 +184,17 @@ class Calendar {
                     
                     // add time block tooltip summary to day-level tooltips
                     dayTooltips.push(tooltipText);
-                    projectIndicators += `<div class="calendar-project-indicator" data-tooltip="${tooltipText}" data-tooltip-position="top">${blockCount}</div>`;
+                    projectIndicators += `<div class="calendar-project-indicator">${blockCount}</div>`;
                 }
 
-                // If we have aggregated tooltips, join them into one text for the day container
-                const dayTooltipAttr = dayTooltips.length > 0 ? ` data-tooltip="${dayTooltips.map(t => t.replace(/"/g, '\\"')).join('\n')}" data-tooltip-position="top"` : '';
+                // If we have aggregated tooltips, create an invisible overlay element that carries the tooltip
+                const dayTooltip = dayTooltips.length > 0 ? dayTooltips.map(t => t.replace(/"/g, '\\"')).join('\n') : null;
+                const overlayHtml = dayTooltip ? `<div class="calendar-day-overlay" data-tooltip="${dayTooltip}" data-tooltip-position="top"></div>` : '';
 
                 html += `
-                    <div class="${dayClasses}" data-date="${currentDate.toISOString()}"${dayTooltipAttr}>
+                    <div class="${dayClasses}" data-date="${currentDate.toISOString()}">
                         <div class="calendar-day-number">${currentDate.getDate()}</div>
+                        ${overlayHtml}
                         <div class="calendar-day-projects">
                             ${projectIndicators}
                         </div>
@@ -226,20 +237,41 @@ class Calendar {
         // Day selection
         const dayElements = this.calendarContainer?.querySelectorAll('.calendar-day');
         dayElements?.forEach(dayElement => {
-            dayElement.addEventListener('click', () => {
-                this.selectedDate = new Date(dayElement.dataset.date);
-                this.render();
-                // Load time blocks for the newly selected date
-                this.loadSelectedDateTimeBlocks();
+            // No tooltip handling here; a dedicated overlay element will carry tooltip activation to avoid flicker
+            dayElement.addEventListener('mouseenter', (e) => {
+                // no-op
             });
-            
-            // Show tooltip immediately when hovering the whole day (fix intermittent missing tooltips)
+
+            dayElement.addEventListener('mouseleave', (e) => {
+                // no-op
+            });
+
+            // (No contextmenu handler) right-click will not trigger the tooltip for calendar days
+        });
+
+        // For each day element, show/hide tooltip by reading the overlay inside it and allow clicks on the day
+        const dayElements2 = this.calendarContainer?.querySelectorAll('.calendar-day');
+        dayElements2?.forEach(dayElement => {
+            // Click selects the day for all days (even those without events)
+            dayElement.addEventListener('click', () => {
+                const selected = new Date(dayElement.dataset.date);
+                this.selectedDate = selected;
+
+                if (this.isMini) {
+                    // Emit event for mini calendar usage and don't re-render full calendar
+                    window.dispatchEvent(new CustomEvent('miniDateSelected', { detail: { date: selected } }));
+                } else {
+                    this.render();
+                    this.loadSelectedDateTimeBlocks();
+                }
+            });
+
+            // Hover logic: if an overlay with tooltip exists inside the day, show/hide it
             dayElement.addEventListener('mouseenter', (e) => {
                 try {
-                    // Use global tooltip manager to show immediately
-                    if (dayElement.hasAttribute('data-tooltip')) {
-                        // show() displays immediately
-                        window.tooltipManager?.show(dayElement);
+                    const overlay = dayElement.querySelector('.calendar-day-overlay');
+                    if (overlay) {
+                        window.tooltipManager?.show(overlay);
                     }
                 } catch (err) {
                     // ignore
@@ -248,20 +280,10 @@ class Calendar {
 
             dayElement.addEventListener('mouseleave', (e) => {
                 try {
-                    window.tooltipManager?.hide();
-                } catch (err) {
-                    // ignore
-                }
-            });
-
-            // Right-click (contextmenu) should show the tooltip for the day
-            dayElement.addEventListener('contextmenu', (e) => {
-                // Only act if there is tooltip content
-                if (!dayElement.hasAttribute('data-tooltip')) return;
-                e.preventDefault();
-                try {
-                    // Show immediately
-                    window.tooltipManager?.show(dayElement);
+                    const overlay = dayElement.querySelector('.calendar-day-overlay');
+                    if (overlay) {
+                        window.tooltipManager?.hide();
+                    }
                 } catch (err) {
                     // ignore
                 }
@@ -300,6 +322,20 @@ class Calendar {
 
         try {
             const timeBlocks = await this.timeBlocks.getTimeBlocksForDate(this.selectedDate);
+
+            // Only sync the TimeBlocks instance when this calendar is the mini
+            // calendar used elsewhere (e.g., header mini calendar). The full
+            // calendar view must not override the Home TimeBlocks currentDate
+            // because that leads to unexpected navigation/state changes.
+            if (this.isMini) {
+                try {
+                    this.timeBlocks.timeBlocks = timeBlocks || [];
+                    this.timeBlocks.currentDate = new Date(this.selectedDate);
+                } catch (syncErr) {
+                    // Non-fatal: if sync fails, continue rendering calendar's own list
+                    console.warn('Failed to sync TimeBlocks instance from Calendar (mini):', syncErr);
+                }
+            }
             
             if (timeBlocks.length === 0) {
                 this.calendarTimeBlocks.innerHTML = `

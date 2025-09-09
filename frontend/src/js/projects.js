@@ -2,6 +2,7 @@
 import API from './api.js';
 import Utils from './utils.js';
 import Dialog from './dialog.js';
+import Tooltip from './tooltip.js';
 import * as Runtime from '../../wailsjs/runtime/runtime.js';
 
 class Projects {
@@ -31,6 +32,18 @@ class Projects {
         this.descriptionField = document.getElementById('project-description');
         this.urlField = document.getElementById('project-url');
         this.deadlineField = document.getElementById('project-deadline');
+
+        // Add tooltip to Add Project button via TooltipManager if available
+        if (this.addProjectBtn) {
+            try {
+                Tooltip.addTooltip(this.addProjectBtn, 'Add project', { position: 'bottom' });
+                this.addProjectBtn.setAttribute('aria-label', 'Add project');
+                // remove native title if present to avoid duplicate tooltips
+                this.addProjectBtn.removeAttribute('title');
+            } catch (err) {
+                // ignore; fallback to native title if present
+            }
+        }
     }
 
     bindEvents() {
@@ -59,6 +72,8 @@ class Projects {
             this.projects = await API.getAllProjects() || [];
             this.renderProjects();
             this.updateProjectSelectors();
+            // Notify other modules (calendar, timeblocks, etc.) that projects changed
+            try { window.dispatchEvent(new CustomEvent('projectsUpdated')); } catch (e) { /* ignore */ }
         } catch (error) {
             console.error('Error loading projects:', error);
             Utils.showNotification('Error', 'Failed to load projects', 'error');
@@ -180,6 +195,17 @@ class Projects {
                 const id = parseInt(btn.dataset.id);
                 this.handleProjectAction(action, id);
             });
+            // Register custom tooltip for each action button and remove native title
+            try {
+                const nativeTitle = btn.getAttribute('title');
+                if (nativeTitle) {
+                    Tooltip.addTooltip(btn, nativeTitle, { position: 'top' });
+                    btn.removeAttribute('title');
+                    btn.setAttribute('aria-label', nativeTitle);
+                }
+            } catch (err) {
+                // ignore and leave native title if Tooltip not available
+            }
         });
 
         // Open project URLs in the system default browser (not inside the app webview)

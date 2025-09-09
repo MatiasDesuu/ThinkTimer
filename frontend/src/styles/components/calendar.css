@@ -7,6 +7,187 @@
     gap: 1.5rem;
 }
 
+/* Ensure mini calendar popup is a top-layer overlay (override any responsive placement) */
+.mini-calendar-popup {
+    /* Keep fixed positioning, but avoid forcing top/right/width here so
+       inline JS positioning can override for mobile. Desktop placement is
+       applied in a separate media query below. */
+    position: fixed !important;
+    background-color: var(--bg-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18) !important;
+    z-index: 9999 !important;
+    padding: 0.5rem !important;
+}
+
+#mini-calendar-container .calendar-container {
+    box-shadow: none;
+    padding: 0.25rem;
+}
+
+@media (max-width: 480px) {
+    .mini-calendar-popup {
+        /* On very small devices make popup stretch across available content area
+           but stay to the right of the left nav (respecting --nav-width). */
+        left: calc(var(--nav-width, 0px) + 12px) !important;
+        right: 12px !important;
+    top: calc(var(--header-height, 56px) - 8px) !important;
+        width: auto !important;
+    }
+}
+
+/* Desktop placement: explicit top/right/width for larger viewports. Keeping
+   these inside a min-width media query prevents the rules from interfering
+   with mobile inline positioning applied by JS. */
+@media (min-width: 769px) {
+    .mini-calendar-popup {
+    top: var(--header-height, 64px) !important; /* position below header */
+        right: 20px !important;
+        width: 320px !important;
+        max-width: calc(100% - 40px) !important;
+    }
+}
+/* Larger mobile/tablet breakpoint: when the viewport is narrow we want the mini calendar
+   to appear below the quickcalendar button and occupy the available width while not
+   overlapping the left navigation. We use fixed positioning but align left to the
+   end of the nav using the --nav-width variable so it respects collapsed/expanded nav. */
+@media (max-width: 768px) {
+    /* In narrow viewports place the popup inside the wrapper that sits next to the
+       header buttons. This avoids fixed positioning issues and matches desktop toggle
+       behavior while allowing the popup to span the available width. */
+    .mini-calendar-wrapper {
+        display: inline-block;
+        position: relative;
+        /* remove default extra margin so header spacing is controlled from main layout */
+        margin-left: 0;
+    }
+
+    /* Use fixed positioning that spans the viewport minus the nav width so the
+       popup occupies the full content width while respecting the left sidebar. */
+    .mini-calendar-wrapper .mini-calendar-popup {
+        position: fixed !important;
+        top: calc(var(--header-height, 64px) + 8px) !important;
+        left: calc(var(--nav-width, 0px) + 12px) !important;
+        right: 12px !important;
+        width: auto !important;
+        max-width: calc(100vw - var(--nav-width, 0px) - 24px) !important;
+        border-radius: 10px !important;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+        transform-origin: top center !important;
+    }
+
+    /* Ensure the popup stacks after header and doesn't cover primary content area
+       scrolling behavior remains internal */
+    .mini-calendar-popup.show {
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+    }
+}
+
+/* Make mini popup visually match tooltip: smaller height, entry animation and arrow */
+.mini-calendar-popup {
+    max-height: 360px;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px) scale(0.98);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.mini-calendar-popup.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* Arrow (piquito) pointing to the origin (top-right corner near button) */
+.mini-calendar-popup::before {
+    /* arrow removed for mini popup - override presentational pseudo elements */
+    display: none;
+}
+
+.mini-calendar-popup::after {
+    display: none;
+}
+
+/* Compact responsive adjustments for mini calendar content */
+/* container inside popup: take remaining space and allow internal scrolling */
+#mini-calendar-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0; /* allow to shrink within popup */
+    overflow: hidden;
+}
+
+#mini-calendar-container .calendar-container {
+    padding: 0.25rem !important;
+    margin-bottom: 0 !important;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+/* Make the calendar container a column flexbox so header stays fixed and grid can scroll */
+#mini-calendar-container .calendar-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.mini-calendar-popup .calendar-grid {
+    gap: 4px;
+    /* grid should be able to scroll inside its container */
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    /* let rows size naturally but allow overflow */
+    grid-auto-rows: minmax(28px, auto);
+    flex: 1 1 auto;
+    min-height: 0; /* allow it to shrink inside flex container */
+    overflow-y: auto;
+}
+
+.mini-calendar-popup .calendar-day {
+    padding: 0.25rem 0.2rem;
+    min-height: 0; /* allow height to be controlled by grid rows */
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.mini-calendar-popup .calendar-day-number {
+    font-weight: 600;
+    margin-bottom: 0.08rem;
+    font-size: 0.75rem;
+}
+
+.mini-calendar-popup .calendar-day-projects {
+    gap: 0.2rem;
+}
+
+.mini-calendar-popup .calendar-project-dot {
+    width: 6px;
+    height: 6px;
+}
+
+.mini-calendar-popup .calendar-project-indicator {
+    min-width: 14px;
+    height: 14px;
+    font-size: 0.62rem;
+    border-radius: 4px;
+}
+
+/* Ensure tooltips inside the mini calendar don't overflow and wrap */
+.mini-calendar-popup [data-tooltip] {
+    white-space: normal;
+}
+
 .month-selector-group {
     position: relative;
     display: inline-block;
@@ -289,6 +470,20 @@
     flex-wrap: wrap;
 }
 
+/* Invisible overlay that covers the calendar day to act as a single tooltip target */
+.calendar-day-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Make overlay passive so it doesn't block clicks to children; we will use the day element's
+       mouseenter/mouseleave to trigger the tooltip, reading the tooltip text from this overlay. */
+    pointer-events: none;
+    background: transparent;
+    z-index: 2; /* above children but below any floating UI */
+}
+
 .calendar-project-dot {
     width: 5px;
     height: 5px;
@@ -384,6 +579,60 @@
     
     .calendar-nav-btn {
         width: 28px;
+
+/* Mini calendar popup (responsive override inside small-layout block)
+   Use fixed positioning and respect the left navigation width so it doesn't
+   overlap the sidebar. It will span the available content area on small
+   viewports. */
+.mini-calendar-popup {
+    position: fixed !important;
+    top: 64px !important;
+    left: calc(var(--nav-width, 0px) + 12px) !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: calc(100% - var(--nav-width, 0px) - 24px) !important;
+    background-color: var(--bg-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.15) !important;
+    z-index: 1200 !important;
+    padding: 0.75rem !important;
+}
+
+#mini-calendar-container .calendar-container {
+    box-shadow: none;
+    padding: 0.5rem;
+}
+
+#open-mini-calendar {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0.35rem;
+}
+
+#open-mini-calendar i { font-size: 1rem; }
+
+/* Ensure the mini calendar button and custom URL button share a compact, flexible sizing
+   Use min-width so they can grow or be adjusted by responsive rules in main.css */
+#open-mini-calendar, #open-custom-url {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+    padding: 0.35rem;
+}
+
+#open-mini-calendar:hover, #open-custom-url:hover {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+}
         height: 28px;
         border-radius: 4px;
         font-size: 0.8rem;
@@ -413,5 +662,32 @@
     
     .calendar-day-number {
         font-size: 0.8rem;
+    }
+    
+    /* Make the section header for time-blocks stack and ensure the Add Block
+       button moves below the title and occupies the full width on small screens. */
+    #calendar-page .time-blocks-section .section-header,
+    #home-page .time-blocks-section .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    /* Target both calendar and home add-block buttons so they behave the same
+       in responsive layouts. Keep padding/height from the base .btn styles. */
+    #add-calendar-manual-block,
+    #add-manual-block {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0; /* reset any inline or upstream margins */
+    }
+
+    /* For very small screens keep the same behaviour but slightly reduce gaps */
+    @media (max-width: 480px) {
+        #calendar-page .time-blocks-section .section-header,
+        #home-page .time-blocks-section .section-header {
+            gap: 0.35rem;
+        }
     }
 }

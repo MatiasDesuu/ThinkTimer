@@ -1,8 +1,17 @@
 /* Navigation Bar Component */
 
 /* Main Navigation Container */
+:root {
+    --nav-width: 200px;
+}
+
+/* Header height used by popups to position below toolbar/header */
+:root {
+    --header-height: 64px;
+}
+
 .nav {
-    width: 200px;
+    width: var(--nav-width);
     background-color: var(--bg-secondary);
     border-right: 1px solid var(--border-color);
     padding: 1rem 0;
@@ -17,6 +26,12 @@
 .nav.collapsed,
 html.nav-collapsed-init .nav {
     width: 60px;
+}
+
+/* When the global state toggles nav-collapsed on the html element expose the smaller width
+   so other elements (like the main content and popups) can reference it via var(--nav-width). */
+html.nav-collapsed-init {
+    --nav-width: 60px;
 }
 
 /* Navigation Brand */
@@ -74,6 +89,8 @@ html.nav-collapsed-init .nav .nav-brand {
     overflow: hidden;
     position: relative;
     transition: padding 0.3s ease;
+    /* ensure consistent item height across modes */
+    min-height: 36px;
 }
 
 .nav.collapsed-centered .nav-item,
@@ -81,6 +98,7 @@ html.nav-collapsed-init .nav .nav-item {
     padding: 0.6rem;
     justify-content: center;
     gap: 0;
+    min-height: 36px;
     transition: justify-content 0.3s ease;
 }
 
@@ -172,7 +190,7 @@ html.nav-collapsed-init .nav .nav-item {
 /* Main Content Adjustment */
 .main {
     flex: 1;
-    margin-left: 200px;
+    margin-left: var(--nav-width);
     padding: 1.5rem;
     overflow-y: auto;
     min-height: 100vh;
@@ -186,29 +204,78 @@ html.nav-collapsed-init .main {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .nav {
-        width: 50px;
-        padding: 0.75rem 0;
+    /* On smaller viewports expose a smaller nav width globally so popups can avoid overlapping it */
+    :root {
+    /* match the collapsed width so responsive sidebar appears identical to collapsed state */
+    --nav-width: 60px;
+    }
+
+    /* Ensure nav and collapsed-state selectors are identical in responsive */
+    .nav,
+    .nav.collapsed,
+    html.nav-collapsed-init .nav {
+        width: var(--nav-width);
+        padding: 1rem 0; /* same vertical spacing */
     }
     
     .nav.collapsed,
     html.nav-collapsed-init .nav {
-        width: 50px;
+        width: var(--nav-width);
     }
     
     .nav-brand span,
     .nav-item span {
         display: none;
     }
-    
-    .nav-brand {
+    /* Mirror exact collapsed-state rules so responsive appearance is identical */
+    .nav-brand,
+    .nav.collapsed-centered .nav-brand,
+    html.nav-collapsed-init .nav .nav-brand {
         justify-content: center;
-        padding: 0 0.75rem;
+        padding: 0 1rem; /* same as collapsed */
+        gap: 0;
     }
-    
-    .nav-item {
+
+    .nav-item,
+    .nav.collapsed-centered .nav-item,
+    html.nav-collapsed-init .nav .nav-item {
         padding: 0.6rem;
         justify-content: center;
+        gap: 0;
+    min-height: 36px;
+    }
+
+    .nav-item i,
+    .nav.collapsed-centered .nav-item i,
+    html.nav-collapsed-init .nav .nav-item i {
+        width: auto;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .nav-items {
+        gap: 0.125rem !important;
+        row-gap: 0.125rem !important;
+        padding: 0 0.5rem !important;
+    }
+    /* Force exact per-item spacing in case other styles override */
+    .nav-item {
+        padding-top: 0.6rem !important;
+        padding-bottom: 0.6rem !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin: 0 !important;
+        font-size: 0.9rem !important;
+        line-height: 1 !important;
+    min-height: 36px !important;
+    }
+    .nav {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+
+    .nav-footer {
+        padding: 0 0.25rem; /* match collapsed footer padding */
     }
     
     .nav-toggle {
@@ -216,12 +283,21 @@ html.nav-collapsed-init .main {
     }
     
     .main {
-        margin-left: 50px;
+        margin-left: var(--nav-width);
         padding: 1rem;
     }
     
     .main.nav-collapsed,
     html.nav-collapsed-init .main {
-        margin-left: 50px;
+        margin-left: var(--nav-width);
     }
+}
+
+/* If the brand element is intentionally empty/hidden, remove its layout footprint */
+.nav-brand[aria-hidden="true"] {
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    height: 0 !important;
 }

@@ -173,13 +173,17 @@
 .setting-select:focus {
     outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+     box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
     background-color: var(--bg-primary);
 }
 
 .setting-select:focus-visible {
-    outline: 2px solid var(--accent-color);
-    outline-offset: 2px;
+     /* Use the same box-shadow focus treatment and disable outline to avoid
+         the browser/global focus-visible outline stacking with the element's
+         own box-shadow (which caused the 'double' ring). */
+    outline: none !important;
+    outline-offset: 0 !important;
+     box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
 }
 
 .setting-select option {
@@ -210,13 +214,16 @@
 .setting-input:focus {
     outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+     box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
     background-color: var(--bg-primary);
 }
 
 .setting-input:focus-visible {
-    outline: 2px solid var(--accent-color);
-    outline-offset: 2px;
+     /* Match .setting-input:focus behavior and disable outline to prevent
+         double focus rings from global focus-visible rules. */
+    outline: none !important;
+    outline-offset: 0 !important;
+     box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
 }
 
 .setting-input::placeholder {
