@@ -201,9 +201,24 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    /* On small screens, make the modal try to occupy almost the full viewport
+       while keeping a small gutter/margin so it doesn't touch screen edges. */
+    .standard-modal {
+        /* increase horizontal gutter so modal has more margin at sides */
+        padding: 1rem 1.5rem; /* top/bottom 1rem, left/right 1.5rem */
+        align-items: center;
+        justify-content: center;
+    }
+
     .standard-modal-content {
-        width: 95%;
-        max-height: 95vh;
+        width: calc(100% - 3rem); /* respect horizontal gutter (2 * 1.5rem) */
+        height: calc(100% - 3rem); /* respect vertical gutter (2 * 1rem) */
+        max-width: none;
+        max-height: none;
+        border-radius: var(--radius);
+        overflow: hidden; /* let inner body scroll */
+        display: flex;
+        flex-direction: column;
     }
     
     .standard-modal-header {
@@ -221,6 +236,11 @@
     
     .standard-modal-btn {
         width: 100%;
+    }
+
+    /* Make primary (accept) button appear above other actions on small screens */
+    .standard-modal-actions .standard-modal-btn-primary {
+        order: -1;
     }
 }
 

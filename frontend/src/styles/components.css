@@ -549,6 +549,31 @@
     background-color: #c62828;
 }
 
+/* Responsive adjustments for custom dialog (mobile) */
+@media (max-width: 768px) {
+    .custom-dialog {
+        width: calc(100% - 3rem);
+        max-width: none;
+        margin: 0 1.5rem;
+    }
+
+    .custom-dialog-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .custom-dialog-btn {
+        width: 100%;
+    }
+
+    /* Ensure confirm (primary/danger/success) appears above cancel on small screens */
+    .custom-dialog-actions .custom-dialog-btn-primary,
+    .custom-dialog-actions .custom-dialog-btn-danger,
+    .custom-dialog-actions .custom-dialog-btn-success {
+        order: -1;
+    }
+}
+
 /* Context Menu */
 .context-menu {
     position: fixed;
