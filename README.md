@@ -1,8 +1,14 @@
 # README
 
+<p align="center">
+   <img src="Screenshots/Home_1.png" alt="Home" width="300" style="margin:0 10px;" />
+   <img src="Screenshots/Calendar_1.png" alt="Calendar" width="300" style="margin:0 10px;" />
+   <img src="Screenshots/Settings_1.png" alt="Settings" width="300" style="margin:0 10px;" />
+</p>
+
 ## ThinkTimer
 
-A modern, lightweight time tracking application built with GO + Wails and vanilla HTML/CSS/JavaScript.
+A modern, lightweight time tracking application built with GO + Wails and HTML/CSS/JavaScript.
 
 ## Features
 
@@ -11,14 +17,11 @@ A modern, lightweight time tracking application built with GO + Wails and vanill
 - **Time Tracking**: Start, pause, and reset timers with automatic time block creation
 - **Manual Time Blocks**: Add time blocks manually for work done offline
 - **Calendar View**: Visual calendar showing project deadlines and work history
-- **Dark/Light Themes**: Switch between modern light and dark themes
 
 ### 🖥️ User Interface
 - **4 Main Screens**: Home, Projects, Calendar, and Settings
 - **Responsive Design**: Works on different screen sizes
 - **Minimalist Design**: Clean, modern UI inspired by Notion/Obsidian
-- **Font Awesome Icons**: Consistent iconography throughout
-- **Keyboard Shortcuts**: Full keyboard navigation support
 
 ### 📊 Time Management
 - **Real-time Timer**: Live timer with visual feedback
@@ -123,14 +126,6 @@ ThinkTimer uses SQLite3 database stored alongside the executable:
 - **projects**: Project information and metadata
 - **time_blocks**: Individual time tracking entries
 - **settings**: Application configuration
-
-## Contributing
-
-This project follows clean architecture principles:
-- Keep backend logic in services
-- Use proper error handling
-- Maintain separation between frontend and backend
-- Follow existing code patterns
 
 ## License
 
