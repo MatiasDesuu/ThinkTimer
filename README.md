@@ -1,10 +1,10 @@
 # README
 
-<p align="center">
-   <img src="Screenshots/Home_1.png" alt="Home" width="300" style="margin:0 10px;" />
-   <img src="Screenshots/Calendar_1.png" alt="Calendar" width="300" style="margin:0 10px;" />
-   <img src="Screenshots/Settings_1.png" alt="Settings" width="300" style="margin:0 10px;" />
-</p>
+<div align="center" style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
+   <img src="Screenshots/Home_1.png" alt="Home" width="300" style="border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.12);" />
+   <img src="Screenshots/Calendar_1.png" alt="Calendar" width="300" style="border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.12);" />
+   <img src="Screenshots/Settings_1.png" alt="Settings" width="300" style="border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.12);" />
+</div>
 
 ## ThinkTimer
 
