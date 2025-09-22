@@ -757,6 +757,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         height: 32px;
         padding: 0.3rem 0.4rem;
     }
+
+    #open-mini-calendar {
+        min-width: 36px;
+        height: 32px;
+        padding: 0.3rem 0.4rem;
+    }
+    
+    #open-mini-calendar i {
+        font-size: 0.8rem;
+    }
     
     .date-selector {
         padding: 0.3rem 0.4rem;
@@ -810,4 +820,113 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 *:focus-visible {
     outline: 2px solid var(--accent-color);
     outline-offset: 2px;
+}
+
+/* Today projects popup - small overlay listing projects and durations */
+.today-projects-popup {
+    position: fixed !important;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    padding: 0.5rem;
+    z-index: 99999;
+    min-width: 220px;
+    max-width: 420px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px) scale(0.98);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.today-projects-popup.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.today-projects-header h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.today-projects-header h4 i {
+    margin-right: 0.2rem;
+    color: var(--accent-color);
+    font-size: 0.95rem;
+}
+
+.today-projects-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.today-project-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.5rem;
+    border-radius: 6px;
+    background-color: var(--bg-secondary);
+}
+
+.today-project-item .project-name {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 220px;
+    font-weight: 500;
+}
+
+.today-project-item .project-duration {
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+}
+
+/* Icon to the left of the project name */
+.today-project-item .project-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+}
+
+.today-project-item .project-left i {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+}
+
+/* Make the main item use left icon + content alignment */
+.today-project-item {
+    display: flex;
+    align-items: center;
+}
+
+.today-project-item .project-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+@media (max-width: 768px) {
+    .today-projects-popup {
+        left: calc(var(--nav-width, 0px) + 12px) !important;
+        right: 12px !important;
+        top: calc(var(--header-height, 64px) + 8px) !important;
+        width: auto !important;
+        max-width: calc(100vw - var(--nav-width, 0px) - 24px) !important;
+    }
 }

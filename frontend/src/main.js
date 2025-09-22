@@ -65,6 +65,7 @@ class App {
         this.initializeCustomURLButton();
     this.initializeMiniCalendarButton();
     this.initializeTodayTotalIndicator();
+    this.initializeTodayProjectsPopup();
         // Debug helper: log nav spacing (gap/padding) in responsive to help diagnose spacing issues
         try {
             this._logNavSpacing = () => {
@@ -255,6 +256,170 @@ class App {
             togglePopup(false);
             // Ensure any tooltip is hidden after selection
             try { window.tooltipManager?.hide(); } catch (err) {}
+        });
+    }
+
+    initializeTodayProjectsPopup() {
+        this.todayProjectsBtn = document.getElementById('today-total');
+        this.todayProjectsPopup = document.getElementById('today-projects-popup');
+        this.todayProjectsContainer = document.getElementById('today-projects-container');
+
+        if (!this.todayProjectsBtn || !this.todayProjectsPopup || !this.todayProjectsContainer) return;
+
+        const applyInlinePositionOnce = () => {
+            try {
+                const rect = this.todayProjectsBtn.getBoundingClientRect();
+                const docEl = document.documentElement;
+                const navWidth = parseFloat(getComputedStyle(docEl).getPropertyValue('--nav-width')) || 0;
+                const gap = 8;
+                const top = rect.bottom + window.scrollY + gap;
+
+                if (this.todayProjectsPopup.parentElement !== document.body) {
+                    this.todayProjectsPopup._originalParent = this.todayProjectsPopup.parentElement;
+                    this.todayProjectsPopup._originalNextSibling = this.todayProjectsPopup.nextSibling;
+                    document.body.appendChild(this.todayProjectsPopup);
+                    this.todayProjectsPopup._teleported = true;
+                }
+
+                this.todayProjectsPopup.style.setProperty('position', 'fixed', 'important');
+                this.todayProjectsPopup.style.setProperty('top', `${top}px`, 'important');
+                if (window.innerWidth < 769) {
+                    this.todayProjectsPopup.style.setProperty('left', `${navWidth + 12}px`, 'important');
+                    this.todayProjectsPopup.style.setProperty('right', `12px`, 'important');
+                    this.todayProjectsPopup.style.setProperty('width', 'auto', 'important');
+                    this.todayProjectsPopup.style.setProperty('max-width', `calc(100vw - ${navWidth + 24}px)`, 'important');
+                } else {
+                    // Anchor the popup under the today button (use its left edge) instead
+                    // of aligning it to the header right which previously placed it under
+                    // the date selector. Ensure popup won't overflow the viewport.
+                    const popupWidth = this.todayProjectsPopup.offsetWidth || 320;
+                    let left = rect.left;
+                    const margin = 12; // keep some space from the edge
+                    if (left + popupWidth + margin > window.innerWidth) {
+                        left = Math.max(margin, window.innerWidth - popupWidth - margin);
+                    }
+                    // ensure not negative
+                    left = Math.max(margin, left);
+                    this.todayProjectsPopup.style.setProperty('left', `${left}px`, 'important');
+                    this.todayProjectsPopup.style.removeProperty('right');
+                    this.todayProjectsPopup.style.removeProperty('width');
+                    this.todayProjectsPopup.style.removeProperty('max-width');
+                    this.todayProjectsPopup.style.setProperty('transform-origin', 'top left', 'important');
+                }
+                this.todayProjectsPopup.style.setProperty('z-index', '100000', 'important');
+            } catch (err) {
+                // ignore
+            }
+        };
+
+        const clearInlinePosition = () => {
+            this.todayProjectsPopup.style.removeProperty('position');
+            this.todayProjectsPopup.style.removeProperty('top');
+            this.todayProjectsPopup.style.removeProperty('left');
+            this.todayProjectsPopup.style.removeProperty('right');
+            this.todayProjectsPopup.style.removeProperty('width');
+            this.todayProjectsPopup.style.removeProperty('max-width');
+            this.todayProjectsPopup.style.removeProperty('z-index');
+        };
+
+        const togglePopup = async (show) => {
+            if (show) {
+                // fetch and render project totals for the selected date
+                try {
+                    let targetDate = null;
+                    if (this.timeBlocks && this.timeBlocks.currentDate) targetDate = new Date(this.timeBlocks.currentDate);
+                    else {
+                        const t = new Date();
+                        targetDate = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+                    }
+
+                    const startOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+                    const timeBlocks = await API.getTimeBlocksByDate(startOfDay) || [];
+
+                    // Group by project id/name and sum duration
+                    const totalsByProject = {};
+                    const now = new Date();
+                    timeBlocks.forEach(tb => {
+                        const key = tb.project_id || tb.project_name || 'unknown';
+                        const name = tb.project_name || 'Unknown Project';
+                        let seconds = 0;
+                        if (!tb.end_time) {
+                            seconds = Utils.calculateDuration(tb.start_time, now);
+                        } else if (tb.duration !== undefined && tb.duration !== null) {
+                            seconds = tb.duration;
+                        } else {
+                            seconds = Utils.calculateDuration(tb.start_time, tb.end_time);
+                        }
+
+                        if (!totalsByProject[key]) totalsByProject[key] = { name, seconds: 0 };
+                        totalsByProject[key].seconds += seconds;
+                    });
+
+                    // Render list
+                    const items = Object.keys(totalsByProject).map(k => {
+                        const p = totalsByProject[k];
+                        // Render as: [icon] Project Name: 1h 20m
+                        // Use folder icon by default; future: use project-specific icon if available
+                        return `<div class="today-project-item"><div class="project-left"><i class="fas fa-folder"></i></div><div class="project-name">${Utils.escapeHtml(p.name)}:<span class="project-duration">${Utils.formatDuration(p.seconds)}</span></div></div>`;
+                    });
+
+                    this.todayProjectsContainer.innerHTML = items.length ? items.join('') : `<div class="empty-state"><i class="fas fa-clock"></i><div>No projects tracked today</div></div>`;
+                } catch (err) {
+                    console.error('Error loading today projects:', err);
+                    this.todayProjectsContainer.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><div>Failed to load</div></div>`;
+                }
+
+                // compute position and show
+                applyInlinePositionOnce();
+                requestAnimationFrame(() => this.todayProjectsPopup.classList.add('show'));
+            } else {
+                this.todayProjectsPopup.classList.remove('show');
+
+                let cleaned = false;
+                const cleanUp = () => {
+                    if (cleaned) return;
+                    cleaned = true;
+                    clearInlinePosition();
+                    try {
+                        if (this.todayProjectsPopup._teleported && this.todayProjectsPopup._originalParent) {
+                            const parent = this.todayProjectsPopup._originalParent;
+                            const next = this.todayProjectsPopup._originalNextSibling;
+                            if (next) parent.insertBefore(this.todayProjectsPopup, next);
+                            else parent.appendChild(this.todayProjectsPopup);
+                        }
+                    } catch (e) {
+                        // ignore
+                    }
+                    delete this.todayProjectsPopup._teleported;
+                    delete this.todayProjectsPopup._originalParent;
+                    delete this.todayProjectsPopup._originalNextSibling;
+
+                    this.todayProjectsPopup.removeEventListener('transitionend', onTransitionEnd);
+                    if (transitionFallback) clearTimeout(transitionFallback);
+                };
+
+                const onTransitionEnd = (ev) => {
+                    if (ev.propertyName === 'opacity' || ev.propertyName === 'transform') {
+                        cleanUp();
+                    }
+                };
+
+                const transitionFallback = setTimeout(() => cleanUp(), 350);
+                this.todayProjectsPopup.addEventListener('transitionend', onTransitionEnd);
+            }
+        };
+
+        this.todayProjectsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const isVisible = this.todayProjectsPopup.classList.contains('show');
+            togglePopup(!isVisible);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!this.todayProjectsPopup.contains(e.target) && e.target !== this.todayProjectsBtn) {
+                togglePopup(false);
+            }
         });
     }
 
