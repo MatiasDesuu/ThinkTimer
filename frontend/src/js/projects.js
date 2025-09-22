@@ -9,6 +9,7 @@ class Projects {
     constructor() {
         this.projects = [];
         this.currentEditingId = null;
+        this.projectDurations = new Map(); // cache project total durations in seconds
         
         this.initializeElements();
         this.bindEvents();
@@ -83,12 +84,15 @@ class Projects {
         }
     }
 
-    renderProjects() {
+    async renderProjects() {
         const activeProjects = this.projects.filter(p => p.status !== 'completed');
         const completedProjects = this.projects.filter(p => p.status === 'completed');
 
         // Render active projects
         if (!this.activeProjectsList) return;
+
+        // Pre-fetch durations for visible projects to display totals
+        await this.fetchProjectDurations([...activeProjects, ...completedProjects]);
 
         if (activeProjects.length === 0) {
             this.activeProjectsList.innerHTML = `
@@ -121,6 +125,9 @@ class Projects {
         else if (statusClass === 'paused') statusIcon = '<i class="fas fa-pause-circle"></i>';
         else if (statusClass === 'completed') statusIcon = '<i class="fas fa-check-circle"></i>';
 
+    const totalSeconds = this.projectDurations.get(project.id) || 0;
+    const totalDisplay = totalSeconds > 0 ? Utils.formatDurationShort(totalSeconds) : '0m';
+
         return `
             <div class="project-card" data-id="${project.id}">
                 <div class="project-info">
@@ -128,6 +135,7 @@ class Projects {
                         <div class="project-title-section">
                             <div class="project-title-row">
                                 <span class="project-status-badge ${statusClass}">${statusIcon} ${statusClass.charAt(0).toUpperCase() + statusClass.slice(1)}</span>
+                                <div class="project-total-time ${statusClass}"><i class="fas fa-clock"></i>${totalDisplay}</div>
                                 <h3 class="project-title">${Utils.escapeHtml(project.name)}</h3>
                             </div>
                             ${project.description ? `
@@ -264,6 +272,21 @@ class Projects {
                 }
             });
         });
+    }
+
+    // Fetch total durations for visible projects and cache them
+    async fetchProjectDurations(projects) {
+        const promises = projects.map(async (p) => {
+            try {
+                const secs = await API.getTotalDurationByProject(p.id);
+                this.projectDurations.set(p.id, secs || 0);
+            } catch (err) {
+                console.error('Error fetching duration for project', p.id, err);
+                this.projectDurations.set(p.id, 0);
+            }
+        });
+
+        await Promise.all(promises);
     }
 
     async handleProjectAction(action, id) {

@@ -21,6 +21,8 @@ export function GetTimeBlocksByDate(arg1:time.Time):Promise<Array<models.TimeBlo
 
 export function GetTimeBlocksByDateRange(arg1:time.Time,arg2:time.Time):Promise<Array<models.TimeBlock>>;
 
+export function GetTotalDurationByProject(arg1:number):Promise<number>;
+
 export function OpenDirectory(arg1:string):Promise<void>;
 
 export function StopRunningTimeBlock(arg1:number):Promise<models.TimeBlock>;

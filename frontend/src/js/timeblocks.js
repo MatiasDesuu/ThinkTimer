@@ -121,6 +121,12 @@ class TimeBlocks {
         this.currentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         this.updateDateDisplay();
         this.loadTimeBlocks();
+        // Notify listeners that the selected date changed
+        try {
+            window.dispatchEvent(new CustomEvent('dateChanged', { detail: { date: this.currentDate } }));
+        } catch (e) {
+            console.warn('Could not dispatch dateChanged event', e);
+        }
     }
 
     // Set timer reference for pause state checking
@@ -160,6 +166,12 @@ class TimeBlocks {
         this.currentDate.setDate(this.currentDate.getDate() + days);
         this.updateDateDisplay();
         this.loadTimeBlocks();
+        // Notify listeners that the selected date changed
+        try {
+            window.dispatchEvent(new CustomEvent('dateChanged', { detail: { date: this.currentDate } }));
+        } catch (e) {
+            console.warn('Could not dispatch dateChanged event', e);
+        }
     }
 
     updateDateDisplay() {
@@ -624,6 +636,12 @@ class TimeBlocks {
         this.currentDate = new Date(date);
         this.updateDateDisplay();
         this.loadTimeBlocks();
+        // Notify listeners that the selected date changed
+        try {
+            window.dispatchEvent(new CustomEvent('dateChanged', { detail: { date: this.currentDate } }));
+        } catch (e) {
+            console.warn('Could not dispatch dateChanged event', e);
+        }
     }
 }
 

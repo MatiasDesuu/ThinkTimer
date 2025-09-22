@@ -12,6 +12,19 @@ class Utils {
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 
+    // Compact duration display: H:mm (if hours>0) or Xm (minutes)
+    static formatDurationShort(seconds) {
+        if (seconds === null || seconds === undefined) return '0m';
+        const totalSeconds = Math.floor(seconds);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+        if (hours > 0) {
+            return `${hours}:${String(minutes).padStart(2, '0')}`;
+        }
+        return `${minutes}m`;
+    }
+
     // Format date to readable string
     static formatDate(date) {
         if (!date) return '';

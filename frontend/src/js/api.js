@@ -72,6 +72,15 @@ class API {
         }
     }
 
+    static async getTotalDurationByProject(projectID) {
+        try {
+            return await window.go.main.App.GetTotalDurationByProject(projectID);
+        } catch (error) {
+            console.error('Error getting total duration by project:', error);
+            throw error;
+        }
+    }
+
     static async updateTimeBlock(id, timeBlockData) {
         try {
             return await window.go.main.App.UpdateTimeBlock(id, timeBlockData);

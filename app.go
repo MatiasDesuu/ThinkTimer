@@ -96,6 +96,11 @@ func (a *App) StopTimeBlockWithDuration(id int, duration int) (*models.TimeBlock
 	return a.timeBlockService.StopTimeBlockWithDuration(id, duration)
 }
 
+// GetTotalDurationByProject returns the total duration in seconds for a project
+func (a *App) GetTotalDurationByProject(projectID int) (int, error) {
+	return a.timeBlockService.GetTotalDurationByProject(projectID)
+}
+
 // Settings API methods
 func (a *App) GetSettings() (*models.Settings, error) {
 	return a.settingsService.GetSettings()

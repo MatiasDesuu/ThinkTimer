@@ -6,6 +6,7 @@ import Calendar from './js/calendar.js';
 import Settings from './js/settings.js';
 import NavBar from './js/navbar.js';
 import Utils from './js/utils.js';
+import API from './js/api.js';
 import Dialog from './js/dialog.js';
 import tooltipManager from './js/tooltip.js';
 
@@ -63,6 +64,7 @@ class App {
         this.initializeKeyboardShortcuts();
         this.initializeCustomURLButton();
     this.initializeMiniCalendarButton();
+    this.initializeTodayTotalIndicator();
         // Debug helper: log nav spacing (gap/padding) in responsive to help diagnose spacing issues
         try {
             this._logNavSpacing = () => {
@@ -297,6 +299,61 @@ class App {
         // Listen for custom URL changes
         window.addEventListener('customUrlChanged', () => {
             this.settings.updateUrlButtonVisibility();
+        });
+    }
+
+    // Show total duration worked today (sum of all time blocks for current date)
+    initializeTodayTotalIndicator() {
+        this.todayTotalEl = document.getElementById('today-total');
+        if (!this.todayTotalEl) return;
+
+        const update = async (date) => {
+            try {
+                // Use provided date (from dateChanged event) or the currently selected date
+                let targetDate = null;
+                if (date) targetDate = new Date(date);
+                else if (this.timeBlocks && this.timeBlocks.currentDate) targetDate = new Date(this.timeBlocks.currentDate);
+                else {
+                    const t = new Date();
+                    targetDate = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+                }
+
+                const startOfDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+                const timeBlocks = await API.getTimeBlocksByDate(startOfDay) || [];
+
+                let totalSeconds = 0;
+                const now = new Date();
+                timeBlocks.forEach(tb => {
+                    if (!tb.end_time) {
+                        // running block: calculate from start_time to now
+                        totalSeconds += Utils.calculateDuration(tb.start_time, now);
+                    } else if (tb.duration !== undefined && tb.duration !== null) {
+                        totalSeconds += tb.duration;
+                    } else {
+                        // fallback: calculate from start/end
+                        totalSeconds += Utils.calculateDuration(tb.start_time, tb.end_time);
+                    }
+                });
+
+                const display = totalSeconds > 0 ? Utils.formatDurationShort(totalSeconds) : '0m';
+                this.todayTotalEl.innerHTML = `<i class="fas fa-clock"></i> ${display}`;
+                this.todayTotalEl.style.display = 'inline-flex';
+            } catch (err) {
+                console.error('Error updating today total indicator:', err);
+                this.todayTotalEl.style.display = 'none';
+            }
+        };
+
+        // Update initially using the current selected date if available
+        update();
+
+        // Update on timeblock changes (recompute for current selected date)
+        window.addEventListener('timeBlockUpdated', () => update());
+
+        // Also update when the date in timeBlocks changes (listen to custom event)
+        window.addEventListener('dateChanged', (ev) => {
+            const newDate = ev && ev.detail && ev.detail.date ? ev.detail.date : null;
+            update(newDate);
         });
     }
 

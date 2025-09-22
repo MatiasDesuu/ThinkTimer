@@ -38,6 +38,10 @@ export function GetTimeBlocksByDateRange(arg1, arg2) {
   return window['go']['main']['App']['GetTimeBlocksByDateRange'](arg1, arg2);
 }
 
+export function GetTotalDurationByProject(arg1) {
+  return window['go']['main']['App']['GetTotalDurationByProject'](arg1);
+}
+
 export function OpenDirectory(arg1) {
   return window['go']['main']['App']['OpenDirectory'](arg1);
 }

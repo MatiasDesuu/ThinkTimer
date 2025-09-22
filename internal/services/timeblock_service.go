@@ -262,3 +262,21 @@ func (s *TimeBlockService) StopTimeBlockWithDuration(id int, duration int) (*mod
 
 	return s.GetTimeBlockByID(id)
 }
+
+// GetTotalDurationByProject returns the total duration in seconds for a given project
+func (s *TimeBlockService) GetTotalDurationByProject(projectID int) (int, error) {
+	query := `
+		SELECT COALESCE(SUM(duration), 0) FROM time_blocks WHERE project_id = ?
+	`
+
+	var total sql.NullInt64
+	err := s.db.QueryRow(query, projectID).Scan(&total)
+	if err != nil {
+		return 0, err
+	}
+
+	if !total.Valid {
+		return 0, nil
+	}
+	return int(total.Int64), nil
+}
