@@ -871,7 +871,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .today-project-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 0.4rem 0.5rem;
     border-radius: 6px;
