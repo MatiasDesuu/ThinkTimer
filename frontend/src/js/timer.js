@@ -28,6 +28,7 @@ class Timer {
     initializeElements() {
         console.log('Initializing timer elements...');
         this.projectSelector = document.getElementById('project-selector');
+    this.openProjectDiscordBtn = document.getElementById('open-project-discord');
     this.openProjectUrlBtn = document.getElementById('open-project-url');
     this.openProjectDirBtn = document.getElementById('open-project-dir');
         this.timerDisplay = document.getElementById('timer-display');
@@ -66,6 +67,14 @@ class Timer {
             });
         }
 
+        // Open project discord when the button is clicked
+        if (this.openProjectDiscordBtn) {
+            this.openProjectDiscordBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await this.openSelectedProjectDiscord();
+            });
+        }
+
         // Open project directory when the button is clicked
         if (this.openProjectDirBtn) {
             this.openProjectDirBtn.addEventListener('click', async (e) => {
@@ -76,6 +85,72 @@ class Timer {
 
         // Listen for project list updates so option data-urls are available/updated
         window.addEventListener('projectsUpdated', () => this.updateProjectUrlButton());
+    }
+
+    async openSelectedProjectDiscord() {
+        try {
+            if (!this.projectSelector || !this.projectSelector.value) return;
+
+            const selectedOption = this.projectSelector.options[this.projectSelector.selectedIndex];
+            let discordRaw = selectedOption?.dataset?.discord || null;
+
+            // Fallback: ask API for project details
+            if (!discordRaw) {
+                try {
+                    const projectId = parseInt(this.projectSelector.value);
+                    const proj = await API.getProjectByID(projectId);
+                    discordRaw = proj?.discord || null;
+                } catch (err) {
+                    console.error('Error fetching project for discord:', err);
+                }
+            }
+
+            if (!discordRaw) {
+                Utils.showNotification('Warning', 'No Discord channel set for selected project', 'warning');
+                return;
+            }
+
+            // parse and build protocol URL
+            const discordRegex = /(?:discord:\/\/-\/channels\/|https?:\/\/[^\s\/]+\/channels\/)(\d+)\/(\d+)/i;
+            const m = String(discordRaw).match(discordRegex);
+            let protocolURL = null;
+            if (m && m.length >= 3) {
+                const serverId = m[1];
+                const channelId = m[2];
+                protocolURL = `discord://-/channels/${serverId}/${channelId}`;
+            } else {
+                const parts = String(discordRaw).split('/').filter(Boolean);
+                if (parts.length >= 2 && /^\d+$/.test(parts[parts.length-2]) && /^\d+$/.test(parts[parts.length-1])) {
+                    const serverId = parts[parts.length-2];
+                    const channelId = parts[parts.length-1];
+                    protocolURL = `discord://-/channels/${serverId}/${channelId}`;
+                }
+            }
+
+            if (!protocolURL) {
+                Utils.showNotification('Error', 'Could not parse Discord channel URL for selected project', 'error');
+                return;
+            }
+
+            // Try backend OpenURL first
+            try {
+                if (window.go && window.go.main && window.go.main.App && typeof window.go.main.App.OpenURL === 'function') {
+                    await window.go.main.App.OpenURL(protocolURL);
+                    return;
+                }
+            } catch (err) {
+                console.error('Error calling OpenURL backend:', err);
+            }
+
+            // Fallbacks
+            try { Runtime.BrowserOpenURL(protocolURL); return; } catch (e) { /* continue */ }
+            try { window.location.href = protocolURL; return; } catch (e) { /* continue */ }
+            try { window.open(protocolURL, '_blank'); return; } catch (e) { Utils.showNotification('Error', 'Failed to open Discord link', 'error'); }
+
+        } catch (err) {
+            console.error('openSelectedProjectDiscord error:', err);
+            Utils.showNotification('Error', 'Failed to open Discord link', 'error');
+        }
     }
 
     async start() {
@@ -363,6 +438,17 @@ class Timer {
                     this.openProjectDirBtn.setAttribute('aria-label', 'Open project folder');
                 } else {
                     this.openProjectDirBtn.style.display = 'none';
+                }
+            }
+            // Also handle discord button
+            if (this.openProjectDiscordBtn) {
+                const discord = selectedOption ? selectedOption.getAttribute('data-discord') : null;
+                if (discord && String(discord).trim()) {
+                    this.openProjectDiscordBtn.style.display = 'inline-flex';
+                    this.openProjectDiscordBtn.title = '';
+                    this.openProjectDiscordBtn.setAttribute('aria-label', 'Open project Discord channel');
+                } else {
+                    this.openProjectDiscordBtn.style.display = 'none';
                 }
             }
         } catch (err) {

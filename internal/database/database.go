@@ -57,6 +57,7 @@ func (db *DB) migrate() error {
 			name TEXT NOT NULL,
 			description TEXT,
 			url TEXT,
+			discord TEXT,
 			directory TEXT,
 			deadline DATETIME,
 			status TEXT DEFAULT 'active',
@@ -97,6 +98,11 @@ func (db *DB) migrate() error {
 
 	// Handle custom_url column migration safely
 	if err := db.addCustomURLColumn(); err != nil {
+		return err
+	}
+
+	// Handle discord column migration for projects
+	if err := db.addProjectDiscordColumn(); err != nil {
 		return err
 	}
 
@@ -222,6 +228,41 @@ func (db *DB) addCustomURLColumn() error {
 
 		// Update existing record to have empty custom_url
 		_, err = db.conn.Exec("UPDATE settings SET custom_url = '' WHERE id = 1 AND custom_url IS NULL")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// addProjectDiscordColumn adds the discord column to projects if it doesn't exist
+func (db *DB) addProjectDiscordColumn() error {
+	query := "PRAGMA table_info(projects)"
+	rows, err := db.conn.Query(query)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	hasDiscord := false
+	for rows.Next() {
+		var cid int
+		var name, dataType string
+		var notNull, dfltValue, pk interface{}
+
+		if err := rows.Scan(&cid, &name, &dataType, &notNull, &dfltValue, &pk); err != nil {
+			continue
+		}
+
+		if name == "discord" {
+			hasDiscord = true
+			break
+		}
+	}
+
+	if !hasDiscord {
+		_, err := db.conn.Exec("ALTER TABLE projects ADD COLUMN discord TEXT DEFAULT ''")
 		if err != nil {
 			return err
 		}

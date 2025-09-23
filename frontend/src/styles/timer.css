@@ -92,6 +92,20 @@
     padding-bottom: 0;
 }
 
+/* Ensure Discord button matches the other small icon buttons exactly */
+#open-project-discord {
+    height: var(--timer-control-height);
+    padding: 0 0.6rem; /* slightly smaller horizontal padding to match icon width */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#open-project-discord i {
+    font-size: 1rem; /* same as other icon buttons */
+    line-height: 1;
+}
+
 #open-project-url:hover, #open-project-dir:hover {
     transform: none !important;
     border-color: var(--accent-color) !important;

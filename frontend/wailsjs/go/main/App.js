@@ -46,6 +46,10 @@ export function OpenDirectory(arg1) {
   return window['go']['main']['App']['OpenDirectory'](arg1);
 }
 
+export function OpenURL(arg1) {
+  return window['go']['main']['App']['OpenURL'](arg1);
+}
+
 export function StopRunningTimeBlock(arg1) {
   return window['go']['main']['App']['StopRunningTimeBlock'](arg1);
 }

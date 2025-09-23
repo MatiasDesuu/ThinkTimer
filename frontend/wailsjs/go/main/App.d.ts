@@ -25,6 +25,8 @@ export function GetTotalDurationByProject(arg1:number):Promise<number>;
 
 export function OpenDirectory(arg1:string):Promise<void>;
 
+export function OpenURL(arg1:string):Promise<void>;
+
 export function StopRunningTimeBlock(arg1:number):Promise<models.TimeBlock>;
 
 export function StopTimeBlockWithDuration(arg1:number,arg2:number):Promise<models.TimeBlock>;

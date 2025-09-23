@@ -32,6 +32,7 @@ class Projects {
         this.nameField = document.getElementById('project-name');
         this.descriptionField = document.getElementById('project-description');
         this.urlField = document.getElementById('project-url');
+        this.discordField = document.getElementById('project-discord');
     this.directoryField = document.getElementById('project-directory');
         this.deadlineField = document.getElementById('project-deadline');
 
@@ -161,6 +162,12 @@ class Projects {
                                 <a href="${project.url}" target="_blank" class="project-url">${Utils.escapeHtml(project.url)}</a>
                             </div>
                         ` : ''}
+                        ${project.discord ? `
+                            <div class="project-meta-item">
+                                <i class="fab fa-discord"></i>
+                                <a href="#" class="project-discord" data-discord="${Utils.escapeHtml(project.discord)}">${Utils.escapeHtml(project.discord)}</a>
+                            </div>
+                        ` : ''}
                         ${project.directory ? `
                             <div class="project-meta-item">
                                 <i class="fas fa-folder-open"></i>
@@ -272,6 +279,81 @@ class Projects {
                 }
             });
         });
+
+        // Discord links - attempt to open in Discord app using discord:// protocol
+        const discordLinks = [
+            ...this.activeProjectsList?.querySelectorAll('.project-discord') || [],
+            ...this.completedProjectsList?.querySelectorAll('.project-discord') || []
+        ];
+
+        discordLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const raw = link.dataset.discord;
+                if (!raw) return;
+
+                // Try to extract server and channel ids from common URL forms
+                const discordRegex = /(?:discord:\/\/-\/channels\/|https?:\/\/[^\s\/]+\/channels\/)(\d+)\/(\d+)/i;
+                const m = String(raw).match(discordRegex);
+                let protocolURL = null;
+                if (m && m.length >= 3) {
+                    const serverId = m[1];
+                    const channelId = m[2];
+                    protocolURL = `discord://-/channels/${serverId}/${channelId}`;
+                } else {
+                    // If user entered direct ids separated by slash
+                    const parts = String(raw).split('/').filter(Boolean);
+                    if (parts.length >= 2 && /^\d+$/.test(parts[parts.length-2]) && /^\d+$/.test(parts[parts.length-1])) {
+                        const serverId = parts[parts.length-2];
+                        const channelId = parts[parts.length-1];
+                        protocolURL = `discord://-/channels/${serverId}/${channelId}`;
+                    }
+                }
+
+                if (!protocolURL) {
+                    console.log('project-discord: could not parse raw value', raw);
+                    Utils.showNotification('Error', 'Could not parse Discord channel URL. Expected format: https://discord.com/channels/<server_id>/<channel_id>', 'error');
+                    return;
+                }
+
+                console.log('project-discord clicked, raw:', raw, 'protocolURL:', protocolURL);
+                (async () => {
+                    try {
+                        // Prefer calling backend method which uses system start/open/xdg-open
+                        if (window.go && window.go.main && window.go.main.App && typeof window.go.main.App.OpenURL === 'function') {
+                            await window.go.main.App.OpenURL(protocolURL);
+                            console.log('project-discord: called backend OpenURL with', protocolURL);
+                            return;
+                        }
+                    } catch (err) {
+                        console.error('Error calling OpenURL backend:', err);
+                    }
+
+                    try {
+                        Runtime.BrowserOpenURL(protocolURL);
+                        return;
+                    } catch (err) {
+                        console.error('Runtime.BrowserOpenURL failed:', err);
+                    }
+
+                    // Try navigation via location (sometimes triggers protocol handlers)
+                    try {
+                        window.location.href = protocolURL;
+                        return;
+                    } catch (err) {
+                        console.error('window.location.href open failed:', err);
+                    }
+
+                    // Final fallback: open a new window/tab
+                    try {
+                        window.open(protocolURL, '_blank');
+                        return;
+                    } catch (e) {
+                        Utils.showNotification('Error', 'Failed to open Discord link', 'error');
+                    }
+                })();
+            });
+        });
     }
 
     // Fetch total durations for visible projects and cache them
@@ -337,6 +419,7 @@ class Projects {
         this.nameField.value = project.name;
         this.descriptionField.value = project.description || '';
         this.urlField.value = project.url || '';
+        if (this.discordField) this.discordField.value = project.discord || '';
     this.directoryField.value = project.directory || '';
         this.deadlineField.value = project.deadline ? Utils.formatDateForInput(project.deadline) : '';
         
@@ -397,7 +480,8 @@ class Projects {
 
         // Handle URL: when updating we must send an explicit empty string
         // so the backend receives a non-nil value and will clear the column.
-        const rawUrl = formData.get('url');
+    const rawUrl = formData.get('url');
+    const rawDiscord = formData.get('discord');
         let urlValue = null;
         if (this.currentEditingId) {
             // For updates, send empty string when the user cleared the field
@@ -431,6 +515,7 @@ class Projects {
             name: formData.get('name').trim(),
             description: formData.get('description').trim() || null,
             url: urlValue,
+            discord: (rawDiscord && String(rawDiscord).trim() !== '') ? String(rawDiscord).trim() : (this.currentEditingId ? '' : null),
             directory: directoryValue,
             deadline: deadlineValue
         };
@@ -490,6 +575,9 @@ class Projects {
 
                         if (project.directory) option.setAttribute('data-directory', project.directory);
                         else option.removeAttribute('data-directory');
+
+                        if (project.discord) option.setAttribute('data-discord', project.discord);
+                        else option.removeAttribute('data-discord');
                         selector.appendChild(option);
                     });
                 

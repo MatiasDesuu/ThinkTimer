@@ -131,3 +131,24 @@ func (a *App) OpenDirectory(path string) error {
 	// Start the command and don't wait for it to finish to avoid blocking the app
 	return cmd.Start()
 }
+
+// OpenURL opens the given URL using the OS default handler (supports custom protocols)
+func (a *App) OpenURL(url string) error {
+	if url == "" {
+		return nil
+	}
+
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "windows":
+		// Use cmd start to allow custom protocols
+		cmd = exec.Command("cmd", "/c", "start", "", url)
+	case "darwin":
+		cmd = exec.Command("open", url)
+	default:
+		// Assume Linux / BSD with xdg-open available
+		cmd = exec.Command("xdg-open", url)
+	}
+
+	return cmd.Start()
+}

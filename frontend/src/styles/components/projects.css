@@ -288,6 +288,27 @@
     text-decoration: underline;
 }
 
+/* Discord link style - match project-url and directory styling */
+.project-card .project-discord {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    text-align: left !important;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 0.375rem;
+    font-size: 0.75rem; /* match project-directory */
+    overflow-wrap: anywhere;
+}
+
+.project-card .project-discord:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
 .project-actions {
     display: flex;
     gap: 0.5rem;
