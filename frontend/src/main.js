@@ -358,9 +358,9 @@ class App {
                     // Render list
                     const items = Object.keys(totalsByProject).map(k => {
                         const p = totalsByProject[k];
-                        // Render as: [icon] Project Name: 1h 20m
+                        // Render as: [icon] Project Name | 1h 20m
                         // Use folder icon by default; future: use project-specific icon if available
-                        return `<div class="today-project-item"><div class="project-left"><i class="fas fa-folder"></i></div><div class="project-name">${Utils.escapeHtml(p.name)}:<span class="project-duration">${Utils.formatDuration(p.seconds)}</span></div></div>`;
+                        return `<div class="today-project-item"><div class="project-left"><i class="fas fa-folder"></i></div><div class="project-name">${Utils.escapeHtml(p.name)}</div><div class="project-duration">${Utils.formatDuration(p.seconds)}</div></div>`;
                     });
 
                     this.todayProjectsContainer.innerHTML = items.length ? items.join('') : `<div class="empty-state"><i class="fas fa-clock"></i><div>No projects tracked today</div></div>`;
