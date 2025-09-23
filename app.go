@@ -121,6 +121,8 @@ func (a *App) OpenDirectory(path string) error {
 	switch runtime.GOOS {
 	case "windows":
 		cmd = exec.Command("explorer", path)
+		// Hide the console window when starting the process on Windows
+		setHiddenWindow(cmd)
 	case "darwin":
 		cmd = exec.Command("open", path)
 	default:
@@ -143,6 +145,8 @@ func (a *App) OpenURL(url string) error {
 	case "windows":
 		// Use cmd start to allow custom protocols
 		cmd = exec.Command("cmd", "/c", "start", "", url)
+		// Hide the console window when using cmd start
+		setHiddenWindow(cmd)
 	case "darwin":
 		cmd = exec.Command("open", url)
 	default:
