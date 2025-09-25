@@ -31,6 +31,7 @@ class Timer {
     this.openProjectDiscordBtn = document.getElementById('open-project-discord');
     this.openProjectUrlBtn = document.getElementById('open-project-url');
     this.openProjectDirBtn = document.getElementById('open-project-dir');
+    this.editProjectBtn = document.getElementById('edit-project-btn');
         this.timerDisplay = document.getElementById('timer-display');
         this.startBtn = document.getElementById('start-timer');
         this.pauseBtn = document.getElementById('pause-timer');
@@ -80,6 +81,14 @@ class Timer {
             this.openProjectDirBtn.addEventListener('click', async (e) => {
                 e.preventDefault();
                 await this.openSelectedProjectDir();
+            });
+        }
+
+        // Edit selected project when edit button is clicked
+        if (this.editProjectBtn) {
+            this.editProjectBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await this.editSelectedProject();
             });
         }
 
@@ -451,8 +460,50 @@ class Timer {
                     this.openProjectDiscordBtn.style.display = 'none';
                 }
             }
+
+            // Also handle edit button visibility
+            if (this.editProjectBtn) {
+                const hasSelection = this.projectSelector && this.projectSelector.value;
+                if (hasSelection) {
+                    this.editProjectBtn.style.display = 'inline-flex';
+                    this.editProjectBtn.title = '';
+                    this.editProjectBtn.setAttribute('aria-label', 'Edit selected project');
+                } else {
+                    this.editProjectBtn.style.display = 'none';
+                }
+            }
         } catch (err) {
             console.warn('Failed to update project URL button:', err);
+        }
+    }
+
+    async editSelectedProject() {
+        try {
+            if (!this.projectSelector || !this.projectSelector.value) {
+                Utils.showNotification('Warning', 'Please select a project first', 'warning');
+                return;
+            }
+
+            const projectId = parseInt(this.projectSelector.value);
+
+            // Try to use the Projects module instance created in main (window.app.projects)
+            const projectsModule = window.app && window.app.projects ? window.app.projects : null;
+            if (projectsModule && typeof projectsModule.editProject === 'function') {
+                await projectsModule.editProject(projectId);
+                return;
+            }
+
+            // Fallback: attempt to fetch project and open project modal directly via API
+            const project = await API.getProjectByID(projectId);
+            if (project) {
+                // As a last resort, open the Projects modal by dispatching an event
+                window.dispatchEvent(new CustomEvent('openProjectEdit', { detail: { project } }));
+            } else {
+                Utils.showNotification('Error', 'Failed to load project for editing', 'error');
+            }
+        } catch (err) {
+            console.error('Error editing selected project:', err);
+            Utils.showNotification('Error', 'Failed to open project editor', 'error');
         }
     }
 

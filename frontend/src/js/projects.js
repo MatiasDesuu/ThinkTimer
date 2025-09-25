@@ -14,6 +14,35 @@ class Projects {
         this.initializeElements();
         this.bindEvents();
         this.loadProjects();
+        // Listen for external requests to open project editor (fallback)
+        window.addEventListener('openProjectEdit', (ev) => {
+            try {
+                const project = ev && ev.detail && ev.detail.project ? ev.detail.project : null;
+                if (!project || !project.id) return;
+                // Ensure projects list contains this project; if not, try to set fields directly
+                const existing = this.getProjectById(project.id);
+                if (existing) this.editProject(project.id);
+                else {
+                    // Populate modal with provided project data
+                    this.currentEditingId = project.id;
+                    this.projectModalTitle.textContent = 'Edit Project';
+                    if (this.projectModalIcon) {
+                        this.projectModalIcon.className = 'standard-modal-icon project-edit';
+                        const iconElement = this.projectModalIcon.querySelector('i');
+                        if (iconElement) iconElement.className = 'fas fa-edit';
+                    }
+                    this.nameField.value = project.name || '';
+                    this.descriptionField.value = project.description || '';
+                    this.urlField.value = project.url || '';
+                    if (this.discordField) this.discordField.value = project.discord || '';
+                    this.directoryField.value = project.directory || '';
+                    this.deadlineField.value = project.deadline ? Utils.formatDateForInput(project.deadline) : '';
+                    this.openModal();
+                }
+            } catch (e) {
+                // ignore
+            }
+        });
     }
 
     initializeElements() {
