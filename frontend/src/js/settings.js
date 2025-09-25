@@ -277,7 +277,7 @@ class Settings {
                     
                     if (settingsData.settings) {
                         // Validate settings structure
-                        const validThemes = ['light', 'dark'];
+                        const validThemes = ['light', 'dark', 'modern-dark', 'modern-light'];
                         const validLanguages = ['en'];
                         
                         if (validThemes.includes(settingsData.settings.theme)) {

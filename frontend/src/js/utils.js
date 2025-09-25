@@ -25,6 +25,21 @@ class Utils {
         return `${minutes}m`;
     }
 
+    static formatDurationFriendly(seconds) {
+        if (seconds === null || seconds === undefined) return '0m';
+        const totalSeconds = Math.floor(seconds);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+        if (hours > 0 && minutes > 0) {
+            return `${hours}h ${minutes}m`;
+        }
+        if (hours > 0) {
+            return `${hours}h`;
+        }
+        return `${minutes}m`;
+    }
+
     // Format date to readable string
     static formatDate(date) {
         if (!date) return '';

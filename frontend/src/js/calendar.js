@@ -30,6 +30,49 @@ class Calendar {
         this.selectedDateDisplay = document.getElementById('selected-calendar-date');
         this.calendarTimeBlocks = document.getElementById('calendar-time-blocks');
         this.addCalendarManualBlockBtn = document.getElementById('add-calendar-manual-block');
+        // Indicator for total time on the selected date (will create if missing)
+        this.selectedDateTotal = document.getElementById('selected-calendar-total');
+        if (!this.selectedDateTotal) {
+            const header = document.querySelector('#calendar-page .time-blocks-section .section-header');
+            if (header) {
+                // Reuse the same markup and classes used by Projects page (.project-total-time)
+                const span = document.createElement('span');
+                span.id = 'selected-calendar-total';
+                span.className = 'project-total-time calendar';
+                span.setAttribute('aria-hidden', 'true');
+                span.innerHTML = `<i class="fas fa-clock"></i>`; // value will be set later
+
+                // Prefer inserting inside the H2 title right after the selected date span
+                const title = header.querySelector('h2');
+                if (title) {
+                    const dateSpan = title.querySelector('#selected-calendar-date');
+                    // Ensure the literal title text (e.g., "Blocks for") is wrapped
+                    // into a single element so flex wrapping won't split the words
+                    const textNodes = Array.from(title.childNodes).filter(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
+                    if (textNodes.length > 0) {
+                        const textWrap = document.createElement('span');
+                        textWrap.className = 'calendar-title-text';
+                        textWrap.textContent = textNodes.map(n => n.textContent.trim()).join(' ');
+                        title.insertBefore(textWrap, textNodes[0]);
+                        textNodes.forEach(n => n.remove());
+                    }
+
+                    if (dateSpan) {
+                        dateSpan.insertAdjacentElement('afterend', span);
+                    } else {
+                        title.appendChild(span);
+                    }
+                } else {
+                    // Fallback to placing in header next to add button
+                    if (this.addCalendarManualBlockBtn && this.addCalendarManualBlockBtn.parentNode === header) {
+                        header.insertBefore(span, this.addCalendarManualBlockBtn);
+                    } else {
+                        header.appendChild(span);
+                    }
+                }
+                this.selectedDateTotal = span;
+            }
+        }
     }
 
     bindEvents() {
@@ -169,19 +212,22 @@ class Calendar {
                 // Add time blocks indicator
                 if (timeBlocksForDate.length > 0) {
                     const blockCount = timeBlocksForDate.length;
-                    const totalHours = timeBlocksForDate.reduce((sum, block) => {
+                    // Sum total duration in seconds to avoid decimal hour representation
+                    const totalSeconds = timeBlocksForDate.reduce((sum, block) => {
                         if (block.end_time) {
                             const start = new Date(block.start_time);
                             const end = new Date(block.end_time);
-                            return sum + (end - start) / (1000 * 60 * 60); // Convert to hours
+                            return sum + Math.floor((end - start) / 1000); // seconds
                         }
-                        return sum;
+                        // If block is running (no end_time) try to use provided duration or skip
+                        return sum + (block.duration ? Math.floor(block.duration) : 0);
                     }, 0);
-                    
-                    const tooltipText = blockCount === 1 
-                        ? `1 time block (${totalHours.toFixed(1)}h)`
-                        : `${blockCount} time blocks (${totalHours.toFixed(1)}h)`;
-                    
+
+                    const friendly = Utils.formatDurationFriendly(totalSeconds);
+                    const tooltipText = blockCount === 1
+                        ? `1 time block (${friendly})`
+                        : `${blockCount} time blocks (${friendly})`;
+
                     // add time block tooltip summary to day-level tooltips
                     dayTooltips.push(tooltipText);
                     projectIndicators += `<div class="calendar-project-indicator">${blockCount}</div>`;
@@ -315,6 +361,29 @@ class Calendar {
         if (this.selectedDateDisplay) {
             this.selectedDateDisplay.textContent = Utils.formatDate(this.selectedDate);
         }
+        // Update total time indicator for the selected date
+        try {
+            if (this.selectedDateTotal) {
+                const timeBlocks = this.getTimeBlocksForDate(this.selectedDate) || [];
+                const totalSeconds = timeBlocks.reduce((sum, block) => {
+                    if (block.end_time) {
+                        const start = new Date(block.start_time);
+                        const end = new Date(block.end_time);
+                        return sum + Math.floor((end - start) / 1000);
+                    }
+                    // If running block, try to use stored duration as fallback
+                    return sum + (block.duration ? Math.floor(block.duration) : 0);
+                }, 0);
+
+                // Use the compact project-style display (H:mm or Xm) to match Projects page
+                const totalDisplay = totalSeconds > 0 ? Utils.formatDurationShort(totalSeconds) : '0m';
+                if (this.selectedDateTotal) {
+                    this.selectedDateTotal.innerHTML = `<i class="fas fa-clock"></i>${totalDisplay}`;
+                }
+            }
+        } catch (err) {
+            // ignore
+        }
     }
 
     async loadSelectedDateTimeBlocks() {
@@ -354,6 +423,8 @@ class Calendar {
                 
             // Bind events for the time block actions
             this.bindCalendarTimeBlockEvents();
+            // Refresh the selected date display (including total indicator)
+            this.updateSelectedDateDisplay();
                 
         } catch (error) {
             console.error('Error loading calendar time blocks:', error);

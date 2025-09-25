@@ -1,6 +1,54 @@
-/* Themes CSS - Light and Dark theme support */
+/* Themes CSS - Light, Dark and Modern palettes */
 
-/* Dark theme - default colors are already set in main.css */
+/* Modern Dark palette */
+[data-theme="modern-dark"] {
+    --bg-primary: #0d0d0f;         /* Fondo principal - casi negro pero no absoluto */
+    --bg-secondary: #1a1a1f;       /* Paneles, sidebar */
+    --bg-tertiary: #2a2a31;        /* Elementos elevados */
+
+    --text-primary: #f5f5f7;       /* Texto principal */
+    --text-secondary: #c7c7cc;     /* Texto secundario */
+    --text-tertiary: #8e8e93;      /* Texto deshabilitado, hints */
+
+    --border-color: #3a3a40;       /* Bordes sutiles */
+
+    --accent-color: #1098F7;       /* Azul moderno (más suave que #2196f3) */
+    --accent-hover: #055E9E;       /* Azul intenso para hover */
+
+    --success-color: #20BF55;      /* Verde moderno (Android-like) */
+    --warning-color: #FFB10A;      /* Amarillo más suave */
+    --error-color: #EF2D56;        /* Rojo vibrante pero no agresivo */
+
+    --shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 12px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* Modern Light palette */
+[data-theme="modern-light"] {
+    --bg-primary: #fafafa;
+    --bg-secondary: #eaeaea;
+    --bg-tertiary: #dcdcdc;
+
+    --text-primary: #1c1c1e;
+    --text-secondary: #3a3a3c;
+    --text-tertiary: #7c7c80;
+
+    --border-color: #bdbdc2;
+
+    --accent-color: #078EED;
+    --accent-hover: #044776;
+
+    --success-color: #0F5727;
+    --warning-color: #CC8B00;
+    --error-color: #D62828;
+
+    --shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Dark theme - original palette */
 [data-theme="dark"] {
     --bg-primary: #0a0a0a;
     --bg-secondary: #181818;
@@ -19,7 +67,7 @@
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Light theme override */
+/* Light theme - original palette */
 [data-theme="light"] {
     --bg-primary: #f7f7f7;
     --bg-secondary: #e0e0e0;
@@ -38,82 +86,88 @@
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Theme specific adjustments */
-[data-theme="dark"] .nav {
+/* Theme specific adjustments
+   Alias modern-* variants with their base family where appropriate so
+   components can target either 'dark' or 'modern-dark' etc. */
+
+/* Nav border */
+[data-theme="dark"] .nav, [data-theme="modern-dark"] .nav {
     border-right-color: var(--border-color);
 }
 
-[data-theme="dark"] .nav-item.active {
+/* Active nav item */
+[data-theme="dark"] .nav-item.active, [data-theme="modern-dark"] .nav-item.active {
     background-color: var(--accent-color);
     color: white;
 }
 
-[data-theme="dark"] .project-status.active {
+/* Project status badges */
+[data-theme="dark"] .project-status.active, [data-theme="modern-dark"] .project-status.active {
     background-color: rgba(67, 214, 117, 0.2);
     color: var(--success-color);
 }
 
-[data-theme="dark"] .project-status.completed {
+[data-theme="dark"] .project-status.completed, [data-theme="modern-dark"] .project-status.completed {
     background-color: rgba(33, 150, 243, 0.2);
     color: var(--accent-color);
 }
 
-[data-theme="dark"] .project-status.paused {
+[data-theme="dark"] .project-status.paused, [data-theme="modern-dark"] .project-status.paused {
     background-color: rgba(255, 179, 0, 0.2);
     color: var(--warning-color);
 }
 
-[data-theme="dark"] .time-block.running {
+[data-theme="dark"] .time-block.running, [data-theme="modern-dark"] .time-block.running {
     border-color: var(--success-color);
     background-color: rgba(67, 214, 117, 0.1);
 }
 
-/* Light theme specific adjustments */
-[data-theme="light"] .project-status.active {
+/* Light variants */
+[data-theme="light"] .project-status.active, [data-theme="modern-light"] .project-status.active {
     background-color: rgba(67, 214, 117, 0.15);
     color: #2e7d36;
 }
 
-[data-theme="light"] .project-status.completed {
+[data-theme="light"] .project-status.completed, [data-theme="modern-light"] .project-status.completed {
     background-color: rgba(25, 118, 210, 0.15);
     color: #1565c0;
 }
 
-[data-theme="light"] .project-status.paused {
+[data-theme="light"] .project-status.paused, [data-theme="modern-light"] .project-status.paused {
     background-color: rgba(255, 179, 0, 0.15);
     color: #e65100;
 }
 
-[data-theme="light"] .time-block.running {
+[data-theme="light"] .time-block.running, [data-theme="modern-light"] .time-block.running {
     border-color: #2e7d36;
     background-color: rgba(67, 214, 117, 0.1);
 }
 
-[data-theme="dark"] .timer-container.running {
+/* Timer container states */
+[data-theme="dark"] .timer-container.running, [data-theme="modern-dark"] .timer-container.running {
     border-color: var(--success-color);
     background-color: #1a2f1a;
 }
 
-[data-theme="dark"] .timer-container.paused {
+[data-theme="dark"] .timer-container.paused, [data-theme="modern-dark"] .timer-container.paused {
     border-color: var(--warning-color);
     background-color: #2d1a0a;
 }
 
-[data-theme="dark"] .calendar-day.today {
+/* Calendar day styling */
+[data-theme="dark"] .calendar-day.today, [data-theme="modern-dark"] .calendar-day.today {
     border-color: var(--accent-color);
 }
 
-[data-theme="dark"] .calendar-day.selected {
+[data-theme="dark"] .calendar-day.selected, [data-theme="modern-dark"] .calendar-day.selected {
     background-color: var(--accent-color);
     color: white;
 }
 
-[data-theme="dark"] .calendar-day.other-month {
+[data-theme="dark"] .calendar-day.other-month, [data-theme="modern-dark"] .calendar-day.other-month {
     background-color: #2d3748;
-    color: var(--text-muted);
+    color: var(--text-tertiary);
 }
-
-
 
 /* Theme transition */
 * {
@@ -147,27 +201,23 @@
     transition: transform 0.3s ease;
 }
 
-[data-theme="dark"] .theme-toggle .fa-sun {
+[data-theme="dark"] .theme-toggle .fa-sun, [data-theme="modern-dark"] .theme-toggle .fa-sun {
     transform: rotate(180deg);
 }
 
-[data-theme="light"] .theme-toggle .fa-moon {
+[data-theme="light"] .theme-toggle .fa-moon, [data-theme="modern-light"] .theme-toggle .fa-moon {
     transform: rotate(-90deg);
 }
 
-/* Accessibility improvements for dark theme */
-[data-theme="dark"] .form-group input:focus,
-[data-theme="dark"] .form-group select:focus,
-[data-theme="dark"] .form-group textarea:focus {
+/* Accessibility improvements for dark themes */
+[data-theme="dark"] .form-group input:focus, [data-theme="modern-dark"] .form-group input:focus,
+[data-theme="dark"] .form-group select:focus, [data-theme="modern-dark"] .form-group select:focus,
+[data-theme="dark"] .form-group textarea:focus, [data-theme="modern-dark"] .form-group textarea:focus {
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
 }
 
-[data-theme="dark"] .btn:focus {
+[data-theme="dark"] .btn:focus, [data-theme="modern-dark"] .btn:focus {
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
-}
-
-[data-theme="dark"] .nav-item:focus {
-    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
 }
 
 /* Print styles (always light) */

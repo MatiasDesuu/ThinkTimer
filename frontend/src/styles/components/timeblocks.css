@@ -377,3 +377,37 @@
         gap: 0.25rem;
     }
 }
+
+
+
+/* Reuse project total time visual style for calendar header indicator */
+.project-total-time.calendar {
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-tertiary);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-tertiary);
+    margin-left: 0.2rem;
+}
+
+.project-total-time.calendar i {
+    width: 0.9rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    /* Keep the calendar total visible on small screens but make it compact
+       and remove left margin since headers stack vertically in responsive mode. */
+    .project-total-time.calendar {
+        display: inline-flex;
+        margin-left: 0; /* header stacks so no left spacing needed */
+        margin-top: 0.25rem; /* small gap under the title */
+    }
+}

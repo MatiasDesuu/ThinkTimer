@@ -120,7 +120,10 @@ func (a *App) OpenDirectory(path string) error {
 	var cmd *exec.Cmd
 	switch runtime.GOOS {
 	case "windows":
-		cmd = exec.Command("explorer", path)
+		// Use "cmd /c start" so Windows handles the path with the default file explorer
+		// This avoids creating a separate explorer.exe process each time and matches
+		// the approach used in OpenURL for custom protocols.
+		cmd = exec.Command("cmd", "/c", "start", "", path)
 		// Hide the console window when starting the process on Windows
 		setHiddenWindow(cmd)
 	case "darwin":
@@ -130,17 +133,8 @@ func (a *App) OpenDirectory(path string) error {
 		cmd = exec.Command("xdg-open", path)
 	}
 
-	// Debug logging to help diagnose issues when opening directories
-	// Print the command being executed and the OS
-	println("OpenDirectory called. OS:", runtime.GOOS, " Path:", path)
-
 	// Start the command and don't wait for it to finish to avoid blocking the app
-	if err := cmd.Start(); err != nil {
-		// Log the error to stdout/stderr for debugging
-		println("OpenDirectory: failed to start command:", err.Error())
-		return err
-	}
-	return nil
+	return cmd.Start()
 }
 
 // OpenURL opens the given URL using the OS default handler (supports custom protocols)
@@ -163,12 +157,5 @@ func (a *App) OpenURL(url string) error {
 		cmd = exec.Command("xdg-open", url)
 	}
 
-	// Debug log
-	println("OpenURL called. OS:", runtime.GOOS, " URL:", url)
-
-	if err := cmd.Start(); err != nil {
-		println("OpenURL: failed to start command:", err.Error())
-		return err
-	}
-	return nil
+	return cmd.Start()
 }

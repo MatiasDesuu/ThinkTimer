@@ -70,7 +70,7 @@ input:-webkit-autofill:active {
 }
 
 /* Light theme override */
-[data-theme="light"] {
+[data-theme="light"], [data-theme="modern-light"] {
     --bg-primary: #f7f7f7;
     --bg-secondary: #e0e0e0;
     --bg-tertiary: #cccccc;

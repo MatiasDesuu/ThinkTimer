@@ -642,6 +642,14 @@
         font-size: 0.95rem;
         gap: 0.5rem;
     }
+
+    /* Ensure the title text doesn't get split across lines in responsive mode
+       Wrap the literal title text into a single element and force it to be
+       block-level on small screens so the date moves to the next line. */
+    .calendar-title-text {
+        display: inline-block;
+        white-space: nowrap;
+    }
     
     .calendar-title i {
         font-size: 0.9rem;
@@ -671,6 +679,17 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
+    }
+
+    /* On small screens, force the title text to be its own line so the date
+       appears below it (restores original responsive layout behavior). */
+    @media (max-width: 768px) {
+        #calendar-page .calendar-title .calendar-title-text {
+            display: block;
+        }
+        #calendar-page .calendar-title #selected-calendar-date {
+            display: block;
+        }
     }
 
     /* Target both calendar and home add-block buttons so they behave the same
