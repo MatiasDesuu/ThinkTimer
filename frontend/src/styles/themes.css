@@ -2,22 +2,22 @@
 
 /* Modern Dark palette */
 [data-theme="modern-dark"] {
-    --bg-primary: #0d0d0f;         /* Fondo principal - casi negro pero no absoluto */
-    --bg-secondary: #1a1a1f;       /* Paneles, sidebar */
-    --bg-tertiary: #2a2a31;        /* Elementos elevados */
+    --bg-primary: #0d0d0f;         
+    --bg-secondary: #1a1a1f;      
+    --bg-tertiary: #2a2a31;        
 
-    --text-primary: #f5f5f7;       /* Texto principal */
-    --text-secondary: #c7c7cc;     /* Texto secundario */
-    --text-tertiary: #8e8e93;      /* Texto deshabilitado, hints */
+    --text-primary: #f5f5f7;
+    --text-secondary: #c7c7cc;
+    --text-tertiary: #8e8e93;
 
-    --border-color: #3a3a40;       /* Bordes sutiles */
+    --border-color: #3a3a40;     
 
-    --accent-color: #1098F7;       /* Azul moderno (más suave que #2196f3) */
-    --accent-hover: #055E9E;       /* Azul intenso para hover */
+    --accent-color: #1098F7;
+    --accent-hover: #055E9E;
 
-    --success-color: #20BF55;      /* Verde moderno (Android-like) */
-    --warning-color: #FFB10A;      /* Amarillo más suave */
-    --error-color: #EF2D56;        /* Rojo vibrante pero no agresivo */
+    --success-color: #20BF55;
+    --warning-color: #FFB10A;
+    --error-color: #EF2D56;
 
     --shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
     --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.3);
@@ -87,8 +87,8 @@
 }
 
 /* Theme specific adjustments
-   Alias modern-* variants with their base family where appropriate so
-   components can target either 'dark' or 'modern-dark' etc. */
+Alias modern-* variants with their base family where appropriate so
+components can target either 'dark' or 'modern-dark' etc. */
 
 /* Nav border */
 [data-theme="dark"] .nav, [data-theme="modern-dark"] .nav {
