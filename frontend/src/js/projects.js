@@ -486,19 +486,66 @@ class Projects {
     }
 
     closeModal() {
+        if (!this.projectModal) return;
+
+        // Begin hiding the modal (remove active class to trigger CSS transition)
         this.projectModal.classList.remove('active');
         document.body.style.overflow = '';
-        this.currentEditingId = null;
-        this.projectForm.reset();
-        this.projectModalTitle.textContent = 'Add Project';
-        
-        // Reset icon to add mode
-        if (this.projectModalIcon) {
-            this.projectModalIcon.className = 'standard-modal-icon project';
-            const iconElement = this.projectModalIcon.querySelector('i');
-            if (iconElement) {
-                iconElement.className = 'fas fa-folder-plus';
+
+        // Cleanup function to reset form state and title/icon after hide animation
+        const doCleanup = () => {
+            try {
+                this.currentEditingId = null;
+                // reset the form fields
+                if (this.projectForm) this.projectForm.reset();
+                if (this.projectModalTitle) this.projectModalTitle.textContent = 'Add Project';
+
+                // Reset icon to add mode
+                if (this.projectModalIcon) {
+                    this.projectModalIcon.className = 'standard-modal-icon project';
+                    const iconElement = this.projectModalIcon.querySelector('i');
+                    if (iconElement) {
+                        iconElement.className = 'fas fa-folder-plus';
+                    }
+                }
+            } catch (e) {
+                // swallow cleanup errors
             }
+        };
+
+        // If the modal has a CSS transition, wait for transitionend before cleaning up.
+        // Otherwise perform cleanup immediately.
+        try {
+            const cs = getComputedStyle(this.projectModal);
+            const dur = (parseFloat(cs.transitionDuration) || 0) + (parseFloat(cs.transitionDelay) || 0);
+            const totalMs = Math.round(dur * 1000);
+
+            if (totalMs > 10) {
+                let cleaned = false;
+                const onEnd = (ev) => {
+                    // Only handle events for the modal element itself
+                    if (ev.target !== this.projectModal) return;
+                    if (cleaned) return;
+                    cleaned = true;
+                    try { this.projectModal.removeEventListener('transitionend', onEnd); } catch (e) {}
+                    doCleanup();
+                    if (fallback) clearTimeout(fallback);
+                };
+
+                this.projectModal.addEventListener('transitionend', onEnd);
+                // Fallback in case transitionend doesn't fire
+                const fallback = setTimeout(() => {
+                    if (cleaned) return;
+                    cleaned = true;
+                    try { this.projectModal.removeEventListener('transitionend', onEnd); } catch (e) {}
+                    doCleanup();
+                }, totalMs + 80);
+            } else {
+                doCleanup();
+            }
+        } catch (e) {
+            // If anything goes wrong reading computed style, just cleanup immediately
+            doCleanup();
         }
     }
 

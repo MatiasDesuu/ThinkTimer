@@ -640,7 +640,15 @@ class App {
                         break;
                     case 'Escape':
                         e.preventDefault();
-                        this.timer.reset();
+                        // If timer is running or paused, stop and save the block.
+                        // Reset (which deletes the block) should only be used when
+                        // there's no active/paused timer.
+                        if (this.timer && (this.timer.isRunning || this.timer.isPaused)) {
+                            // call stop (async) to save duration and reset state
+                            try { this.timer.stop(); } catch (err) { this.timer.reset(); }
+                        } else {
+                            this.timer.reset();
+                        }
                         break;
                 }
             }
