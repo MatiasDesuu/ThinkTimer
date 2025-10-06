@@ -104,7 +104,7 @@
     align-items: center;
     gap: 0.4rem;
     text-align: center !important;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
 }
 
 .project-card .project-total-time i {
@@ -226,7 +226,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     font-size: 0.85rem;
     justify-content: flex-start;
     text-align: left !important;

@@ -128,7 +128,7 @@
     right: 0.6rem;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     pointer-events: none;
     display: inline-flex;
     align-items: center;
@@ -330,7 +330,7 @@
 }
 
 .time-block-description {
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     font-size: 0.8rem;
     margin-top: 0.25rem;
 }
@@ -343,7 +343,7 @@
 .time-block-btn {
     border: none;
     background: none;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     cursor: pointer;
     padding: 0.25rem;
     border-radius: var(--radius-sm);
@@ -376,13 +376,13 @@
 .empty-state {
     text-align: center;
     padding: 2rem;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
 }
 
 .empty-state i {
     font-size: 2rem;
     margin-bottom: 0.5rem;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
 }
 
 .empty-state p {

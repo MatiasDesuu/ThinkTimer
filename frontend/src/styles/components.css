@@ -133,7 +133,7 @@
 
 .project-deadline {
     font-size: 0.7rem;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     white-space: nowrap;
 }
 
@@ -156,7 +156,7 @@
 .project-btn {
     border: none;
     background: none;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     cursor: pointer;
     padding: 0.25rem;
     border-radius: var(--radius-sm);
@@ -223,7 +223,7 @@
 
 .project-progress-text {
     font-size: 0.7rem;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     margin-top: 0.2rem;
 }
 
@@ -309,7 +309,7 @@
 }
 
 .calendar-day.other-month {
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     background-color: var(--bg-secondary);
 }
 
@@ -367,7 +367,7 @@
     gap: 1rem;
     margin-top: 0.75rem;
     font-size: 0.75rem;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
 }
 
 .calendar-legend-item {
@@ -413,7 +413,7 @@
 
 .calendar-stat-label {
     font-size: 0.7rem;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     text-transform: uppercase;
 }
 
@@ -643,7 +643,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     font-size: 0.85rem;
 }
 

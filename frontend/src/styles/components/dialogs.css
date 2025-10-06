@@ -119,7 +119,7 @@
 .custom-dialog-btn-secondary:hover {
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
-    border-color: var(--text-tertiary);
+    color: var(--text-secondary);
 }
 
 .custom-dialog-btn-primary {

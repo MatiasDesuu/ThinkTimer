@@ -132,7 +132,7 @@
 
 .switch-label {
     font-size: 0.9rem;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
 }
 
 .setting-select {
@@ -229,7 +229,7 @@
 }
 
 .setting-input::placeholder {
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     opacity: 0.7;
 }
 
