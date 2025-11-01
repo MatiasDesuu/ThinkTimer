@@ -14,9 +14,16 @@ class Dialog {
     }
 
     bindEvents() {
-        // Close dialog when clicking overlay
+        // Track mousedown to prevent closing when dragging from inside to outside
+        this._mouseDownTarget = null;
+        
+        this.overlay?.addEventListener('mousedown', (e) => {
+            this._mouseDownTarget = e.target;
+        });
+
+        // Close dialog when clicking overlay (only if mousedown was also on overlay)
         this.overlay?.addEventListener('click', (e) => {
-            if (e.target === this.overlay) {
+            if (e.target === this.overlay && this._mouseDownTarget === this.overlay) {
                 this.hide();
             }
         });

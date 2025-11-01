@@ -22,32 +22,41 @@ class StandardModal {
     }
 
     createModal() {
-        // Create modal container
-        this.modal = document.createElement('div');
-        this.modal.id = this.id;
-        this.modal.className = 'standard-modal';
-        
-        // Modal content structure
-        this.modal.innerHTML = `
-            <div class="standard-modal-content">
-                <div class="standard-modal-header">
-                    <div class="standard-modal-icon ${this.options.iconType}">
-                        <i class="${this.options.icon}"></i>
+        // Check if modal already exists in DOM
+        const existingModal = document.getElementById(this.id);
+        if (existingModal) {
+            // Use existing modal
+            this.modal = existingModal;
+            this.isUsingExisting = true;
+        } else {
+            // Create new modal container
+            this.modal = document.createElement('div');
+            this.modal.id = this.id;
+            this.modal.className = 'standard-modal';
+            
+            // Modal content structure
+            this.modal.innerHTML = `
+                <div class="standard-modal-content">
+                    <div class="standard-modal-header">
+                        <div class="standard-modal-icon ${this.options.iconType}">
+                            <i class="${this.options.icon}"></i>
+                        </div>
+                        <h2 class="standard-modal-title">${this.options.title}</h2>
+                        ${this.options.closable ? '<button type="button" class="standard-modal-close">&times;</button>' : ''}
                     </div>
-                    <h2 class="standard-modal-title">${this.options.title}</h2>
-                    ${this.options.closable ? '<button type="button" class="standard-modal-close">&times;</button>' : ''}
+                    <div class="standard-modal-body">
+                        <!-- Content will be inserted here -->
+                    </div>
+                    <div class="standard-modal-actions">
+                        <!-- Actions will be inserted here -->
+                    </div>
                 </div>
-                <div class="standard-modal-body">
-                    <!-- Content will be inserted here -->
-                </div>
-                <div class="standard-modal-actions">
-                    <!-- Actions will be inserted here -->
-                </div>
-            </div>
-        `;
+            `;
 
-        // Add to DOM
-        document.body.appendChild(this.modal);
+            // Add to DOM
+            document.body.appendChild(this.modal);
+            this.isUsingExisting = false;
+        }
 
         // Bind events
         this.bindEvents();
@@ -60,9 +69,16 @@ class StandardModal {
             closeBtn?.addEventListener('click', () => this.hide());
         }
 
-        // Click outside to close
+        // Track mousedown to prevent closing when dragging from inside to outside
+        this._mouseDownTarget = null;
+        
+        this.modal.addEventListener('mousedown', (e) => {
+            this._mouseDownTarget = e.target;
+        });
+
+        // Click outside to close (only if mousedown was also on modal)
         this.modal.addEventListener('click', (e) => {
-            if (e.target === this.modal) {
+            if (e.target === this.modal && this._mouseDownTarget === this.modal) {
                 this.hide();
             }
         });
@@ -135,6 +151,10 @@ class StandardModal {
             setTimeout(() => firstInput.focus(), 150);
         }
 
+        if (this.onOpen) {
+            this.onOpen();
+        }
+
         return this;
     }
 
@@ -157,6 +177,51 @@ class StandardModal {
 
     onCloseCallback(callback) {
         this.onClose = callback;
+        return this;
+    }
+
+    onOpenCallback(callback) {
+        this.onOpen = callback;
+        return this;
+    }
+
+    onSubmitCallback(callback) {
+        this.onSubmit = callback;
+        return this;
+    }
+
+    // Set form submit handler
+    setFormHandler(formId, submitCallback) {
+        const form = this.modal.querySelector(`#${formId}`);
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (submitCallback) {
+                    submitCallback(e);
+                }
+                if (this.onSubmit) {
+                    this.onSubmit(e);
+                }
+            });
+        }
+        return this;
+    }
+
+    // Reset form
+    resetForm(formId) {
+        const form = this.modal.querySelector(`#${formId}`);
+        if (form) {
+            form.reset();
+        }
+        return this;
+    }
+
+    // Focus first input
+    focusFirstInput() {
+        const firstInput = this.modal.querySelector('input, textarea, select');
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 150);
+        }
         return this;
     }
 

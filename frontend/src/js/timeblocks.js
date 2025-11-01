@@ -4,6 +4,7 @@ import Utils from './utils.js';
 import Settings from './settings.js';
 import Dialog from './dialog.js';
 import Tooltip from './tooltip.js';
+import StandardModal from './standard-modal.js';
 
 class TimeBlocks {
     constructor(projectsInstance) {
@@ -22,12 +23,15 @@ class TimeBlocks {
     initializeElements() {
         this.timeBlocksList = document.getElementById('time-blocks-list');
         this.addManualBlockBtn = document.getElementById('add-manual-block');
-        this.timeBlockModal = document.getElementById('timeblock-modal');
-        this.timeBlockModalTitle = document.getElementById('timeblock-modal-title');
-        this.timeBlockModalIcon = this.timeBlockModal?.querySelector('.standard-modal-icon');
+        
+        // Use StandardModal for timeblock modal
+        this.timeBlockModal = new StandardModal('timeblock-modal', {
+            title: 'Add Time Block',
+            icon: 'fas fa-plus-circle',
+            iconType: 'timeblock'
+        });
+        
         this.timeBlockForm = document.getElementById('timeblock-form');
-        this.cancelTimeBlockBtn = document.getElementById('cancel-timeblock');
-        this.closeTimeBlockBtn = this.timeBlockModal?.querySelector('.standard-modal-close');
         this.currentDateDisplay = document.getElementById('current-date');
         if (this.currentDateDisplay) {
             // Use the app's custom tooltip system instead of native title
@@ -63,16 +67,16 @@ class TimeBlocks {
             this.currentEditingId = null; // Reset editing ID
             this.openModal('add');
         });
+        
+        // Set up form handler for timeblock modal
+        this.timeBlockModal.setFormHandler('timeblock-form', (e) => this.handleSubmit(e));
+        
+        // Actions are already defined in HTML, just bind events
+        this.cancelTimeBlockBtn = document.getElementById('cancel-timeblock');
+        this.closeTimeBlockBtn = this.timeBlockModal.modal.querySelector('.standard-modal-close');
+        
         this.cancelTimeBlockBtn?.addEventListener('click', () => this.closeModal());
         this.closeTimeBlockBtn?.addEventListener('click', () => this.closeModal());
-        this.timeBlockForm?.addEventListener('submit', (e) => this.handleSubmit(e));
-        
-        // Close modal when clicking outside
-        this.timeBlockModal?.addEventListener('click', (e) => {
-            if (e.target === this.timeBlockModal) {
-                this.closeModal();
-            }
-        });
 
         // Event delegation for action buttons
         this.timeBlocksList?.addEventListener('click', (e) => {
@@ -470,34 +474,16 @@ class TimeBlocks {
     }
 
     openModal(mode = 'add') {
-        if (!this.timeBlockModal) {
-            Utils.showNotification('Error', 'Modal not found', 'error');
-            return;
-        }
-        
         // Update modal title based on mode
-        if (this.timeBlockModalTitle) {
-            this.timeBlockModalTitle.textContent = mode === 'edit' ? 'Edit Time Block' : 'Add Time Block';
+        if (mode === 'edit') {
+            this.timeBlockModal.setTitle('Edit Time Block');
+            this.timeBlockModal.setIcon('fas fa-edit', 'timeblock-edit');
+        } else {
+            this.timeBlockModal.setTitle('Add Time Block');
+            this.timeBlockModal.setIcon('fas fa-plus-circle', 'timeblock');
         }
         
-        // Update icon based on mode
-        if (this.timeBlockModalIcon) {
-            if (mode === 'edit') {
-                this.timeBlockModalIcon.className = 'standard-modal-icon timeblock-edit';
-                const iconElement = this.timeBlockModalIcon.querySelector('i');
-                if (iconElement) {
-                    iconElement.className = 'fas fa-edit';
-                }
-            } else {
-                this.timeBlockModalIcon.className = 'standard-modal-icon timeblock';
-                const iconElement = this.timeBlockModalIcon.querySelector('i');
-                if (iconElement) {
-                    iconElement.className = 'fas fa-plus-circle';
-                }
-            }
-        }
-        
-        this.timeBlockModal.classList.add('active');
+        this.timeBlockModal.show();
         document.body.style.overflow = 'hidden';
         
         // Set default times
@@ -513,21 +499,14 @@ class TimeBlocks {
     }
 
     closeModal() {
-        this.timeBlockModal?.classList.remove('active');
+        this.timeBlockModal.hide();
         document.body.style.overflow = '';
         this.currentEditingId = null;
         
         // Reset form and icon after animation completes
         setTimeout(() => {
-            this.timeBlockForm?.reset();
-            
-            if (this.timeBlockModalIcon) {
-                this.timeBlockModalIcon.className = 'standard-modal-icon timeblock';
-                const iconElement = this.timeBlockModalIcon.querySelector('i');
-                if (iconElement) {
-                    iconElement.className = 'fas fa-plus-circle';
-                }
-            }
+            this.timeBlockModal.resetForm('timeblock-form');
+            this.timeBlockModal.setIcon('fas fa-plus-circle', 'timeblock');
         }, 200); // Wait for modal close animation to complete
     }
 

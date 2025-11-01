@@ -3,6 +3,7 @@ import API from './api.js';
 import Utils from './utils.js';
 import Dialog from './dialog.js';
 import Tooltip from './tooltip.js';
+import StandardModal from './standard-modal.js';
 import * as Runtime from '../../wailsjs/runtime/runtime.js';
 
 class Projects {
@@ -25,12 +26,8 @@ class Projects {
                 else {
                     // Populate modal with provided project data
                     this.currentEditingId = project.id;
-                    this.projectModalTitle.textContent = 'Edit Project';
-                    if (this.projectModalIcon) {
-                        this.projectModalIcon.className = 'standard-modal-icon project-edit';
-                        const iconElement = this.projectModalIcon.querySelector('i');
-                        if (iconElement) iconElement.className = 'fas fa-edit';
-                    }
+                    this.projectModal.setTitle('Edit Project');
+                    this.projectModal.setIcon('fas fa-edit', 'project-edit');
                     this.nameField.value = project.name || '';
                     this.descriptionField.value = project.description || '';
                     this.urlField.value = project.url || '';
@@ -50,12 +47,15 @@ class Projects {
         this.completedProjectsList = document.getElementById('completed-projects-list');
         this.completedProjectsSection = document.getElementById('completed-projects-section');
         this.addProjectBtn = document.getElementById('add-project');
-        this.projectModal = document.getElementById('project-modal');
+        
+        // Use StandardModal for project modal
+        this.projectModal = new StandardModal('project-modal', {
+            title: 'Add Project',
+            icon: 'fas fa-folder-plus',
+            iconType: 'project'
+        });
+        
         this.projectForm = document.getElementById('project-form');
-        this.projectModalTitle = document.getElementById('project-modal-title');
-        this.projectModalIcon = this.projectModal?.querySelector('.standard-modal-icon');
-        this.cancelProjectBtn = document.getElementById('cancel-project');
-        this.closeProjectBtn = this.projectModal?.querySelector('.standard-modal-close');
         
         // Form fields
         this.nameField = document.getElementById('project-name');
@@ -79,21 +79,26 @@ class Projects {
     }
 
     bindEvents() {
-        this.addProjectBtn.addEventListener('click', () => this.openModal());
+        this.addProjectBtn.addEventListener('click', () => {
+            // Set title and icon for add mode
+            this.projectModal.setTitle('Add Project');
+            this.projectModal.setIcon('fas fa-folder-plus', 'project');
+            this.openModal();
+        });
+        
+        // Set up form handler for project modal
+        this.projectModal.setFormHandler('project-form', (e) => this.handleSubmit(e));
+        
+        // Actions are already defined in HTML, just bind events
+        this.cancelProjectBtn = document.getElementById('cancel-project');
+        this.closeProjectBtn = this.projectModal.modal.querySelector('.standard-modal-close');
+        
         this.cancelProjectBtn.addEventListener('click', () => this.closeModal());
         this.closeProjectBtn?.addEventListener('click', () => this.closeModal());
-        this.projectForm.addEventListener('submit', (e) => this.handleSubmit(e));
-        
-        // Close modal when clicking outside
-        this.projectModal.addEventListener('click', (e) => {
-            if (e.target === this.projectModal) {
-                this.closeModal();
-            }
-        });
 
         // Close modal with escape key
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.projectModal.classList.contains('active')) {
+            if (e.key === 'Escape' && this.projectModal.isVisible) {
                 this.closeModal();
             }
         });
@@ -433,16 +438,8 @@ class Projects {
         if (!project) return;
 
         this.currentEditingId = id;
-        this.projectModalTitle.textContent = 'Edit Project';
-        
-        // Update icon for edit mode
-        if (this.projectModalIcon) {
-            this.projectModalIcon.className = 'standard-modal-icon project-edit';
-            const iconElement = this.projectModalIcon.querySelector('i');
-            if (iconElement) {
-                iconElement.className = 'fas fa-edit';
-            }
-        }
+        this.projectModal.setTitle('Edit Project');
+        this.projectModal.setIcon('fas fa-edit', 'project-edit');
         
         // Populate form
         this.nameField.value = project.name;
@@ -480,16 +477,13 @@ class Projects {
     }
 
     openModal() {
-        this.projectModal.classList.add('active');
+        this.projectModal.show();
         document.body.style.overflow = 'hidden';
         this.nameField.focus();
     }
 
     closeModal() {
-        if (!this.projectModal) return;
-
-        // Begin hiding the modal (remove active class to trigger CSS transition)
-        this.projectModal.classList.remove('active');
+        this.projectModal.hide();
         document.body.style.overflow = '';
 
         // Cleanup function to reset form state and title/icon after hide animation
@@ -497,56 +491,18 @@ class Projects {
             try {
                 this.currentEditingId = null;
                 // reset the form fields
-                if (this.projectForm) this.projectForm.reset();
-                if (this.projectModalTitle) this.projectModalTitle.textContent = 'Add Project';
-
-                // Reset icon to add mode
-                if (this.projectModalIcon) {
-                    this.projectModalIcon.className = 'standard-modal-icon project';
-                    const iconElement = this.projectModalIcon.querySelector('i');
-                    if (iconElement) {
-                        iconElement.className = 'fas fa-folder-plus';
-                    }
-                }
+                this.projectModal.resetForm('project-form');
+                
+                // Reset title and icon to add mode
+                this.projectModal.setTitle('Add Project');
+                this.projectModal.setIcon('fas fa-folder-plus', 'project');
             } catch (e) {
                 // swallow cleanup errors
             }
         };
 
-        // If the modal has a CSS transition, wait for transitionend before cleaning up.
-        // Otherwise perform cleanup immediately.
-        try {
-            const cs = getComputedStyle(this.projectModal);
-            const dur = (parseFloat(cs.transitionDuration) || 0) + (parseFloat(cs.transitionDelay) || 0);
-            const totalMs = Math.round(dur * 1000);
-
-            if (totalMs > 10) {
-                let cleaned = false;
-                const onEnd = (ev) => {
-                    // Only handle events for the modal element itself
-                    if (ev.target !== this.projectModal) return;
-                    if (cleaned) return;
-                    cleaned = true;
-                    try { this.projectModal.removeEventListener('transitionend', onEnd); } catch (e) {}
-                    doCleanup();
-                    if (fallback) clearTimeout(fallback);
-                };
-
-                this.projectModal.addEventListener('transitionend', onEnd);
-                // Fallback in case transitionend doesn't fire
-                const fallback = setTimeout(() => {
-                    if (cleaned) return;
-                    cleaned = true;
-                    try { this.projectModal.removeEventListener('transitionend', onEnd); } catch (e) {}
-                    doCleanup();
-                }, totalMs + 80);
-            } else {
-                doCleanup();
-            }
-        } catch (e) {
-            // If anything goes wrong reading computed style, just cleanup immediately
-            doCleanup();
-        }
+        // Wait for modal close animation to complete before cleanup
+        setTimeout(doCleanup, 200);
     }
 
     async handleSubmit(e) {
