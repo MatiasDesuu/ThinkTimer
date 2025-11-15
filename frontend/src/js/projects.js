@@ -15,6 +15,7 @@ class Projects {
         this.initializeElements();
         this.bindEvents();
         this.loadProjects();
+        this.loadCompletedProjectsToggleState();
         // Listen for external requests to open project editor (fallback)
         window.addEventListener('openProjectEdit', (ev) => {
             try {
@@ -46,6 +47,8 @@ class Projects {
         this.activeProjectsList = document.getElementById('active-projects-list');
         this.completedProjectsList = document.getElementById('completed-projects-list');
         this.completedProjectsSection = document.getElementById('completed-projects-section');
+        this.completedProjectsHeader = this.completedProjectsSection ? this.completedProjectsSection.querySelector('.section-header') : null;
+        this.toggleCompletedBtn = document.getElementById('toggle-completed-projects');
         this.addProjectBtn = document.getElementById('add-project');
         
         // Use StandardModal for project modal
@@ -96,6 +99,21 @@ class Projects {
         this.cancelProjectBtn.addEventListener('click', () => this.closeModal());
         this.closeProjectBtn?.addEventListener('click', () => this.closeModal());
 
+        // Bind toggle completed projects event
+        if (this.toggleCompletedBtn) {
+            this.toggleCompletedBtn.addEventListener('click', () => this.toggleCompletedProjects());
+        }
+
+        // Bind toggle completed projects event for the entire header
+        if (this.completedProjectsHeader) {
+            this.completedProjectsHeader.addEventListener('click', (e) => {
+                // Prevent event bubbling if clicking on the button itself to avoid double triggering
+                if (e.target !== this.toggleCompletedBtn && !this.toggleCompletedBtn.contains(e.target)) {
+                    this.toggleCompletedProjects();
+                }
+            });
+        }
+
         // Close modal with escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.projectModal.isVisible) {
@@ -144,6 +162,7 @@ class Projects {
         // Render completed projects
         if (completedProjects.length > 0) {
             this.completedProjectsSection.style.display = 'block';
+            this.updateCompletedProjectsVisibility();
             this.completedProjectsList.innerHTML = completedProjects.map(project => this.createProjectCard(project)).join('');
         } else {
             this.completedProjectsSection.style.display = 'none';
@@ -631,6 +650,57 @@ class Projects {
 
     getProjectById(id) {
         return this.projects.find(project => project.id === id);
+    }
+
+    async loadCompletedProjectsToggleState() {
+        try {
+            // Load from localStorage instead of database
+            const stored = localStorage.getItem('completedProjectsExpanded');
+            this.completedProjectsExpanded = stored !== null ? JSON.parse(stored) : true;
+            this.updateCompletedProjectsVisibility();
+            this.updateToggleButtonIcon();
+        } catch (error) {
+            console.error('Error loading completed projects toggle state:', error);
+            this.completedProjectsExpanded = true; // default to expanded
+            this.updateCompletedProjectsVisibility();
+            this.updateToggleButtonIcon();
+        }
+    }
+
+    updateCompletedProjectsVisibility() {
+        if (this.completedProjectsList) {
+            this.completedProjectsList.style.display = this.completedProjectsExpanded ? 'block' : 'none';
+        }
+        // Update header margin based on expansion state
+        if (this.completedProjectsHeader) {
+            if (this.completedProjectsExpanded) {
+                this.completedProjectsHeader.classList.remove('collapsed');
+            } else {
+                this.completedProjectsHeader.classList.add('collapsed');
+            }
+        }
+    }
+
+    updateToggleButtonIcon() {
+        if (this.toggleCompletedBtn) {
+            const icon = this.toggleCompletedBtn.querySelector('i');
+            if (icon) {
+                icon.className = this.completedProjectsExpanded ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+            }
+        }
+    }
+
+    async toggleCompletedProjects() {
+        this.completedProjectsExpanded = !this.completedProjectsExpanded;
+        this.updateCompletedProjectsVisibility();
+        this.updateToggleButtonIcon();
+
+        // Save to localStorage instead of database
+        try {
+            localStorage.setItem('completedProjectsExpanded', JSON.stringify(this.completedProjectsExpanded));
+        } catch (error) {
+            console.error('Error saving completed projects toggle state:', error);
+        }
     }
 }
 

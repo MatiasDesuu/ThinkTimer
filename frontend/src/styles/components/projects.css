@@ -446,6 +446,70 @@
     opacity: 0.8;
 }
 
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    transition: background-color 0.2s ease;
+}
+
+.section-header:hover {
+    background-color: var(--bg-hover);
+}
+
+.section-header.collapsed {
+    margin-bottom: 0;
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    pointer-events: none; /* Prevent text selection issues */
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+    box-shadow: none;
+    pointer-events: auto; /* Ensure button is still individually clickable */
+}
+
+.toggle-btn:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.toggle-btn:focus,
+.toggle-btn:active,
+.toggle-btn:focus-visible,
+.toggle-btn:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.toggle-btn i {
+    font-size: 1rem;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .project-info {
@@ -538,36 +602,6 @@
         gap: 0.3rem;
     }
     
-    /* Add text content for buttons in responsive mode */
-    .project-action-btn[data-action="edit"]:after {
-        content: " Edit";
-        margin-left: 0.25rem;
-    }
-    
-    .project-action-btn[data-action="delete"]:after {
-        content: " Delete";
-        margin-left: 0.25rem;
-    }
-    
-    .project-action-btn[data-action="complete"]:after {
-        content: " Complete";
-        margin-left: 0.25rem;
-    }
-    
-    .project-action-btn[data-action="uncomplete"]:after {
-        content: " Reopen";
-        margin-left: 0.25rem;
-    }
-    
-    .project-action-btn[data-action="pause"]:after {
-        content: " Pause";
-        margin-left: 0.25rem;
-    }
-    
-    .project-action-btn[data-action="resume"]:after {
-        content: " Resume";
-        margin-left: 0.25rem;
-    }
 }
 
 @media (max-width: 480px) {
@@ -612,5 +646,38 @@
         box-sizing: border-box;
     margin: 0 0 0 0; /* remove extra bottom gap so header spacing is controlled by .page-header */
         /* do not override padding/height so it matches .btn in normal mode */
+    }
+}
+
+@media (min-width: 769px) {
+    /* Add text content for buttons on larger screens */
+    .project-action-btn[data-action="edit"]:after {
+        content: " Edit";
+        margin-left: 0.25rem;
+    }
+    
+    .project-action-btn[data-action="delete"]:after {
+        content: " Delete";
+        margin-left: 0.25rem;
+    }
+    
+    .project-action-btn[data-action="complete"]:after {
+        content: " Complete";
+        margin-left: 0.25rem;
+    }
+    
+    .project-action-btn[data-action="uncomplete"]:after {
+        content: " Reopen";
+        margin-left: 0.25rem;
+    }
+    
+    .project-action-btn[data-action="pause"]:after {
+        content: " Pause";
+        margin-left: 0.25rem;
+    }
+    
+    .project-action-btn[data-action="resume"]:after {
+        content: " Resume";
+        margin-left: 0.25rem;
     }
 }

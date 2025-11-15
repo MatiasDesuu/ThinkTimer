@@ -110,19 +110,21 @@
                             </select>
                             <span class="select-chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
                         </div>
-                        <button id="open-project-url" class="btn" data-tooltip="Open project URL" data-tooltip-position="bottom" style="display: none;">
-                            <i class="fas fa-globe"></i>
-                        </button>
-                        <button id="open-project-dir" class="btn" data-tooltip="Open project folder" data-tooltip-position="bottom" style="display: none;">
-                            <i class="fas fa-folder-open"></i>
-                        </button>
-                        <button id="open-project-discord" class="btn" data-tooltip="Open Discord channel" data-tooltip-position="bottom" style="display: none;">
-                            <i class="fab fa-discord"></i>
-                        </button>
-                        <!-- Edit selected project (reuses same modal as Projects page) -->
-                        <button id="edit-project-btn" class="btn" data-tooltip="Edit selected project" data-tooltip-position="bottom" style="display: none;">
-                            <i class="fas fa-edit"></i>
-                        </button>
+                        <div class="project-actions">
+                            <button id="open-project-url" class="btn" data-tooltip="Open project URL" data-tooltip-position="bottom" style="display: none;">
+                                <i class="fas fa-globe"></i>
+                            </button>
+                            <button id="open-project-dir" class="btn" data-tooltip="Open project folder" data-tooltip-position="bottom" style="display: none;">
+                                <i class="fas fa-folder-open"></i>
+                            </button>
+                            <button id="open-project-discord" class="btn" data-tooltip="Open Discord channel" data-tooltip-position="bottom" style="display: none;">
+                                <i class="fab fa-discord"></i>
+                            </button>
+                            <!-- Edit selected project (reuses same modal as Projects page) -->
+                            <button id="edit-project-btn" class="btn" data-tooltip="Edit selected project" data-tooltip-position="bottom" style="display: none;">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="timer-display">
                         <span id="timer-display">00:00:00</span>
@@ -178,6 +180,9 @@
                 <div id="completed-projects-section" class="completed-projects-section" style="display: none;">
                     <div class="section-header">
                         <h2><i class="fas fa-check-circle"></i>Completed Projects</h2>
+                        <button id="toggle-completed-projects" class="btn toggle-btn">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
                     </div>
                     <div id="completed-projects-list" class="completed-projects-list">
                         <!-- Completed projects will be populated here -->
