@@ -496,13 +496,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin: 0;
 }
 
-[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator,
+[data-theme="modern-dark"] input[type="date"]::-webkit-calendar-picker-indicator {
     background-size: 16px 16px;
+    filter: invert(1);
 }
 
 /* Dark theme calendar icon */
-[data-theme="dark"] input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+[data-theme="dark"] input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+[data-theme="modern-dark"] input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     background-size: 16px 16px;
+    filter: invert(1);
 }
 
 .form-group select {
