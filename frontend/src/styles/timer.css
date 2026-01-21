@@ -269,7 +269,6 @@
 /* Timer states */
 .timer-section.running #timer-display {
     color: var(--success-color);
-    animation: pulse 2s infinite;
 }
 
 .timer-section.paused #timer-display {
@@ -558,11 +557,6 @@
     background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%);
 }
 
-/* Pulse animation for running state */
-.timer-section.running {
-    animation: timer-pulse 2s ease-in-out infinite;
-}
-
 @keyframes timer-pulse {
     0%, 100% {
         box-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
@@ -572,10 +566,6 @@
     }
 }
 
-/* Gentle glow animation for paused state */
-.timer-section.paused {
-    animation: timer-glow 3s ease-in-out infinite;
-}
 
 @keyframes timer-glow {
     0%, 100% {
