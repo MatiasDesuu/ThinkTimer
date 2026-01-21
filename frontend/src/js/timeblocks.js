@@ -400,7 +400,7 @@ class TimeBlocks {
     }
 
     updateRunningTimers() {
-        const runningBlocks = this.timeBlocksList?.querySelectorAll('.time-block.running');
+        const runningBlocks = this.timeBlocksList?.querySelectorAll('.time-block.running, .time-block.paused');
         runningBlocks?.forEach(blockElement => {
             const id = parseInt(blockElement.dataset.id);
             const timeBlock = this.timeBlocks.find(tb => tb.id === id);
@@ -409,24 +409,17 @@ class TimeBlocks {
                 // Check if this timer is paused
                 const isTimerPaused = this.timer && this.timer.currentTimeBlockId === timeBlock.id && this.timer.isPaused;
                 
-                let duration;
-                if (isTimerPaused) {
-                    // Use timer's elapsed seconds when paused (don't calculate from current time)
-                    duration = this.timer.elapsedSeconds;
-                } else {
-                    // Calculate current duration for actually running timer
-                    duration = Utils.calculateDuration(timeBlock.start_time, new Date());
-                }
-                
-                const durationElement = blockElement.querySelector('.time-block-duration span');
-                if (durationElement) {
-                    durationElement.textContent = Utils.formatDuration(duration);
-                }
-                
                 // Update visual state based on pause status
                 if (isTimerPaused) {
                     blockElement.classList.remove('running');
                     blockElement.classList.add('paused');
+                    
+                    // Update duration when paused
+                    const duration = this.timer.elapsedSeconds;
+                    const durationElement = blockElement.querySelector('.time-block-duration span');
+                    if (durationElement) {
+                        durationElement.textContent = Utils.formatDuration(duration);
+                    }
                     
                     // Update time range text
                     const timeRangeElement = blockElement.querySelector('.time-block-meta-item span');
