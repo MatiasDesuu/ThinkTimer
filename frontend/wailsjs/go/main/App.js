@@ -62,6 +62,10 @@ export function UpdateProject(arg1, arg2) {
   return window['go']['main']['App']['UpdateProject'](arg1, arg2);
 }
 
+export function UpdateProjectsOrder(arg1) {
+  return window['go']['main']['App']['UpdateProjectsOrder'](arg1);
+}
+
 export function UpdateSettings(arg1) {
   return window['go']['main']['App']['UpdateSettings'](arg1);
 }

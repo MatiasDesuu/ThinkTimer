@@ -23,6 +23,7 @@ type Project struct {
 	Directory   *string       `json:"directory" db:"directory"`
 	Deadline    *time.Time    `json:"deadline" db:"deadline"`
 	Status      ProjectStatus `json:"status" db:"status"`
+	Order       int           `json:"order" db:"order"`
 	CreatedAt   time.Time     `json:"created_at" db:"created_at"`
 	UpdatedAt   time.Time     `json:"updated_at" db:"updated_at"`
 }
@@ -35,6 +36,7 @@ type CreateProjectRequest struct {
 	Discord     *string    `json:"discord"`
 	Directory   *string    `json:"directory"`
 	Deadline    *time.Time `json:"deadline"`
+	Order       int        `json:"order"`
 }
 
 // UpdateProjectRequest represents the request to update a project
@@ -46,4 +48,5 @@ type UpdateProjectRequest struct {
 	Directory   *string        `json:"directory"`
 	Deadline    *time.Time     `json:"deadline"`
 	Status      *ProjectStatus `json:"status"`
+	Order       *int           `json:"order"`
 }

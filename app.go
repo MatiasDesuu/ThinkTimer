@@ -67,6 +67,10 @@ func (a *App) DeleteProject(id int) error {
 	return a.projectService.DeleteProject(id)
 }
 
+func (a *App) UpdateProjectsOrder(projectOrders map[int]int) error {
+	return a.projectService.UpdateProjectsOrder(projectOrders)
+}
+
 // Time Block API methods
 func (a *App) CreateTimeBlock(req models.CreateTimeBlockRequest) (*models.TimeBlock, error) {
 	return a.timeBlockService.CreateTimeBlock(req)

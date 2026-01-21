@@ -4,6 +4,7 @@ import Utils from './utils.js';
 import Dialog from './dialog.js';
 import Tooltip from './tooltip.js';
 import StandardModal from './standard-modal.js';
+import DragReorder from './drag-reorder.js';
 import * as Runtime from '../../wailsjs/runtime/runtime.js';
 
 class Projects {
@@ -11,6 +12,7 @@ class Projects {
         this.projects = [];
         this.currentEditingId = null;
         this.projectDurations = new Map(); // cache project total durations in seconds
+        this.projectReorder = null;
         
         this.initializeElements();
         this.bindEvents();
@@ -169,6 +171,7 @@ class Projects {
         }
 
         this.bindProjectEvents();
+        this.initProjectReorder();
     }
 
     createProjectCard(project) {
@@ -184,6 +187,7 @@ class Projects {
 
         return `
             <div class="project-card" data-id="${project.id}">
+                ${statusClass !== 'completed' ? '<span class="drag-handle js-drag-handle" title="Drag to reorder">⠿</span>' : ''}
                 <div class="project-info">
                     <div class="project-header">
                         <div class="project-title-section">
@@ -409,6 +413,60 @@ class Projects {
         });
     }
 
+    initProjectReorder() {
+        // Destroy previous instance if it exists
+        if (this.projectReorder) {
+            this.projectReorder.destroy();
+        }
+
+        // Only initialize reorder for active projects
+        if (this.activeProjectsList && this.activeProjectsList.children.length > 0) {
+            this.projectReorder = new DragReorder({
+                container: '#active-projects-list',
+                itemSelector: '.project-card',
+                handleSelector: '.js-drag-handle',
+                onReorder: (newOrder) => {
+                    this.handleProjectReorder(newOrder);
+                }
+            });
+        }
+    }
+
+    async handleProjectReorder(newOrder) {
+        try {
+            // Create a map of project IDs to new order indices
+            const projectOrders = {};
+            newOrder.forEach((item, index) => {
+                const projectId = parseInt(item.element.getAttribute('data-id'));
+                projectOrders[projectId] = index;
+            });
+
+            // Send to backend
+            await API.updateProjectsOrder(projectOrders);
+
+            // Update local projects array order
+            const activeProjects = this.projects.filter(p => p.status !== 'completed');
+            activeProjects.sort((a, b) => (projectOrders[a.id] || 0) - (projectOrders[b.id] || 0));
+            
+            // Update the projects array
+            const completedProjects = this.projects.filter(p => p.status === 'completed');
+            this.projects = [...activeProjects, ...completedProjects];
+
+            // Update project selectors with new order
+            this.updateProjectSelectors();
+
+            // Notify other modules
+            try { window.dispatchEvent(new CustomEvent('projectsUpdated')); } catch (e) { /* ignore */ }
+
+            Utils.showNotification('Success', 'Project order updated', 'success');
+        } catch (error) {
+            console.error('Error updating project order:', error);
+            Utils.showNotification('Error', 'Failed to update project order', 'error');
+            // Reload projects to revert UI
+            await this.loadProjects();
+        }
+    }
+
     // Fetch total durations for visible projects and cache them
     async fetchProjectDurations(projects) {
         const promises = projects.map(async (p) => {
@@ -589,7 +647,11 @@ class Projects {
                 await API.updateProject(this.currentEditingId, projectData);
                 Utils.showNotification('Success', 'Project updated successfully!', 'success');
             } else {
-                // Create new project
+                // Create new project - calculate order
+                const activeProjects = this.projects.filter(p => p.status !== 'completed');
+                const maxOrder = activeProjects.length > 0 ? Math.max(...activeProjects.map(p => p.order || 0)) : -1;
+                projectData.order = maxOrder + 1;
+                
                 await API.createProject(projectData);
                 Utils.showNotification('Success', 'Project created successfully!', 'success');
             }

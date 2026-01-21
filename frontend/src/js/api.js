@@ -45,6 +45,15 @@ class API {
         }
     }
 
+    static async updateProjectsOrder(projectOrders) {
+        try {
+            return await window.go.main.App.UpdateProjectsOrder(projectOrders);
+        } catch (error) {
+            console.error('Error updating projects order:', error);
+            throw error;
+        }
+    }
+
     static async createTimeBlock(timeBlockData) {
         try {
             return await window.go.main.App.CreateTimeBlock(timeBlockData);

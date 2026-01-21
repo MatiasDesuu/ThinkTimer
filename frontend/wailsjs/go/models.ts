@@ -7,6 +7,7 @@ export namespace models {
 	    discord?: string;
 	    directory?: string;
 	    deadline?: time.Time;
+	    order: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new CreateProjectRequest(source);
@@ -20,6 +21,7 @@ export namespace models {
 	        this.discord = source["discord"];
 	        this.directory = source["directory"];
 	        this.deadline = this.convertValues(source["deadline"], time.Time);
+	        this.order = source["order"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -89,6 +91,7 @@ export namespace models {
 	    directory?: string;
 	    deadline?: time.Time;
 	    status: string;
+	    order: number;
 	    created_at: time.Time;
 	    updated_at: time.Time;
 	
@@ -106,6 +109,7 @@ export namespace models {
 	        this.directory = source["directory"];
 	        this.deadline = this.convertValues(source["deadline"], time.Time);
 	        this.status = source["status"];
+	        this.order = source["order"];
 	        this.created_at = this.convertValues(source["created_at"], time.Time);
 	        this.updated_at = this.convertValues(source["updated_at"], time.Time);
 	    }
@@ -204,6 +208,7 @@ export namespace models {
 	    directory?: string;
 	    deadline?: time.Time;
 	    status?: string;
+	    order?: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new UpdateProjectRequest(source);
@@ -218,6 +223,7 @@ export namespace models {
 	        this.directory = source["directory"];
 	        this.deadline = this.convertValues(source["deadline"], time.Time);
 	        this.status = source["status"];
+	        this.order = source["order"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

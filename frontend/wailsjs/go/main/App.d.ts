@@ -33,6 +33,8 @@ export function StopTimeBlockWithDuration(arg1:number,arg2:number):Promise<model
 
 export function UpdateProject(arg1:number,arg2:models.UpdateProjectRequest):Promise<models.Project>;
 
+export function UpdateProjectsOrder(arg1:Record<number, number>):Promise<void>;
+
 export function UpdateSettings(arg1:models.UpdateSettingsRequest):Promise<models.Settings>;
 
 export function UpdateTimeBlock(arg1:number,arg2:models.UpdateTimeBlockRequest):Promise<models.TimeBlock>;

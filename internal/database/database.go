@@ -111,6 +111,11 @@ func (db *DB) migrate() error {
 		return err
 	}
 
+	// Handle order column migration for projects
+	if err := db.addProjectOrderColumn(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -263,6 +268,53 @@ func (db *DB) addProjectDiscordColumn() error {
 
 	if !hasDiscord {
 		_, err := db.conn.Exec("ALTER TABLE projects ADD COLUMN discord TEXT DEFAULT ''")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// addProjectOrderColumn adds the order column to projects if it doesn't exist
+func (db *DB) addProjectOrderColumn() error {
+	query := "PRAGMA table_info(projects)"
+	rows, err := db.conn.Query(query)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	hasOrder := false
+	for rows.Next() {
+		var cid int
+		var name, dataType string
+		var notNull, dfltValue, pk interface{}
+
+		if err := rows.Scan(&cid, &name, &dataType, &notNull, &dfltValue, &pk); err != nil {
+			continue
+		}
+
+		if name == "order" {
+			hasOrder = true
+			break
+		}
+	}
+
+	if !hasOrder {
+		_, err := db.conn.Exec("ALTER TABLE projects ADD COLUMN \"order\" INTEGER DEFAULT 0")
+		if err != nil {
+			return err
+		}
+		// Update existing projects to have order based on created_at
+		_, err = db.conn.Exec(`
+			UPDATE projects 
+			SET "order" = (
+				SELECT COUNT(*) 
+				FROM projects p2 
+				WHERE p2.created_at <= projects.created_at
+			) - 1
+		`)
 		if err != nil {
 			return err
 		}

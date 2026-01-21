@@ -20,17 +20,17 @@ func NewProjectService(db *sql.DB) *ProjectService {
 // CreateProject creates a new project
 func (s *ProjectService) CreateProject(req models.CreateProjectRequest) (*models.Project, error) {
 	query := `
-		INSERT INTO projects (name, description, url, discord, directory, deadline, created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-		RETURNING id, name, description, url, discord, directory, deadline, status, created_at, updated_at
+		INSERT INTO projects (name, description, url, discord, directory, deadline, "order", created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+		RETURNING id, name, description, url, discord, directory, deadline, status, "order", created_at, updated_at
 	`
 
 	now := time.Now()
 
 	var project models.Project
-	err := s.db.QueryRow(query, req.Name, req.Description, req.URL, req.Discord, req.Directory, req.Deadline, now, now).Scan(
+	err := s.db.QueryRow(query, req.Name, req.Description, req.URL, req.Discord, req.Directory, req.Deadline, req.Order, now, now).Scan(
 		&project.ID, &project.Name, &project.Description, &project.URL, &project.Discord, &project.Directory,
-		&project.Deadline, &project.Status, &project.CreatedAt, &project.UpdatedAt,
+		&project.Deadline, &project.Status, &project.Order, &project.CreatedAt, &project.UpdatedAt,
 	)
 
 	if err != nil {
@@ -43,9 +43,9 @@ func (s *ProjectService) CreateProject(req models.CreateProjectRequest) (*models
 // GetAllProjects returns all projects
 func (s *ProjectService) GetAllProjects() ([]models.Project, error) {
 	query := `
-		SELECT id, name, description, url, discord, directory, deadline, status, created_at, updated_at
+		SELECT id, name, description, url, discord, directory, deadline, status, "order", created_at, updated_at
 		FROM projects
-		ORDER BY created_at DESC
+		ORDER BY "order" ASC, created_at DESC
 	`
 
 	rows, err := s.db.Query(query)
@@ -59,7 +59,7 @@ func (s *ProjectService) GetAllProjects() ([]models.Project, error) {
 		var project models.Project
 		err := rows.Scan(
 			&project.ID, &project.Name, &project.Description, &project.URL, &project.Discord, &project.Directory,
-			&project.Deadline, &project.Status, &project.CreatedAt, &project.UpdatedAt,
+			&project.Deadline, &project.Status, &project.Order, &project.CreatedAt, &project.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
@@ -73,7 +73,7 @@ func (s *ProjectService) GetAllProjects() ([]models.Project, error) {
 // GetProjectByID returns a project by ID
 func (s *ProjectService) GetProjectByID(id int) (*models.Project, error) {
 	query := `
-		SELECT id, name, description, url, discord, directory, deadline, status, created_at, updated_at
+		SELECT id, name, description, url, discord, directory, deadline, status, "order", created_at, updated_at
 		FROM projects
 		WHERE id = ?
 	`
@@ -81,7 +81,7 @@ func (s *ProjectService) GetProjectByID(id int) (*models.Project, error) {
 	var project models.Project
 	err := s.db.QueryRow(query, id).Scan(
 		&project.ID, &project.Name, &project.Description, &project.URL, &project.Discord, &project.Directory,
-		&project.Deadline, &project.Status, &project.CreatedAt, &project.UpdatedAt,
+		&project.Deadline, &project.Status, &project.Order, &project.CreatedAt, &project.UpdatedAt,
 	)
 
 	if err != nil {
@@ -125,6 +125,10 @@ func (s *ProjectService) UpdateProject(id int, req models.UpdateProjectRequest) 
 		setParts = append(setParts, "status = ?")
 		args = append(args, *req.Status)
 	}
+	if req.Order != nil {
+		setParts = append(setParts, "\"order\" = ?")
+		args = append(args, *req.Order)
+	}
 
 	setParts = append(setParts, "updated_at = ?")
 	args = append(args, time.Now())
@@ -149,4 +153,22 @@ func (s *ProjectService) DeleteProject(id int) error {
 	query := "DELETE FROM projects WHERE id = ?"
 	_, err := s.db.Exec(query, id)
 	return err
+}
+
+// UpdateProjectsOrder updates the order of multiple projects
+func (s *ProjectService) UpdateProjectsOrder(projectOrders map[int]int) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	for id, order := range projectOrders {
+		_, err := tx.Exec(`UPDATE projects SET "order" = ?, updated_at = ? WHERE id = ?`, order, time.Now(), id)
+		if err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit()
 }

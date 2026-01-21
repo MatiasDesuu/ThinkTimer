@@ -17,8 +17,8 @@
     transition: all 0.2s ease;
     position: relative;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
 }
 
 .project-card:hover {
@@ -924,4 +924,43 @@
         box-shadow: none;
         border: 1px solid #ccc;
     }
+}
+
+/* Drag and Drop Reorder Styles */
+
+/* Drag Handle */
+.drag-handle {
+    cursor: grab;
+    user-select: none;
+    color: var(--text-tertiary);
+    font-size: var(--font-size-category);
+    line-height: 1;
+    padding: 0.25rem;
+    flex-shrink: 0;
+}
+
+.drag-handle:hover {
+    color: var(--text-secondary);
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Item States */
+.reorder-item.is-draggable {
+    opacity: 0.9;
+    z-index: 1000;
+    cursor: grabbing;
+    background-color: var(--background-primary);
+    border: 2px solid var(--border-primary);
+}
+
+.reorder-item.is-draggable .drag-handle {
+    cursor: grabbing;
+}
+
+/* Optional: Add visual feedback for drop zones */
+.reorder-container {
+    position: relative;
 }
