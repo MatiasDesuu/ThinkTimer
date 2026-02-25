@@ -312,8 +312,16 @@ class TimeBlocks {
 
     async editTimeBlock(id) {
         try {
-            const timeBlock = this.timeBlocks.find(tb => tb.id === id);
-            
+            let timeBlock = this.timeBlocks.find(tb => tb.id === id);
+            if (!timeBlock) {
+                try {
+                    const allBlocks = await API.getAllTimeBlocks();
+                    timeBlock = allBlocks.find(tb => tb.id === id);
+                } catch (e) {
+                    console.error('Error fetching time block for edit:', e);
+                }
+            }
+
             if (!timeBlock) {
                 Utils.showNotification('Error', 'Time block not found', 'error');
                 return;

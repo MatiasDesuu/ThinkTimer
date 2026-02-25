@@ -396,16 +396,6 @@ class Calendar {
 
 
 
-            if (this.isMini) {
-                try {
-                    this.timeBlocks.timeBlocks = timeBlocks || [];
-                    this.timeBlocks.currentDate = new Date(this.selectedDate);
-                } catch (syncErr) {
-
-                    console.warn('Failed to sync TimeBlocks instance from Calendar (mini):', syncErr);
-                }
-            }
-
             if (timeBlocks.length === 0) {
                 this.calendarTimeBlocks.innerHTML = `
                     <div class="empty-state">
@@ -530,15 +520,16 @@ class Calendar {
         try {
             switch (action) {
                 case 'edit':
-
+                    // Just open the modal
                     await this.timeBlocks.editTimeBlock(id);
                     break;
                 case 'delete':
-
+                    // The timeblock-module delete function already notifies and cleans up
                     await this.timeBlocks.deleteTimeBlock(id);
-
+                    
+                    // After deleting, refresh the calendar view for this date
                     await this.loadSelectedDateTimeBlocks();
-
+                    // Also refresh the main calendar dots
                     await this.render();
                     break;
                 default:
