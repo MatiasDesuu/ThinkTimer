@@ -7,6 +7,7 @@ type Settings struct {
 	Language   string `json:"language" db:"language"`
 	TimeFormat string `json:"timeFormat" db:"timeformat"` // "12" or "24"
 	CustomURL  string `json:"customUrl" db:"custom_url"`
+	TrelloURL  string `json:"trelloUrl" db:"trello_url"`
 }
 
 // UpdateSettingsRequest represents the request to update settings
@@ -15,4 +16,5 @@ type UpdateSettingsRequest struct {
 	Language   *string `json:"language"`
 	TimeFormat *string `json:"timeFormat"`
 	CustomURL  *string `json:"customUrl"`
+	TrelloURL  *string `json:"trelloUrl"`
 }

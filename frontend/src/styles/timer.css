@@ -217,7 +217,6 @@
 }
 
 .timer-btn:hover:not(:disabled) {
-    transform: translateY(-1px);
     box-shadow: var(--shadow-md);
 }
 
@@ -300,7 +299,6 @@
 }
 
 .time-block:hover {
-    transform: translateY(-1px);
     box-shadow: var(--shadow-md);
 }
 

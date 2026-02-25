@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="./src/styles/timer.css">
     <link rel="stylesheet" href="./src/styles/themes.css">
     <script>
-        // Apply navigation state immediately to prevent flash
+        
         (function() {
             const isCollapsed = localStorage.getItem('navCollapsed') === 'true';
             if (isCollapsed) {
@@ -66,6 +66,9 @@
                     <h1><i class="fas fa-clock"></i>Time Tracking</h1>
                     <div class="page-header-right">
                         <div id="today-total" class="today-total btn" style="display: none;" aria-hidden="true"></div>
+                        <button id="open-trello-url" data-tooltip="Open Trello URL" data-tooltip-position="bottom" style="display: none;">
+                            <i class="fab fa-trello"></i>
+                        </button>
                         <button id="open-custom-url" data-tooltip="Open custom URL" data-tooltip-position="bottom" style="display: none;">
                             <i class="fas fa-external-link-alt"></i>
                         </button>
@@ -250,6 +253,21 @@
                                 <option value="24">24 Hours</option>
                                 <option value="12">12 Hours (AM/PM)</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-card">
+                        <div class="setting-info">
+                            <div class="setting-title">
+                                <i class="fab fa-trello"></i>
+                                <h3>Trello URL</h3>
+                            </div>
+                            <p class="setting-description">Set a Trello URL to open from the home page button</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="form-group">
+                                <input type="url" id="trello-url-input" placeholder="https://trello.com/...">
+                            </div>
                         </div>
                     </div>
 

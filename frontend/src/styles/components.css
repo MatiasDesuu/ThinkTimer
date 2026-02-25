@@ -23,7 +23,6 @@
 
 .project-card:hover {
     box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
 }
 
 .project-main-info {
@@ -262,7 +261,6 @@
 .calendar-nav-btn:hover {
     background-color: var(--accent-color);
     color: white;
-    transform: translateY(-1px);
 }
 
 .calendar-title {
@@ -517,7 +515,6 @@
 }
 
 .custom-dialog-btn:hover {
-    transform: translateY(-1px);
 }
 
 .custom-dialog-btn-primary {

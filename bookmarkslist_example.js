@@ -5,7 +5,7 @@
 
 class ConfigBookmarks {
     constructor(t) {
-        this.t = t; // Translation function
+        this.t = t; 
         this.bookmarkReorder = null;
     }
 
@@ -38,10 +38,10 @@ class ConfigBookmarks {
         const div = document.createElement('div');
         div.className = 'bookmark-item js-item is-idle';
         div.setAttribute('data-bookmark-index', index);
-        // Use index as a stable identifier since bookmarks don't have IDs
+        
         div.setAttribute('data-bookmark-key', index);
 
-        // Create category options
+        
         const cats = Array.isArray(categories) ? categories : [];
         const categoryOptions = cats.map(cat => 
             `<option value="${cat.id}" ${cat.id === bookmark.category ? 'selected' : ''}>${cat.name}</option>`
@@ -71,24 +71,24 @@ class ConfigBookmarks {
             <button type="button" class="btn btn-danger" onclick="configManager.removeBookmark(${index})">${this.t('config.remove')}</button>
         `;
 
-        // Store reference to the actual bookmark object
+        
         div._bookmarkRef = bookmark;
         
-        // Add event listeners for field changes
+        
         const inputs = div.querySelectorAll('input, select');
         inputs.forEach(input => {
             const eventType = input.type === 'text' || input.type === 'url' ? 'input' : 'change';
             input.addEventListener(eventType, (e) => {
                 const field = e.target.getAttribute('data-field');
                 
-                // Update the bookmark object directly via stored reference
+                
                 if (field === 'checkStatus') {
                     bookmark[field] = e.target.checked;
                 } else {
                     bookmark[field] = e.target.value;
                 }
                 
-                // Convert shortcut to uppercase and allow only letters (no numbers)
+                
                 if (field === 'shortcut') {
                     e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
                     bookmark[field] = e.target.value;
@@ -96,7 +96,7 @@ class ConfigBookmarks {
             });
         });
 
-        // Add event listener for icon upload
+        
         const iconInput = div.querySelector(`#bookmark-icon-${index}`);
         const iconButton = div.querySelector('.bookmark-icon-upload button');
         if (iconInput && iconButton) {
@@ -116,7 +116,7 @@ class ConfigBookmarks {
                             bookmark.icon = result.icon;
                             iconButton.classList.add('has-icon');
                             
-                            // Add clear button if it doesn't exist
+                            
                             let clearButton = div.querySelector('.btn-clear-icon');
                             if (!clearButton) {
                                 clearButton = document.createElement('button');
@@ -138,10 +138,10 @@ class ConfigBookmarks {
             });
         }
 
-        // Initialize custom select for the category dropdown
+        
         const selectElement = div.querySelector('select');
         if (selectElement && typeof CustomSelect !== 'undefined') {
-            // Mark as initialized to prevent double initialization
+            
             selectElement.dataset.customSelectInit = 'true';
             new CustomSelect(selectElement);
         }
@@ -155,22 +155,22 @@ class ConfigBookmarks {
      * @param {Function} onReorder - Callback when reorder happens
      */
     initReorder(bookmarks, onReorder) {
-        // Destroy previous instance if it exists
+        
         if (this.bookmarkReorder) {
             this.bookmarkReorder.destroy();
         }
         
-        // Initialize drag-and-drop reordering
+        
         this.bookmarkReorder = new DragReorder({
             container: '#bookmarks-list',
             itemSelector: '.bookmark-item',
             handleSelector: '.js-drag-handle',
             onReorder: (newOrder) => {
-                // Update bookmarks array based on new order
-                // Use stored bookmark references instead of indices
+                
+                
                 const newBookmarks = [];
                 newOrder.forEach((item) => {
-                    // Get the bookmark object stored on the DOM element
+                    
                     const bookmark = item.element._bookmarkRef;
                     if (bookmark) {
                         newBookmarks.push(bookmark);
@@ -226,7 +226,7 @@ class ConfigBookmarks {
      * @param {number} index - The index of the bookmark to clear the icon from
      */
     clearIcon(index) {
-        // Find the bookmark element
+        
         const bookmarkElement = document.querySelector(`[data-bookmark-index="${index}"]`);
         if (!bookmarkElement || !bookmarkElement._bookmarkRef) {
             return;
@@ -234,16 +234,16 @@ class ConfigBookmarks {
 
         const bookmark = bookmarkElement._bookmarkRef;
         
-        // Clear the icon
+        
         bookmark.icon = '';
         
-        // Update the button styling
+        
         const iconButton = bookmarkElement.querySelector('.bookmark-icon-upload button');
         if (iconButton) {
             iconButton.classList.remove('has-icon');
         }
         
-        // Remove the clear button
+        
         const clearButton = bookmarkElement.querySelector('.btn-clear-icon');
         if (clearButton) {
             clearButton.remove();
@@ -251,5 +251,5 @@ class ConfigBookmarks {
     }
 }
 
-// Export for use in other modules
+
 window.ConfigBookmarks = ConfigBookmarks;

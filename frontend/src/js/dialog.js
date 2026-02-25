@@ -1,4 +1,4 @@
-// Dialog Module - Custom dialog system
+
 class Dialog {
     constructor() {
         this.overlay = document.getElementById('custom-dialog');
@@ -14,21 +14,21 @@ class Dialog {
     }
 
     bindEvents() {
-        // Track mousedown to prevent closing when dragging from inside to outside
+        
         this._mouseDownTarget = null;
         
         this.overlay?.addEventListener('mousedown', (e) => {
             this._mouseDownTarget = e.target;
         });
 
-        // Close dialog when clicking overlay (only if mousedown was also on overlay)
+        
         this.overlay?.addEventListener('click', (e) => {
             if (e.target === this.overlay && this._mouseDownTarget === this.overlay) {
                 this.hide();
             }
         });
 
-        // Cancel button
+        
         this.cancelBtn?.addEventListener('click', (e) => {
             if (this.onCancel) {
                 this.onCancel();
@@ -36,7 +36,7 @@ class Dialog {
             this.hide();
         });
 
-        // Confirm button
+        
         this.confirmBtn?.addEventListener('click', (e) => {
             if (this.onConfirm) {
                 this.onConfirm();
@@ -44,7 +44,7 @@ class Dialog {
             this.hide();
         });
 
-        // Escape key
+        
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.isVisible()) {
                 if (this.onCancel) {
@@ -72,25 +72,25 @@ class Dialog {
             throw new Error('Dialog overlay element not found');
         }
 
-        // Set content
+        
         if (this.title) this.title.textContent = title;
         if (this.message) this.message.textContent = message;
         if (this.icon) this.icon.className = `fas ${icon}`;
         
-        // Set icon type
+        
         if (this.iconContainer) this.iconContainer.className = `custom-dialog-icon ${iconType}`;
         
-        // Set button texts
+        
         if (this.confirmBtn) this.confirmBtn.textContent = confirmText;
         if (this.cancelBtn) this.cancelBtn.textContent = cancelText;
         
-        // Set button types
+        
         if (this.confirmBtn) this.confirmBtn.className = `custom-dialog-btn custom-dialog-btn-${confirmType}`;
         
-        // Show dialog
+        
         this.overlay.classList.add('show');
         
-        // Focus confirm button
+        
         setTimeout(() => {
             if (this.confirmBtn) {
                 this.confirmBtn.focus();
@@ -114,20 +114,20 @@ class Dialog {
         
         this.overlay.classList.remove('show');
         
-        // Wait for animation to complete before cleaning up
+        
         setTimeout(() => {
             this.onConfirm = null;
             this.onCancel = null;
-        }, 200); // Match the CSS transition duration
+        }, 200); 
     }
 
     isVisible() {
         return this.overlay?.classList.contains('show');
     }
 
-    // Static method for quick confirmations
+    
     static async confirm(title, message, options = {}) {
-        // Use singleton pattern - create only if doesn't exist
+        
         if (!Dialog.instance) {
             Dialog.instance = new Dialog();
         }
@@ -144,7 +144,7 @@ class Dialog {
         });
     }
 
-    // Static method for info dialogs
+    
     static async info(title, message, options = {}) {
         if (!Dialog.instance) {
             Dialog.instance = new Dialog();
@@ -162,7 +162,7 @@ class Dialog {
         });
     }
 
-    // Static method for success dialogs
+    
     static async success(title, message, options = {}) {
         if (!Dialog.instance) {
             Dialog.instance = new Dialog();
@@ -180,7 +180,7 @@ class Dialog {
         });
     }
 
-    // Static method for error dialogs
+    
     static async error(title, message, options = {}) {
         if (!Dialog.instance) {
             Dialog.instance = new Dialog();

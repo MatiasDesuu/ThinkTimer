@@ -32,10 +32,8 @@
 
 .time-block:hover {
     box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
     /* raise above nearby headers/overlays; promote to its own layer for stacking */
     z-index: 9000;
-    will-change: transform, z-index;
 }
 
 .time-block.running {
@@ -160,7 +158,6 @@
 }
 
 .time-block-action-btn:hover {
-    transform: translateY(-1px);
     box-shadow: var(--shadow-md);
 }
 
@@ -259,9 +256,7 @@
 #home-page #time-blocks-list .time-block:hover,
 #calendar-page #calendar-time-blocks .time-block:hover {
     z-index: 9000 !important; /* below modals (9999) but above headers/notifications */
-    transform: translateY(-1px) !important;
     box-shadow: var(--shadow-md) !important;
-    will-change: transform, z-index;
 }
 
 /* Responsive Time Blocks */

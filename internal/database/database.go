@@ -101,6 +101,11 @@ func (db *DB) migrate() error {
 		return err
 	}
 
+	// Handle trello_url column migration safely
+	if err := db.addTrelloURLColumn(); err != nil {
+		return err
+	}
+
 	// Handle discord column migration for projects
 	if err := db.addProjectDiscordColumn(); err != nil {
 		return err
@@ -233,6 +238,49 @@ func (db *DB) addCustomURLColumn() error {
 
 		// Update existing record to have empty custom_url
 		_, err = db.conn.Exec("UPDATE settings SET custom_url = '' WHERE id = 1 AND custom_url IS NULL")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// addTrelloURLColumn adds the trello_url column if it doesn't exist
+func (db *DB) addTrelloURLColumn() error {
+	// Check if trello_url column exists
+	query := "PRAGMA table_info(settings)"
+	rows, err := db.conn.Query(query)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	hasTrelloURL := false
+	for rows.Next() {
+		var cid int
+		var name, dataType string
+		var notNull, dfltValue, pk interface{}
+
+		if err := rows.Scan(&cid, &name, &dataType, &notNull, &dfltValue, &pk); err != nil {
+			continue
+		}
+
+		if name == "trello_url" {
+			hasTrelloURL = true
+			break
+		}
+	}
+
+	// Add column if it doesn't exist
+	if !hasTrelloURL {
+		_, err := db.conn.Exec("ALTER TABLE settings ADD COLUMN trello_url TEXT DEFAULT ''")
+		if err != nil {
+			return err
+		}
+
+		// Update existing record to have empty trello_url
+		_, err = db.conn.Exec("UPDATE settings SET trello_url = '' WHERE id = 1 AND trello_url IS NULL")
 		if err != nil {
 			return err
 		}

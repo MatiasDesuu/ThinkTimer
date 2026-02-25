@@ -232,12 +232,10 @@
     outline: none;
     border-color: var(--accent-color);
     box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1);
-    transform: translateY(-1px);
 }
 
 .month-selector:hover {
     border-color: var(--accent-color);
-    transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -298,12 +296,10 @@
     background-color: var(--accent-color);
     color: white;
     border-color: var(--accent-color);
-    transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(49, 130, 206, 0.2);
 }
 
 .calendar-nav-btn:active {
-    transform: translateY(0);
     box-shadow: 0 2px 6px rgba(49, 130, 206, 0.2);
 }
 
@@ -311,7 +307,6 @@
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--text-primary);
-    background: linear-gradient(135deg, var(--accent-color), #667eea);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -321,12 +316,11 @@
 }
 
 .calendar-title i {
-    background: linear-gradient(135deg, var(--accent-color), #667eea);
+    background: var(--accent-color);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-size: 1.2rem;
-    /* Fallback for browsers that don't support background-clip */
     color: var(--accent-color);
 }
 
@@ -350,12 +344,10 @@
     background-color: var(--accent-color);
     color: #fff;
     border-color: var(--accent-color);
-    transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(49, 130, 206, 0.2);
 }
 
 .calendar-month-btn:active {
-    transform: translateY(0);
     box-shadow: 0 2px 6px rgba(49, 130, 206, 0.2);
 }
 
@@ -376,7 +368,6 @@
 
 .calendar-day-header {
     padding: 0.5rem 0.25rem;
-    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
     text-align: center;
     font-size: 0.7rem;
     font-weight: 600;
@@ -404,7 +395,6 @@
 
 .calendar-day:hover {
     background-color: var(--bg-secondary);
-    transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border-color: var(--border-color);
 }
@@ -417,7 +407,6 @@
 
 .calendar-day.other-month:hover {
     opacity: 0.9;
-    transform: translateY(-1px);
 }
 
 .calendar-day.selected {
@@ -492,10 +481,6 @@
     transition: all 0.2s ease;
 }
 
-.calendar-day:hover .calendar-project-dot {
-    transform: scale(1.2);
-}
-
 .calendar-project-indicator {
     display: flex;
     align-items: center;
@@ -510,10 +495,6 @@
     margin-top: auto;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
-}
-
-.calendar-day:hover .calendar-project-indicator {
-    transform: scale(1.1);
 }
 
 .calendar-project-indicator.multiple {
@@ -551,12 +532,10 @@
 
 #add-calendar-manual-block:hover, #add-manual-block:hover {
     background-color: #2c5aa0;
-    transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
 }
 
 #add-calendar-manual-block:active, #add-manual-block:active {
-    transform: translateY(0);
     box-shadow: 0 2px 6px rgba(49, 130, 206, 0.2);
 }
 
@@ -614,9 +593,9 @@
 
 #open-mini-calendar i { font-size: 1rem; }
 
-/* Ensure the mini calendar button and custom URL button share a compact, flexible sizing
+/* Ensure the mini calendar button and custom URL buttons share a compact, flexible sizing
    Use min-width so they can grow or be adjusted by responsive rules in main.css */
-#open-mini-calendar, #open-custom-url {
+#open-mini-calendar, #open-custom-url, #open-trello-url {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -629,7 +608,7 @@
     padding: 0.35rem;
 }
 
-#open-mini-calendar:hover, #open-custom-url:hover {
+#open-mini-calendar:hover, #open-custom-url:hover, #open-trello-url:hover {
     background-color: var(--bg-secondary);
     border-color: var(--border-color);
 }

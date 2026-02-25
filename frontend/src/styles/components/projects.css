@@ -23,7 +23,6 @@
 
 .project-card:hover {
     box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
 }
 
 .project-card * {
@@ -151,7 +150,6 @@
     background-color: var(--bg-secondary);
     color: var(--text-primary);
     border-color: var(--border-color);
-    transform: translateY(-1px);
 }
 
 .today-total i {
@@ -333,7 +331,6 @@
 }
 
 .project-action-btn:hover {
-    transform: translateY(-1px);
     box-shadow: var(--shadow-md);
 }
 

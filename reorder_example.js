@@ -1,17 +1,3 @@
-/**
- * DragReorder - A simple drag-and-drop reordering system using native HTML5 API
- * 
- * Usage:
- * const reorder = new DragReorder({
- *   container: '#my-list',           // Container selector
- *   itemSelector: '.my-item',        // Item selector (optional, defaults to children)
- *   handleSelector: '.drag-handle',  // Drag handle selector (optional, makes entire item draggable if not provided)
- *   onReorder: (newOrder) => {       // Callback when order changes
- *     console.log('New order:', newOrder);
- *   }
- * });
- */
-
 class DragReorder {
     constructor(options = {}) {
         this.container = typeof options.container === 'string' 
@@ -30,7 +16,7 @@ class DragReorder {
         this.selected = null;
         this.isTouch = 'ontouchstart' in window;
         
-        // Bind handlers
+        
         this.touchStartHandler = (e) => this.touchStart(e);
         this.touchMoveHandler = (e) => this.touchMove(e);
         this.touchEndHandler = (e) => this.touchEnd(e);
@@ -40,15 +26,15 @@ class DragReorder {
     }
 
     init() {
-        // Add reorder-container class to container
+        
         this.container.classList.add('reorder-container');
         
-        // Initialize items
+        
         this.refreshItems();
     }
 
     refreshItems() {
-        // Add item class and idle class, make handles draggable or add touch listeners
+        
         this.getAllItems().forEach(item => {
             if (!item.classList.contains(this.itemClass)) {
                 item.classList.add(this.itemClass);
@@ -68,7 +54,7 @@ class DragReorder {
                     element.ondragend = (e) => this.dragEnd(e);
                 }
             }
-            // Add dragover to item for mouse drag
+            
             if (!this.isTouch) {
                 item.ondragover = (e) => this.dragOver(e);
             }
@@ -82,10 +68,10 @@ class DragReorder {
         this.selected.classList.remove('is-idle');
         this.selected.classList.add('is-draggable');
         
-        // Prevent scrolling on touch devices
+        
         this.disablePageScroll();
         
-        // Prevent dropping anywhere else
+        
         document.addEventListener('dragover', this.preventDrop, { passive: false });
     }
 
@@ -106,7 +92,7 @@ class DragReorder {
         this.enablePageScroll();
         document.removeEventListener('dragover', this.preventDrop);
         this.selected = null;
-        // Call the onReorder callback with the new order
+        
         if (this.onReorder && typeof this.onReorder === 'function') {
             this.onReorder(this.getNewOrder());
         }
@@ -137,7 +123,7 @@ class DragReorder {
         this.selected.classList.add('is-idle');
         this.enablePageScroll();
         this.selected = null;
-        // Call the onReorder callback with the new order
+        
         if (this.onReorder && typeof this.onReorder === 'function') {
             this.onReorder(this.getNewOrder());
         }
@@ -181,12 +167,12 @@ class DragReorder {
         }));
     }
 
-    // Public method to destroy the instance
+    
     destroy() {
         this.enablePageScroll();
         this.container.classList.remove('reorder-container');
         
-        // Remove classes and listeners from items
+        
         this.getAllItems().forEach(item => {
             item.classList.remove(this.itemClass, 'is-idle', 'is-draggable');
             const element = this.handleSelector ? item.querySelector(this.handleSelector) : item;
@@ -208,7 +194,7 @@ class DragReorder {
     }
 }
 
-// Export for use in other modules
+
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = DragReorder;
 }

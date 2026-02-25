@@ -18,10 +18,10 @@ func NewSettingsService(db *sql.DB) *SettingsService {
 
 // GetSettings returns the current settings
 func (s *SettingsService) GetSettings() (*models.Settings, error) {
-	query := "SELECT id, theme, language, COALESCE(timeformat, '24'), COALESCE(custom_url, '') FROM settings WHERE id = 1"
+	query := "SELECT id, theme, language, COALESCE(timeformat, '24'), COALESCE(custom_url, ''), COALESCE(trello_url, '') FROM settings WHERE id = 1"
 
 	var settings models.Settings
-	err := s.db.QueryRow(query).Scan(&settings.ID, &settings.Theme, &settings.Language, &settings.TimeFormat, &settings.CustomURL)
+	err := s.db.QueryRow(query).Scan(&settings.ID, &settings.Theme, &settings.Language, &settings.TimeFormat, &settings.CustomURL, &settings.TrelloURL)
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +49,10 @@ func (s *SettingsService) UpdateSettings(req models.UpdateSettingsRequest) (*mod
 	if req.CustomURL != nil {
 		setParts = append(setParts, "custom_url = ?")
 		args = append(args, *req.CustomURL)
+	}
+	if req.TrelloURL != nil {
+		setParts = append(setParts, "trello_url = ?")
+		args = append(args, *req.TrelloURL)
 	}
 
 	if len(setParts) > 0 {

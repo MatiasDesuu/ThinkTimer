@@ -1,17 +1,3 @@
-/**
- * DragReorder - A simple drag-and-drop reordering system using native HTML5 API
- * 
- * Usage:
- * const reorder = new DragReorder({
- *   container: '#my-list',           // Container selector
- *   itemSelector: '.my-item',        // Item selector (optional, defaults to children)
- *   handleSelector: '.drag-handle',  // Drag handle selector (optional, makes entire item draggable if not provided)
- *   onReorder: (newOrder) => {       // Callback when order changes
- *     console.log('New order:', newOrder);
- *   }
- * });
- */
-
 class DragReorder {
     constructor(options = {}) {
         this.container = typeof options.container === 'string' 

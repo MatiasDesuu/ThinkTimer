@@ -8,7 +8,8 @@ class Settings {
             theme: 'light',
             language: 'en',
             timeFormat: '24',
-            customUrl: ''
+            customUrl: '',
+            trelloUrl: ''
         };
         
         this.initializeElements();
@@ -22,6 +23,7 @@ class Settings {
         this.notificationsToggle = document.getElementById('notifications-toggle');
         this.notificationsToggleLabel = document.getElementById('notifications-toggle-label');
         this.customUrlInput = document.getElementById('custom-url-input');
+        this.trelloUrlInput = document.getElementById('trello-url-input');
     }
 
     bindEvents() {
@@ -43,6 +45,14 @@ class Settings {
 
         this.customUrlInput?.addEventListener('blur', (e) => {
             this.updateCustomUrl(e.target.value);
+        });
+
+        this.trelloUrlInput?.addEventListener('change', (e) => {
+            this.updateTrelloUrl(e.target.value);
+        });
+
+        this.trelloUrlInput?.addEventListener('blur', (e) => {
+            this.updateTrelloUrl(e.target.value);
         });
     }
 
@@ -75,6 +85,10 @@ class Settings {
 
         if (this.customUrlInput) {
             this.customUrlInput.value = this.settings.customUrl || '';
+        }
+
+        if (this.trelloUrlInput) {
+            this.trelloUrlInput.value = this.settings.trelloUrl || '';
         }
 
         // Update the URL button visibility and dispatch event
@@ -206,6 +220,29 @@ class Settings {
         }
     }
 
+    async updateTrelloUrl(url) {
+        try {
+            // Update local settings
+            this.settings.trelloUrl = url || '';
+            
+            // Save to backend
+            await API.updateSettings({ trelloUrl: this.settings.trelloUrl });
+            
+            // Update the URL button visibility
+            this.updateUrlButtonVisibility();
+            
+            // Dispatch event for other components
+            window.dispatchEvent(new CustomEvent('trelloUrlChanged', { 
+                detail: { trelloUrl: this.settings.trelloUrl } 
+            }));
+            
+            Utils.showNotification('Success', 'Trello URL updated successfully!', 'success');
+        } catch (error) {
+            console.error('Error updating Trello URL:', error);
+            Utils.showNotification('Error', 'Failed to update Trello URL', 'error');
+        }
+    }
+
     updateUrlButtonVisibility() {
         const urlButton = document.getElementById('open-custom-url');
         if (urlButton) {
@@ -213,6 +250,15 @@ class Settings {
                 urlButton.style.display = 'inline-flex';
             } else {
                 urlButton.style.display = 'none';
+            }
+        }
+
+        const trelloButton = document.getElementById('open-trello-url');
+        if (trelloButton) {
+            if (this.settings.trelloUrl && this.settings.trelloUrl.trim()) {
+                trelloButton.style.display = 'inline-flex';
+            } else {
+                trelloButton.style.display = 'none';
             }
         }
     }
