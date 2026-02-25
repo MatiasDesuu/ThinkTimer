@@ -1,11 +1,8 @@
-/* Consolidated notification styles for the app */
 
-/* Base notification container */
 .timer-notification {
     position: fixed;
     top: 2rem;
     right: 2rem;
-    /* Use tertiary background so notification area is distinct but solid */
     background-color: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
@@ -14,12 +11,11 @@
     z-index: 1000;
     max-width: 420px;
     animation: slideInRight 0.3s ease;
-    cursor: pointer; /* indicate clickability */
+    cursor: pointer; 
     transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
 }
 
 .timer-notification.success {
-    /* Use same border width as other notification types for visual consistency */
     border-left: 3px solid var(--success-color);
 }
 
@@ -38,7 +34,6 @@
     align-items: flex-start;
 }
 
-/* Large icon on the left */
 .timer-notification-icon {
     width: 48px;
     height: 48px;
@@ -50,11 +45,10 @@
 }
 
 .timer-notification-icon {
-    background: transparent; /* no filled background */
+    background: transparent; 
     color: inherit;
 }
 
-/* Color the icon glyphs directly while keeping container background transparent */
 .timer-notification.success .timer-notification-icon i {
     color: var(--success-color);
 }
@@ -67,7 +61,6 @@
     color: var(--warning-color);
 }
 
-/* Text block: title above description */
 .timer-notification-text {
     display: flex;
     flex-direction: column;
@@ -89,9 +82,7 @@
     line-height: 1.3;
 }
 
-/* Close button was removed in favor of clicking the notification itself to dismiss */
 
-/* Hover affordance for clickable notification */
 .timer-notification:hover {
     transform: translateX(4px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.12);
@@ -116,7 +107,6 @@
     }
 }
 
-/* Responsive placement */
 @media (max-width: 768px) {
     .timer-notification {
         top: 1rem;

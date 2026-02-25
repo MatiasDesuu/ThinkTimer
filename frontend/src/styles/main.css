@@ -1,9 +1,7 @@
-/* Main CSS - Base styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    /* Disable native context menu globally */
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -12,7 +10,6 @@
     user-select: none;
 }
 
-/* Disable right-click context menu globally */
 html, body {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -22,7 +19,6 @@ html, body {
     user-select: none;
 }
 
-/* Allow text selection for editable elements */
 input, textarea, [contenteditable="true"] {
     -webkit-user-select: text;
     -khtml-user-select: text;
@@ -31,12 +27,10 @@ input, textarea, [contenteditable="true"] {
     user-select: text;
 }
 
-/* Disable autocomplete for all input fields */
 input {
     -webkit-autocomplete: off;
 }
 
-/* Disable autofill styling */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -69,7 +63,6 @@ body {
     min-height: 100vh;
 }
 
-/* Page Structure - Main Content */
 .main {
     flex: 1;
     margin-left: 200px;
@@ -92,14 +85,13 @@ html.nav-collapsed-init .main {
     display: block;
 }
 
-/* Page layout: Full-height flexbox for main pages */
 #home-page,
 #projects-page,
 #calendar-page,
 #settings-page {
     display: none;
     flex-direction: column;
-    min-height: calc(100vh - 3rem); /* Full height minus main padding */
+    min-height: calc(100vh - 3rem); 
 }
 
 #home-page.active,
@@ -109,87 +101,79 @@ html.nav-collapsed-init .main {
     display: flex;
 }
 
-/* Home page specific layout */
 #home-page .time-blocks-section {
     flex: 1;
     display: flex;
     flex-direction: column;
-    margin-bottom: 0; /* Remove bottom margin for last section */
+    margin-bottom: 0; 
 }
 
-/* Reduce vertical space between timer and time-blocks on home for a tighter layout */
 #home-page .timer-section {
     margin-bottom: 1rem;
 }
 
 #home-page .time-blocks-list {
     flex: 1;
-    overflow-y: auto; /* Add scroll if content overflows */
-    padding-bottom: 1rem; /* Ensure space at bottom */
-    min-height: 200px; /* Minimum height for the time blocks area */
+    overflow-y: auto; 
+    padding-bottom: 1rem; 
+    min-height: 200px; 
 }
 
-/* Projects page specific layout */
 #projects-page .page-header {
-    flex-shrink: 0; /* Header doesn't shrink */
+    flex-shrink: 0; 
 }
 
 #projects-page .projects-list {
-    flex: 1; /* Takes remaining space */
-    overflow-y: auto; /* Scrollable if content exceeds */
-    padding-bottom: 1rem; /* Ensure space at bottom */
-    margin-bottom: 0; /* Remove extra bottom margin */
+    flex: 1; 
+    overflow-y: auto; 
+    padding-bottom: 1rem; 
+    margin-bottom: 0; 
 }
 
-/* Reduce vertical space between projects list and completed projects on projects page */
 #projects-page .projects-list {
     margin-bottom: 0.5rem;
 }
 
 #projects-page .completed-projects-section {
-    margin-bottom: 0; /* Remove extra bottom margin */
+    margin-bottom: 0; 
 }
 
-/* Calendar page specific layout */
 #calendar-page .page-header {
-    flex-shrink: 0; /* Header doesn't shrink */
+    flex-shrink: 0; 
 }
 
 #calendar-page .calendar-section {
-    flex-shrink: 0; /* Calendar doesn't shrink */
+    flex-shrink: 0; 
 }
 
 #calendar-page .time-blocks-section {
-    flex: 1; /* Takes remaining space */
+    flex: 1; 
     display: flex;
     flex-direction: column;
-    margin-bottom: 0; /* Remove bottom margin for last section */
+    margin-bottom: 0; 
 }
 
-/* Reduce vertical space between calendar and time-blocks on calendar page */
 #calendar-page .calendar-section {
     margin-bottom: 1rem;
 }
 
 #calendar-page .time-blocks-list {
-    flex: 1; /* Takes remaining space in section */
-    overflow-y: auto; /* Scrollable if content exceeds */
-    padding-bottom: 1rem; /* Ensure space at bottom */
-    min-height: 200px; /* Minimum height for the time blocks area */
+    flex: 1; 
+    overflow-y: auto; 
+    padding-bottom: 1rem; 
+    min-height: 200px; 
 }
 
-/* Settings page specific layout */
 #settings-page .page-header {
-    flex-shrink: 0; /* Header doesn't shrink */
+    flex-shrink: 0; 
 }
 
 #settings-page .settings-list {
-    flex: 1; /* Takes remaining space */
-    overflow-y: auto; /* Scrollable if content exceeds */
-    margin-bottom: 0; /* Remove extra bottom margin */
+    flex: 1; 
+    overflow-y: auto; 
+    margin-bottom: 0; 
 }
 
-/* Page sections - simplified containers */
 .timer-section,
 .time-blocks-section,
 .calendar-section,
@@ -242,7 +226,6 @@ html.nav-collapsed-init .main {
     font-size: 1.5rem;
 }
 
-/* Date Selector */
 .date-selector {
     display: flex;
     align-items: center;
@@ -276,7 +259,6 @@ html.nav-collapsed-init .main {
     border-radius: var(--radius);
 }
 
-/* Custom URL and Trello URL Buttons - Independent but styled like date navigation */
 #open-custom-url, 
 #open-trello-url {
     border: 1px solid var(--border-color);
@@ -305,7 +287,6 @@ html.nav-collapsed-init .main {
     font-size: 0.9rem;
 }
 
-/* Mirror the exact visual style for the mini calendar button */
 #open-mini-calendar {
     border: 1px solid var(--border-color);
     background-color: var(--bg-tertiary);
@@ -336,7 +317,6 @@ html.nav-collapsed-init .main {
     font-size: 0.9rem;
 }
 
-/* Make current date clearly interactive: pointer cursor and subtle hover */
 #current-date {
     cursor: pointer;
 }
@@ -345,7 +325,6 @@ html.nav-collapsed-init .main {
     filter: brightness(0.98);
 }
 
-/* Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -410,7 +389,6 @@ html.nav-collapsed-init .main {
     transform: none;
 }
 
-/* Form Elements */
 .form-group {
     margin-bottom: 1rem;
 }
@@ -443,7 +421,6 @@ html.nav-collapsed-init .main {
     font-family: inherit;
 }
 
-/* DateTime input styles */
 .form-group input[type="datetime-local"] {
     position: relative;
     background-color: var(--bg-primary);
@@ -456,7 +433,6 @@ html.nav-collapsed-init .main {
     color-scheme: dark;
 }
 
-/* Ensure calendar icon is visible and properly positioned */
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     background-size: 16px 16px;
     width: 20px;
@@ -468,7 +444,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     margin: 0;
 }
 
-/* Date input should match datetime-local styling to keep UI consistent */
 .form-group input[type="date"] {
     position: relative;
     background-color: var(--bg-primary);
@@ -484,7 +459,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     color-scheme: dark;
 }
 
-/* Ensure date picker icon aligns and matches size like datetime-local */
 input[type="date"]::-webkit-calendar-picker-indicator {
     background-size: 16px 16px;
     width: 20px;
@@ -502,7 +476,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
 
-/* Dark theme calendar icon */
 [data-theme="dark"] input[type="datetime-local"]::-webkit-calendar-picker-indicator,
 [data-theme="modern-dark"] input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     background-size: 16px 16px;
@@ -557,7 +530,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top: 2rem;
 }
 
-/* Cards */
 .card {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
@@ -571,7 +543,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: var(--shadow-md);
 }
 
-/* Lists */
 .list {
     display: flex;
     flex-direction: column;
@@ -594,7 +565,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: var(--shadow-md);
 }
 
-/* Section Headers */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -615,14 +585,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: var(--accent-color);
 }
 
-/* Page Sections */
 .timer-section, 
 .time-blocks-section, 
 .calendar-section {
     margin-bottom: 2rem;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .main {
     margin-left: 60px;
@@ -633,29 +601,27 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-left: 60px;
     }
     
-    /* Adjust page heights for mobile */
     #home-page,
     #projects-page,
     #calendar-page,
     #settings-page {
-        min-height: calc(100vh - 2rem); /* Reduced padding for mobile */
+        min-height: calc(100vh - 2rem); 
     }
     
     #home-page .time-blocks-list,
     #calendar-page .time-blocks-list {
-        min-height: 150px; /* Smaller minimum height on mobile */
+        min-height: 150px; 
     }
     
     .page-header {
     flex-direction: column;
     align-items: flex-start;
-    margin-bottom: 0.75rem; /* reduce vertical gap under header on mobile */
+    margin-bottom: 0.75rem; 
     }
     
     .page-header-right {
         width: 100%;
     justify-content: stretch;
-    /* keep spacing consistent with desktop */
     gap: 0.75rem;
     }
     
@@ -667,14 +633,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         padding: 0.4rem 0.5rem;
     }
 
-    /* Ensure quick-calendar wrapper doesn't add extra horizontal spacing on mobile */
     .mini-calendar-wrapper {
         margin-left: 0;
         display: inline-flex;
         align-items: center;
     }
 
-    /* Normalize both header icon-buttons so they match exactly in mobile */
     #open-mini-calendar, #open-custom-url, #open-trello-url {
         min-width: 40px;
         height: 36px;
@@ -715,7 +679,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     }
 }
 
-/* Extra small screens - even more compact */
 @media (max-width: 480px) {
     .page-header-right {
         gap: 0.25rem;
@@ -741,7 +704,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     }
 }
 
-/* Smooth scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
 }
@@ -759,7 +721,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background: var(--accent-color);
 }
 
-/* Focus styles */
 *:focus {
     outline: none;
 }
@@ -769,7 +730,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     outline-offset: 2px;
 }
 
-/* Today projects popup - small overlay listing projects and durations */
 .today-projects-popup {
     position: fixed !important;
     background-color: var(--bg-primary);
@@ -843,7 +803,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-weight: 500;
 }
 
-/* Icon to the left of the project name */
 .today-project-item .project-left {
     display: flex;
     align-items: center;
@@ -858,7 +817,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: var(--accent-color);
 }
 
-/* Responsive adjustments for mobile */
 @media (max-width: 480px) {
     .today-project-item {
         gap: 0.25rem;

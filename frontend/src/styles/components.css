@@ -1,6 +1,4 @@
-/* Components CSS - Projects, calendar, and other components */
 
-/* Projects Styles */
 .projects-list,
 .completed-projects-list {
     display: flex;
@@ -200,7 +198,6 @@
     background-color: rgba(255, 179, 0, 0.1);
 }
 
-/* Project progress bar */
 .project-progress {
     margin-top: 0.3rem;
     width: 100%;
@@ -226,7 +223,6 @@
     margin-top: 0.2rem;
 }
 
-/* Calendar Styles */
 .calendar-container {
     background-color: var(--bg-primary);
     border: 1px solid var(--border-color);
@@ -343,7 +339,6 @@
     background-color: white;
 }
 
-/* Calendar time summary */
 .calendar-day-summary {
     position: absolute;
     top: 2px;
@@ -358,7 +353,6 @@
     color: white;
 }
 
-/* Calendar legend */
 .calendar-legend {
     display: flex;
     justify-content: center;
@@ -388,7 +382,6 @@
     background-color: var(--success-color);
 }
 
-/* Calendar stats */
 .calendar-stats {
     display: flex;
     justify-content: space-around;
@@ -415,7 +408,6 @@
     text-transform: uppercase;
 }
 
-/* Custom Dialog */
 .custom-dialog-overlay {
     display: none;
     position: fixed;
@@ -514,9 +506,6 @@
     transition: all 0.2s ease;
 }
 
-.custom-dialog-btn:hover {
-}
-
 .custom-dialog-btn-primary {
     background-color: var(--accent-color);
     border-color: var(--accent-color);
@@ -546,7 +535,6 @@
     background-color: #c62828;
 }
 
-/* Responsive adjustments for custom dialog (mobile) */
 @media (max-width: 768px) {
     .custom-dialog {
         width: calc(100% - 3rem);
@@ -563,7 +551,6 @@
         width: 100%;
     }
 
-    /* Ensure confirm (primary/danger/success) appears above cancel on small screens */
     .custom-dialog-actions .custom-dialog-btn-primary,
     .custom-dialog-actions .custom-dialog-btn-danger,
     .custom-dialog-actions .custom-dialog-btn-success {
@@ -571,7 +558,6 @@
     }
 }
 
-/* Context Menu */
 .context-menu {
     position: fixed;
     background-color: var(--bg-secondary);
@@ -635,7 +621,6 @@
     }
 }
 
-/* Loading states */
 .loading {
     display: inline-flex;
     align-items: center;
@@ -658,7 +643,6 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Tooltips */
 .tooltip {
     position: relative;
     display: inline-block;
@@ -689,7 +673,6 @@
     visibility: visible;
 }
 
-/* Status indicators */
 .status-indicator {
     display: inline-block;
     width: 0.5rem;
@@ -710,7 +693,6 @@
     background-color: var(--warning-color);
 }
 
-/* Badges */
 .badge {
     display: inline-block;
     padding: 0.2rem 0.4rem;
@@ -741,7 +723,6 @@
     color: white;
 }
 
-/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -758,7 +739,6 @@
     }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .modal-content {
         width: 95%;
@@ -870,7 +850,6 @@
     }
 }
 
-/* Dark theme specific adjustments */
 [data-theme="light"] .project-status.active, [data-theme="modern-light"] .project-status.active {
     background-color: rgba(67, 214, 117, 0.15);
     color: #2e7d36;
@@ -895,7 +874,6 @@
     background-color: #2e7d36;
 }
 
-/* Print styles */
 @media print {
     .nav,
     .modal,
@@ -923,9 +901,7 @@
     }
 }
 
-/* Drag and Drop Reorder Styles */
 
-/* Drag Handle */
 .drag-handle {
     cursor: grab;
     user-select: none;
@@ -944,7 +920,6 @@
     cursor: grabbing;
 }
 
-/* Item States */
 .reorder-item.is-draggable {
     opacity: 0.9;
     z-index: 1000;
@@ -957,7 +932,6 @@
     cursor: grabbing;
 }
 
-/* Optional: Add visual feedback for drop zones */
 .reorder-container {
     position: relative;
 }

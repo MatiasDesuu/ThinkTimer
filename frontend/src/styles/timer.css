@@ -1,6 +1,4 @@
-/* Timer CSS - Timer specific styles */
 
-/* Timer Section Layout */
 .timer-section {
     text-align: center;
     padding: 1.5rem;
@@ -30,7 +28,7 @@
 .project-selector-container .btn {
     align-self: center;
     display: inline-flex;
-    padding: 0.75rem 0.8rem; /* match select vertical padding */
+    padding: 0.75rem 0.8rem; 
     align-items: center;
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
@@ -42,7 +40,7 @@
 .project-selector {
     width: 100%;
     max-width: 300px;
-    padding: 0.85rem 2rem 0.85rem 1rem; /* slightly increased vertical padding to avoid clipping */
+    padding: 0.85rem 2rem 0.85rem 1rem; 
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     background-color: var(--bg-primary);
@@ -57,14 +55,11 @@
     -moz-appearance: none;
 }
 
-/* Ensure button and select share a compatible minimum height for visual parity */
 .project-selector,
 .project-selector-container .btn {
     min-height: calc(2.25rem + 2px);
 }
 
-/* Force exact matched control height, box-sizing and vertical alignment so
-   the select and the open-project button render the same visual height. */
 .project-selector,
 .project-selector-container .btn,
  #open-project-url {
@@ -72,22 +67,18 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: calc(2.5rem + 2px); /* slightly larger min-height so select text doesn't get clipped */
-    line-height: normal; /* avoid inherited line-height differences */
+    min-height: calc(2.5rem + 2px); 
+    line-height: normal; 
 }
 
-/* Explicit control height to prevent any inherited padding/line-height from
-   making the controls appear different. Uses a local CSS variable so it can
-   be tweaked per layout or breakpoint if needed. */
 .timer-section {
     --timer-control-height: calc(2.5rem + 2px);
 }
 
-/* Force exact height for the project selector and right-side button */
 #project-selector,
 .project-selector {
     height: var(--timer-control-height);
-    padding-top: 0; /* vertical padding handled by fixed height */
+    padding-top: 0; 
     padding-bottom: 0;
     line-height: normal;
 }
@@ -99,17 +90,16 @@
     padding-bottom: 0;
 }
 
-/* Ensure Discord button matches the other small icon buttons exactly */
 #open-project-discord {
     height: var(--timer-control-height);
-    padding: 0 0.6rem; /* slightly smaller horizontal padding to match icon width */
+    padding: 0 0.6rem; 
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 
 #open-project-discord i {
-    font-size: 1rem; /* same as other icon buttons */
+    font-size: 1rem; 
     line-height: 1;
 }
 
@@ -118,7 +108,6 @@
     border-color: var(--accent-color) !important;
 }
 
-/* Move chevron inside the select so adjacent buttons don't overlap it */
 .project-selector-wrapper {
     position: relative;
     display: inline-flex;
@@ -126,7 +115,6 @@
 }
 
 .project-selector {
-    /* leave space on the right for the chevron */
     padding-right: 2.6rem;
 }
 
@@ -140,7 +128,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    z-index: 3; /* ensure it's above the select control */
+    z-index: 3; 
     font-size: 0.95rem;
 }
 
@@ -163,23 +151,19 @@
     color: var(--accent-color);
 }
 
-/* Make the small action buttons next to the selector behave like the select on hover
-   (no translateY movement). Use the same border-color and subtle focus ring. */
 .project-selector-container .btn:hover,
 .project-selector-container .btn:active {
-    transform: none !important; /* override global button hover translate */
+    transform: none !important; 
     border-color: var(--accent-color) !important;
     box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.08) !important;
 }
 
-/* When focused via keyboard, match select focus styling */
 .project-selector-container .btn:focus {
     outline: none;
     border-color: var(--accent-color) !important;
     box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2) !important;
 }
 
-/* Timer Display */
 .timer-display {
     margin: 1.5rem 0;
 }
@@ -192,7 +176,6 @@
     letter-spacing: 0.05em;
 }
 
-/* Timer Controls */
 .timer-controls {
     display: flex;
     justify-content: center;
@@ -265,7 +248,6 @@
     border-color: #c62828;
 }
 
-/* Timer states */
 .timer-section.running #timer-display {
     color: var(--success-color);
 }
@@ -280,7 +262,6 @@
     100% { opacity: 1; }
 }
 
-/* Time Blocks List */
 .time-blocks-list {
     display: flex;
     flex-direction: column;
@@ -376,7 +357,6 @@
     background-color: rgba(255, 23, 68, 0.1);
 }
 
-/* Empty state */
 .empty-state {
     text-align: center;
     padding: 2rem;
@@ -393,19 +373,14 @@
     font-size: 0.9rem;
 }
 
-/* Responsive timer */
 @media (max-width: 768px) {
     #timer-display {
         font-size: 2.5rem;
     }
     
-    /* Keep selector and button on one row for compact mobile layout
-       Selector flexes to fill available space, button stays compact on the right */
     .project-selector-container {
         width: 100%;
         max-width: none;
-        /* display: flex; */ /* Keep column layout */
-        /* flex-direction: row; */
         gap: 0.5rem;
         align-items: center;
         justify-content: flex-start;
@@ -413,8 +388,6 @@
 
     .project-selector-wrapper {
         width: 100%;
-        /* flex: 1 1 auto; */
-        /* min-width: 0; */ /* allow shrinking inside flex */
     }
 
     .project-selector {
@@ -422,17 +395,15 @@
         max-width: none;
         font-size: 0.85rem;
     }
-    /* ensure space for chevron */
     .project-selector {
         padding-right: 2.2rem;
-        padding-top: 0.85rem; /* match increased desktop padding */
+        padding-top: 0.85rem; 
         padding-bottom: 0.85rem;
     }
 
     .project-selector-container .btn {
     width: auto;
     flex: 0 0 auto;
-    /* keep same vertical sizing as the select so button doesn't change size */
     padding: 0.85rem 0.8rem;
     min-height: calc(2.5rem + 2px);
     align-self: center;
@@ -447,14 +418,11 @@
     .project-actions .btn {
         flex: 1;
         min-width: 40px;
-        /* max-width: 80px; */
     }
 
-    /* Match the compact header icon button sizing so open-project-url stays small */
     #open-project-url {
         flex-shrink: 0;
         min-width: 40px;
-        /* match select/button vertical sizing */
     padding: 0.85rem 0.8rem;
     min-height: calc(2.5rem + 2px);
         display: inline-flex;
@@ -500,12 +468,11 @@
         right: 0.6rem;
     }
 
-    /* Extra-small screens: keep same vertical sizing but allow slightly narrower min-width */
     #open-project-url {
         min-width: 36px;
         padding: 0.6rem 0.6rem;
         min-height: calc(2.5rem + 2px);
-        height: auto; /* allow flexbox centering while keeping min-height */
+        height: auto; 
     }
     
     .timer-btn {
@@ -514,9 +481,7 @@
     }
 }
 
-/* Timer State Styles */
 
-/* Default state - add pseudo-element for background effects */
 .timer-section::before {
     content: '';
     position: absolute;
@@ -535,7 +500,6 @@
     z-index: 1;
 }
 
-/* Running state - green accent */
 .timer-section.running {
     border-color: var(--success-color);
     box-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
@@ -545,7 +509,6 @@
     background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%);
 }
 
-/* Paused state - orange accent */
 .timer-section.paused {
     border-color: var(--warning-color);
     box-shadow: 0 0 20px rgba(255, 152, 0, 0.2);

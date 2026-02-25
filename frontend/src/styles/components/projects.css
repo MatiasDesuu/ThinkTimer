@@ -1,4 +1,3 @@
-/* Projects List */
 .projects-list,
 .completed-projects-list {
     display: flex;
@@ -31,7 +30,7 @@
 
 .project-info {
     flex: 1 1 auto;
-    min-width: 0; /* allow children to shrink inside flex containers */
+    min-width: 0; 
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -61,7 +60,7 @@
     width: 100%;
     justify-content: flex-start;
     flex: 1 1 auto;
-    min-width: 0; /* allow title row to shrink inside card */
+    min-width: 0; 
 }
 
 .project-card .project-status-badge {
@@ -72,7 +71,7 @@
     text-transform: uppercase;
     white-space: nowrap;
     flex-shrink: 0;
-    text-align: center !important; /* Solo el badge debe estar centrado */
+    text-align: center !important; 
 }
 
 .project-card .project-status-badge.active {
@@ -90,9 +89,7 @@
     color: var(--accent-color);
 }
 
-/* Total time indicator shown next to status badge */
 .project-card .project-total-time {
-    /* Visual style similar to status badge */
     padding: 0.25rem 0.6rem;
     border-radius: 12px;
     font-size: 0.75rem;
@@ -128,8 +125,6 @@
     color: var(--accent-color);
 }
 
-/* Today total indicator in the header next to custom URL button
-   Match exact visual style used by #open-custom-url (colors, size, hover) */
 .today-total {
     border: 1px solid var(--border-color);
     background-color: var(--bg-tertiary);
@@ -156,7 +151,6 @@
     font-size: 0.9rem;
 }
 
-/* Mobile adjustments to match #open-custom-url behavior */
 @media (max-width: 768px) {
     .today-total {
         min-width: 40px;
@@ -189,7 +183,6 @@
     color: var(--text-primary);
     line-height: 1.3;
     text-align: left !important;
-    /* Allow title to wrap up to 2 lines (matching time blocks style) */
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -229,10 +222,9 @@
     justify-content: flex-start;
     text-align: left !important;
     width: 100%;
-    min-width: 0; /* allow meta items to shrink */
+    min-width: 0; 
 }
 
-/* Prevent child text from forcing the layout to overflow */
 .project-card .project-meta-item span,
 .project-card .project-title span {
     display: block;
@@ -259,7 +251,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-         margin-right: 0.375rem; /* match gap between other header buttons */
+         margin-right: 0.375rem; 
 }
 
 .project-card .project-url:hover {
@@ -286,7 +278,6 @@
     text-decoration: underline;
 }
 
-/* Discord link style - match project-url and directory styling */
 .project-card .project-discord {
     color: var(--accent-color);
     text-decoration: none;
@@ -298,7 +289,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-right: 0.375rem;
-    font-size: 0.75rem; /* match project-directory */
+    font-size: 0.75rem; 
     overflow-wrap: anywhere;
 }
 
@@ -312,7 +303,6 @@
     gap: 0.5rem;
     align-items: center;
     flex-shrink: 0;
-    /* allow actions area to shrink on narrow containers */
     min-width: 0;
 }
 .project-action-btn {
@@ -467,7 +457,7 @@
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--text-primary);
-    pointer-events: none; /* Prevent text selection issues */
+    pointer-events: none; 
 }
 
 .toggle-btn {
@@ -486,7 +476,7 @@
     appearance: none;
     outline: none;
     box-shadow: none;
-    pointer-events: auto; /* Ensure button is still individually clickable */
+    pointer-events: auto; 
 }
 
 .toggle-btn:hover {
@@ -507,7 +497,6 @@
     font-size: 1rem;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .project-info {
         gap: 0.5rem;
@@ -584,7 +573,6 @@
         width: 100%;
         justify-content: stretch;
         gap: 0.5rem;
-        /* Disable transition for layout changes */
         transition: none;
     }
     
@@ -593,7 +581,6 @@
         justify-content: center;
         padding: 0.6rem 0.5rem;
         font-size: 0.85rem;
-        /* Disable transition for layout changes */
         transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
         min-width: 0;
         gap: 0.3rem;
@@ -635,19 +622,16 @@
         gap: 0.25rem;
     }
 }
-/* Responsive: Add Project button should span its header/container width and keep normal height/padding */
 @media (max-width: 768px) {
     #add-project {
         display: block;
-        width: 100%; /* fill parent (.page-header) which on mobile is full-width */
+        width: 100%; 
         box-sizing: border-box;
-    margin: 0 0 0 0; /* remove extra bottom gap so header spacing is controlled by .page-header */
-        /* do not override padding/height so it matches .btn in normal mode */
+    margin: 0 0 0 0; 
     }
 }
 
 @media (min-width: 769px) {
-    /* Add text content for buttons on larger screens */
     .project-action-btn[data-action="edit"]:after {
         content: " Edit";
         margin-left: 0.25rem;

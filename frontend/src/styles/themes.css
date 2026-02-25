@@ -1,6 +1,4 @@
-/* Themes CSS - Light, Dark and Modern palettes */
 
-/* Modern Dark palette */
 [data-theme="modern-dark"] {
     --bg-primary: #0d0d0f;         
     --bg-secondary: #1a1a1f;      
@@ -24,7 +22,6 @@
     --shadow-lg: 0 12px 20px rgba(0, 0, 0, 0.35);
 }
 
-/* Modern Light palette */
 [data-theme="modern-light"] {
     --bg-primary: #fafafa;
     --bg-secondary: #eaeaea;
@@ -48,7 +45,6 @@
     --shadow-lg: 0 12px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Dark theme - original palette */
 [data-theme="dark"] {
     --bg-primary: hsl(0, 0%, 0%);
     --bg-secondary: hsl(0, 0%, 5%);
@@ -70,7 +66,6 @@
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Light theme - original palette */
 [data-theme="light"] {
     --bg-primary: hsl(0, 0%, 100%);
     --bg-secondary: hsl(0, 0%, 95%);
@@ -92,22 +87,16 @@
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Theme specific adjustments
-Alias modern-* variants with their base family where appropriate so
-components can target either 'dark' or 'modern-dark' etc. */
 
-/* Nav border */
 [data-theme="dark"] .nav, [data-theme="modern-dark"] .nav {
     border-right-color: var(--border-color);
 }
 
-/* Active nav item */
 [data-theme="dark"] .nav-item.active, [data-theme="modern-dark"] .nav-item.active {
     background-color: var(--accent-color);
     color: white;
 }
 
-/* Project status badges */
 [data-theme="dark"] .project-status.active, [data-theme="modern-dark"] .project-status.active {
     background-color: rgba(67, 214, 117, 0.2);
     color: var(--success-color);
@@ -128,7 +117,6 @@ components can target either 'dark' or 'modern-dark' etc. */
     background-color: rgba(67, 214, 117, 0.1);
 }
 
-/* Light variants */
 [data-theme="light"] .project-status.active, [data-theme="modern-light"] .project-status.active {
     background-color: rgba(67, 214, 117, 0.15);
     color: #2e7d36;
@@ -149,7 +137,6 @@ components can target either 'dark' or 'modern-dark' etc. */
     background-color: rgba(67, 214, 117, 0.1);
 }
 
-/* Timer container states */
 [data-theme="dark"] .timer-container.running, [data-theme="modern-dark"] .timer-container.running {
     border-color: var(--success-color);
     background-color: #1a2f1a;
@@ -160,7 +147,6 @@ components can target either 'dark' or 'modern-dark' etc. */
     background-color: #2d1a0a;
 }
 
-/* Calendar day styling */
 [data-theme="dark"] .calendar-day.today, [data-theme="modern-dark"] .calendar-day.today {
     border-color: var(--accent-color);
 }
@@ -175,12 +161,10 @@ components can target either 'dark' or 'modern-dark' etc. */
     color: var(--text-tertiary);
 }
 
-/* Theme transition */
 * {
     transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
-/* Theme toggle animation */
 .theme-toggle {
     position: relative;
     display: inline-flex;
@@ -215,7 +199,6 @@ components can target either 'dark' or 'modern-dark' etc. */
     transform: rotate(-90deg);
 }
 
-/* Accessibility improvements for dark themes */
 [data-theme="dark"] .form-group input:focus, [data-theme="modern-dark"] .form-group input:focus,
 [data-theme="dark"] .form-group select:focus, [data-theme="modern-dark"] .form-group select:focus,
 [data-theme="dark"] .form-group textarea:focus, [data-theme="modern-dark"] .form-group textarea:focus {
@@ -226,7 +209,6 @@ components can target either 'dark' or 'modern-dark' etc. */
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
 }
 
-/* Print styles (always light) */
 @media print {
     * {
         background-color: white !important;

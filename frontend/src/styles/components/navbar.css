@@ -1,11 +1,8 @@
-/* Navigation Bar Component */
 
-/* Main Navigation Container */
 :root {
     --nav-width: 200px;
 }
 
-/* Header height used by popups to position below toolbar/header */
 :root {
     --header-height: 64px;
 }
@@ -28,13 +25,10 @@ html.nav-collapsed-init .nav {
     width: 60px;
 }
 
-/* When the global state toggles nav-collapsed on the html element expose the smaller width
-   so other elements (like the main content and popups) can reference it via var(--nav-width). */
 html.nav-collapsed-init {
     --nav-width: 60px;
 }
 
-/* Navigation Brand */
 .nav-brand {
     display: flex;
     align-items: center;
@@ -63,7 +57,6 @@ html.nav-collapsed-init .nav .nav-brand {
     flex-shrink: 0;
 }
 
-/* Navigation Items Container */
 .nav-items {
     display: flex;
     flex-direction: column;
@@ -72,7 +65,6 @@ html.nav-collapsed-init .nav .nav-brand {
     flex: 1;
 }
 
-/* Navigation Items */
 .nav-item {
     display: flex;
     align-items: center;
@@ -89,7 +81,6 @@ html.nav-collapsed-init .nav .nav-brand {
     overflow: hidden;
     position: relative;
     transition: padding 0.3s ease;
-    /* ensure consistent item height across modes */
     min-height: 36px;
 }
 
@@ -123,8 +114,6 @@ html.nav-collapsed-init .nav .nav-item i {
     width: auto;
 }
 
-/* Text Transitions */
-/* For expanding: text appears after positioning is done */
 .nav-brand span,
 .nav-item span {
     transition: opacity 0.2s ease 0.3s, width 0.2s ease 0.3s;
@@ -139,7 +128,6 @@ html.nav-collapsed-init .nav .nav-brand span {
     transition: opacity 0.2s ease, width 0.2s ease;
 }
 
-/* Navigation Footer */
 .nav-footer {
     padding: 0 0.5rem;
     margin-top: auto;
@@ -150,7 +138,6 @@ html.nav-collapsed-init .nav .nav-footer {
     padding: 0 0.25rem;
 }
 
-/* Navigation Toggle Button */
 .nav-toggle {
     width: 100%;
     display: flex;
@@ -181,13 +168,11 @@ html.nav-collapsed-init .nav .nav-toggle i {
     transition: transform 0.3s ease;
 }
 
-/* Remove any default positioning for tooltip elements */
 .nav.collapsed-centered .nav-item,
 html.nav-collapsed-init .nav .nav-item {
     position: relative;
 }
 
-/* Main Content Adjustment */
 .main {
     flex: 1;
     margin-left: var(--nav-width);
@@ -202,20 +187,16 @@ html.nav-collapsed-init .main {
     margin-left: 60px;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
-    /* On smaller viewports expose a smaller nav width globally so popups can avoid overlapping it */
     :root {
-    /* match the collapsed width so responsive sidebar appears identical to collapsed state */
     --nav-width: 60px;
     }
 
-    /* Ensure nav and collapsed-state selectors are identical in responsive */
     .nav,
     .nav.collapsed,
     html.nav-collapsed-init .nav {
         width: var(--nav-width);
-        padding: 1rem 0; /* same vertical spacing */
+        padding: 1rem 0; 
     }
     
     .nav.collapsed,
@@ -227,12 +208,11 @@ html.nav-collapsed-init .main {
     .nav-item span {
         display: none;
     }
-    /* Mirror exact collapsed-state rules so responsive appearance is identical */
     .nav-brand,
     .nav.collapsed-centered .nav-brand,
     html.nav-collapsed-init .nav .nav-brand {
         justify-content: center;
-        padding: 0 1rem; /* same as collapsed */
+        padding: 0 1rem; 
         gap: 0;
     }
 
@@ -258,7 +238,6 @@ html.nav-collapsed-init .main {
         row-gap: 0.125rem !important;
         padding: 0 0.5rem !important;
     }
-    /* Force exact per-item spacing in case other styles override */
     .nav-item {
         padding-top: 0.6rem !important;
         padding-bottom: 0.6rem !important;
@@ -275,7 +254,7 @@ html.nav-collapsed-init .main {
     }
 
     .nav-footer {
-        padding: 0 0.25rem; /* match collapsed footer padding */
+        padding: 0 0.25rem; 
     }
     
     .nav-toggle {
@@ -293,7 +272,6 @@ html.nav-collapsed-init .main {
     }
 }
 
-/* If the brand element is intentionally empty/hidden, remove its layout footprint */
 .nav-brand[aria-hidden="true"] {
     display: none !important;
     margin: 0 !important;

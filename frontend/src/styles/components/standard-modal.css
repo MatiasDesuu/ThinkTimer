@@ -1,4 +1,3 @@
-/* Standard Modal System - Reusable modal component */
 
 .standard-modal {
     position: fixed;
@@ -42,7 +41,6 @@
     opacity: 1;
 }
 
-/* Header Section */
 .standard-modal-header {
     display: flex;
     gap: 0.75rem;
@@ -90,20 +88,17 @@
     color: var(--text-primary);
 }
 
-/* Body Section */
 .standard-modal-body {
     padding: 0.75rem 1.25rem;
     flex: 1;
     overflow-y: auto;
 }
 
-/* Quita el margen inferior solo al último elemento dentro del body del modal */
 .standard-modal-body > *:last-child {
     margin-bottom: 0 !important;
     margin-top: 0 !important;
 }
 
-/* Label icons styling */
 .standard-modal-body label i {
     margin-right: 0.5rem;
     color: var(--text-muted);
@@ -111,7 +106,6 @@
     text-align: center;
 }
 
-/* Actions Section */
 .standard-modal-actions {
     display: flex;
     gap: 0.5rem;
@@ -120,7 +114,6 @@
     flex-shrink: 0;
 }
 
-/* Modal Buttons */
 .standard-modal-btn {
     flex: 1;
     padding: 0.6rem 1.25rem;
@@ -188,7 +181,6 @@
     border-color: #e60032;
 }
 
-/* Form Integration */
 .standard-modal form {
     display: flex;
     flex-direction: column;
@@ -199,24 +191,20 @@
     flex: 1;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
-    /* On small screens, make the modal try to occupy almost the full viewport
-       while keeping a small gutter/margin so it doesn't touch screen edges. */
     .standard-modal {
-        /* increase horizontal gutter so modal has more margin at sides */
-        padding: 1rem 1.5rem; /* top/bottom 1rem, left/right 1.5rem */
+        padding: 1rem 1.5rem; 
         align-items: center;
         justify-content: center;
     }
 
     .standard-modal-content {
-        width: calc(100% - 3rem); /* respect horizontal gutter (2 * 1.5rem) */
-        height: calc(100% - 3rem); /* respect vertical gutter (2 * 1rem) */
+        width: calc(100% - 3rem); 
+        height: calc(100% - 3rem); 
         max-width: none;
         max-height: none;
         border-radius: var(--radius);
-        overflow: hidden; /* let inner body scroll */
+        overflow: hidden; 
         display: flex;
         flex-direction: column;
     }
@@ -238,13 +226,11 @@
         width: 100%;
     }
 
-    /* Make primary (accept) button appear above other actions on small screens */
     .standard-modal-actions .standard-modal-btn-primary {
         order: -1;
     }
 }
 
-/* Animation for form elements inside modal */
 .standard-modal .form-group {
     animation: slideInUp 0.3s ease-out;
     animation-fill-mode: both;

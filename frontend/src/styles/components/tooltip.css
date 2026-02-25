@@ -1,6 +1,4 @@
-/* Custom Tooltip System */
 
-/* Global Tooltip Container - Will be appended to body */
 #global-tooltip-container {
     position: fixed;
     top: 0;
@@ -37,7 +35,6 @@
     transform: translateY(0);
 }
 
-/* Tooltip Positions - All positions are calculated globally */
 .tooltip.top {
     transform: translateY(-5px);
 }
@@ -70,7 +67,6 @@
     transform: translateX(0);
 }
 
-/* Tooltip Arrow */
 .tooltip::before {
     content: '';
     position: absolute;
@@ -155,7 +151,6 @@
     border-right-color: var(--bg-primary);
 }
 
-/* Theme variations */
 .tooltip.dark {
     background-color: var(--text-primary);
     color: var(--bg-primary);
@@ -222,7 +217,6 @@
     border-right-color: var(--danger-color, #ef4444);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .tooltip {
         font-size: 0.75rem;
