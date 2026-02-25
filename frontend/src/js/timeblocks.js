@@ -477,7 +477,6 @@ class TimeBlocks {
         }
         
         this.timeBlockModal.show();
-        document.body.style.overflow = 'hidden';
         
         // Set default times
         const now = new Date();
@@ -493,7 +492,6 @@ class TimeBlocks {
 
     closeModal() {
         this.timeBlockModal.hide();
-        document.body.style.overflow = '';
         this.currentEditingId = null;
         
         // Reset form and icon after animation completes

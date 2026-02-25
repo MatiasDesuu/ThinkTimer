@@ -4,7 +4,6 @@ import Utils from './utils.js';
 
 class Timer {
     constructor() {
-        console.log('Timer constructor called');
         this.isRunning = false;
         this.isPaused = false;
         this.currentProjectId = null;
@@ -21,12 +20,10 @@ class Timer {
             this.initializeElements();
             this.bindEvents();
             this.updateDisplay();
-            console.log('Timer initialized successfully');
         }, 100);
     }
 
     initializeElements() {
-        console.log('Initializing timer elements...');
         this.projectSelector = document.getElementById('project-selector');
     this.openProjectDiscordBtn = document.getElementById('open-project-discord');
     this.openProjectUrlBtn = document.getElementById('open-project-url');
@@ -38,16 +35,6 @@ class Timer {
         this.stopBtn = document.getElementById('stop-timer');
         this.resetBtn = document.getElementById('reset-timer');
         this.timerContainer = document.querySelector('.timer-section');
-        
-        console.log('Elements found:', {
-            projectSelector: !!this.projectSelector,
-            timerDisplay: !!this.timerDisplay,
-            startBtn: !!this.startBtn,
-            pauseBtn: !!this.pauseBtn,
-            stopBtn: !!this.stopBtn,
-            resetBtn: !!this.resetBtn,
-            timerContainer: !!this.timerContainer
-        });
     }
 
     bindEvents() {
@@ -163,7 +150,6 @@ class Timer {
     }
 
     async start() {
-        console.log('Start function called. Project selector value:', this.projectSelector.value);
         
         if (!this.projectSelector.value) {
             Utils.showNotification('Error', 'Please select a project first', 'error');
@@ -173,17 +159,8 @@ class Timer {
         try {
             if (!this.isRunning && !this.isPaused) {
                 // Starting new timer
-                console.log('Starting new timer');
                 this.currentProjectId = parseInt(this.projectSelector.value);
                 this.startTime = new Date();
-                
-                console.log('Creating time block with project ID:', this.currentProjectId, 'start time:', this.startTime);
-                console.log('Start time details:', {
-                    localString: this.startTime.toLocaleDateString(),
-                    utcString: this.startTime.toUTCString(),
-                    isoString: this.startTime.toISOString(),
-                    timezoneOffset: this.startTime.getTimezoneOffset()
-                });
                 
                 // Create new time block
                 const timeBlockData = {
@@ -199,21 +176,17 @@ class Timer {
                 this.currentTimeBlockId = timeBlock.id;
                 this.elapsedSeconds = 0;
                 
-                console.log('Time block created with ID:', this.currentTimeBlockId);
                 
                 // Dispatch event to refresh time blocks
                 window.dispatchEvent(new CustomEvent('timeBlockUpdated'));
                 
                 Utils.showNotification('Timer Started', 'Time tracking has begun!', 'success');
             } else if (this.isPaused) {
-                // Resuming paused timer
-                console.log('Resuming paused timer');
                 // Add the time spent paused to total paused time
                 if (this.pauseStartTime) {
                     const pauseDuration = (Date.now() - this.pauseStartTime.getTime()) / 1000;
                     this.totalPausedTime += pauseDuration;
                     this.pauseStartTime = null;
-                    console.log('Added pause duration:', pauseDuration, 'Total paused time:', this.totalPausedTime);
                 }
                 Utils.showNotification('Timer Resumed', 'Time tracking resumed!', 'success');
             }
@@ -236,7 +209,6 @@ class Timer {
     }
 
     async pause() {
-        console.log('Pause function called. Running:', this.isRunning);
         
         if (!this.isRunning) {
             console.log('Cannot pause: timer not running');
@@ -251,7 +223,6 @@ class Timer {
             this.updateButtons();
             this.updateContainerClass();
             
-            console.log('Timer paused successfully');
             Utils.showNotification('Timer Paused', 'Time tracking paused', 'warning');
             
             // Dispatch timer state change event
@@ -274,9 +245,7 @@ class Timer {
                     const pauseDuration = (Date.now() - this.pauseStartTime.getTime()) / 1000;
                     this.totalPausedTime += pauseDuration;
                 }
-                
-                console.log('Stopping timer with duration:', this.elapsedSeconds);
-                
+                                
                 // Stop the time block with the calculated duration
                 await API.stopTimeBlockWithDuration(this.currentTimeBlockId, this.elapsedSeconds);
                 
@@ -335,7 +304,6 @@ class Timer {
     }
 
     startInterval() {
-        console.log('Starting timer interval');
         this.stopInterval(); // Clear any existing interval
         this.interval = setInterval(() => {
             if (this.isRunning && this.startTime) {

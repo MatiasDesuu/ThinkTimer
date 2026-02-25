@@ -89,6 +89,7 @@ class Dialog {
         
         
         this.overlay.classList.add('show');
+        document.body.style.overflow = 'hidden';
         
         
         setTimeout(() => {
@@ -113,6 +114,11 @@ class Dialog {
         if (!this.overlay) return;
         
         this.overlay.classList.remove('show');
+        
+        const activeModals = document.querySelectorAll('.standard-modal.active, #custom-dialog.show');
+        if (activeModals.length === 0) {
+            document.body.style.overflow = '';
+        }
         
         
         setTimeout(() => {

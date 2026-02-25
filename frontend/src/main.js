@@ -75,16 +75,6 @@ class App {
                     if (!navItems || !firstItem) return;
                     const si = getComputedStyle(navItems);
                     const fi = getComputedStyle(firstItem);
-                    console.group('NAV-SPACING-DEBUG');
-                    console.log('viewport-width:', window.innerWidth);
-                    console.log('.nav-items gap:', si.getPropertyValue('gap') || si.gap);
-                    console.log('.nav-items row-gap:', si.getPropertyValue('row-gap') || si.rowGap);
-                    console.log('.nav-items padding:', si.padding);
-                    console.log('.nav-item padding:', fi.padding);
-                    console.log('.nav-item margin:', fi.margin);
-                    console.log('.nav-item height:', fi.height);
-                    console.log('.nav-item line-height:', fi.lineHeight);
-                    console.groupEnd();
                 } catch (e) {
                     // ignore
                 }
@@ -105,8 +95,6 @@ class App {
 
 
         this.timeBlocks.updateDateDisplay();
-
-        console.log('ThinkTimer App initialized successfully!');
     }
 
     initializeMiniCalendarButton() {

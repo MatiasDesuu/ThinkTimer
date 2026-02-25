@@ -144,6 +144,7 @@ class StandardModal {
     show() {
         this.isVisible = true;
         this.modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
         
         // Focus management
         const firstInput = this.modal.querySelector('input, textarea, select, button');
@@ -161,6 +162,12 @@ class StandardModal {
     hide() {
         this.isVisible = false;
         this.modal.classList.remove('active');
+        
+        // Re-enable scroll only if no other modals are active
+        const activeModals = document.querySelectorAll('.standard-modal.active, #custom-dialog.show');
+        if (activeModals.length === 0) {
+            document.body.style.overflow = '';
+        }
         
         if (this.onClose) {
             this.onClose();

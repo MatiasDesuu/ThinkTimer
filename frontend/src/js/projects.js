@@ -555,13 +555,11 @@ class Projects {
 
     openModal() {
         this.projectModal.show();
-        document.body.style.overflow = 'hidden';
         this.nameField.focus();
     }
 
     closeModal() {
         this.projectModal.hide();
-        document.body.style.overflow = '';
 
         // Cleanup function to reset form state and title/icon after hide animation
         const doCleanup = () => {
