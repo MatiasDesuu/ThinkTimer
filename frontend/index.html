@@ -114,8 +114,14 @@
                             <span class="select-chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
                         </div>
                         <div class="project-actions">
-                            <button id="open-project-url" class="btn" data-tooltip="Open project URL" data-tooltip-position="bottom" style="display: none;">
-                                <i class="fas fa-globe"></i>
+                            <button id="open-project-url1" class="btn project-url-btn" data-tooltip="Open link 1" data-tooltip-position="bottom" style="display: none;">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button id="open-project-url2" class="btn project-url-btn" data-tooltip="Open link 2" data-tooltip-position="bottom" style="display: none;">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button id="open-project-url3" class="btn project-url-btn" data-tooltip="Open link 3" data-tooltip-position="bottom" style="display: none;">
+                                <i class="fas fa-link"></i>
                             </button>
                             <button id="open-project-dir" class="btn" data-tooltip="Open project folder" data-tooltip-position="bottom" style="display: none;">
                                 <i class="fas fa-folder-open"></i>
@@ -327,8 +333,16 @@
                             <textarea id="project-description" name="description" rows="2" autocomplete="off"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="project-url"><i class="fas fa-link"></i>URL (optional)</label>
-                            <input type="url" id="project-url" name="url" autocomplete="off">
+                            <label for="project-url1"><i class="fas fa-link"></i>URL 1 (optional)</label>
+                            <input type="url" id="project-url1" name="url1" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-url2"><i class="fas fa-link"></i>URL 2 (optional)</label>
+                            <input type="url" id="project-url2" name="url2" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="project-url3"><i class="fas fa-link"></i>URL 3 (optional)</label>
+                            <input type="url" id="project-url3" name="url3" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label for="project-discord"><i class="fab fa-discord"></i>Discord Channel (optional)</label>

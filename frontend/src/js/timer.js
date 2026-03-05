@@ -25,10 +25,12 @@ class Timer {
 
     initializeElements() {
         this.projectSelector = document.getElementById('project-selector');
-    this.openProjectDiscordBtn = document.getElementById('open-project-discord');
-    this.openProjectUrlBtn = document.getElementById('open-project-url');
-    this.openProjectDirBtn = document.getElementById('open-project-dir');
-    this.editProjectBtn = document.getElementById('edit-project-btn');
+        this.openProjectDiscordBtn = document.getElementById('open-project-discord');
+        this.openProjectUrlBtn1 = document.getElementById('open-project-url1');
+        this.openProjectUrlBtn2 = document.getElementById('open-project-url2');
+        this.openProjectUrlBtn3 = document.getElementById('open-project-url3');
+        this.openProjectDirBtn = document.getElementById('open-project-dir');
+        this.editProjectBtn = document.getElementById('edit-project-btn');
         this.timerDisplay = document.getElementById('timer-display');
         this.startBtn = document.getElementById('start-timer');
         this.pauseBtn = document.getElementById('pause-timer');
@@ -47,11 +49,23 @@ class Timer {
             this.projectSelector.addEventListener('change', () => this.updateProjectUrlButton());
         }
 
-        // Open project URL when the button is clicked
-        if (this.openProjectUrlBtn) {
-            this.openProjectUrlBtn.addEventListener('click', async (e) => {
+        // Open project URLs when the buttons are clicked
+        if (this.openProjectUrlBtn1) {
+            this.openProjectUrlBtn1.addEventListener('click', async (e) => {
                 e.preventDefault();
-                await this.openSelectedProjectUrl();
+                await this.openSelectedProjectUrl(1);
+            });
+        }
+        if (this.openProjectUrlBtn2) {
+            this.openProjectUrlBtn2.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await this.openSelectedProjectUrl(2);
+            });
+        }
+        if (this.openProjectUrlBtn3) {
+            this.openProjectUrlBtn3.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await this.openSelectedProjectUrl(3);
             });
         }
 
@@ -394,18 +408,39 @@ class Timer {
         };
     }
 
+    getUrlIcon(url) {
+        if (!url) return 'fas fa-globe';
+        const lowerUrl = url.toLowerCase();
+        if (lowerUrl.includes('docs.google.com/document')) return 'fas fa-file-word';
+        if (lowerUrl.includes('docs.google.com/spreadsheets')) return 'fas fa-file-excel';
+        if (lowerUrl.includes('drive.google.com')) return 'fab fa-google-drive';
+        if (lowerUrl.includes('trello.com')) return 'fab fa-trello';
+        return 'fas fa-globe';
+    }
+
     updateProjectUrlButton() {
         try {
-            if (!this.projectSelector || !this.openProjectUrlBtn) return;
+            if (!this.projectSelector) return;
             const selectedOption = this.projectSelector.options[this.projectSelector.selectedIndex];
-            const url = selectedOption ? selectedOption.getAttribute('data-url') : null;
-            if (url && url.trim()) {
-                this.openProjectUrlBtn.style.display = 'inline-flex';
-                this.openProjectUrlBtn.title = '';
-                this.openProjectUrlBtn.setAttribute('aria-label', 'Open project URL');
-            } else {
-                this.openProjectUrlBtn.style.display = 'none';
-            }
+            
+            const processUrlButton = (btn, urlDataAttr) => {
+                if (!btn) return;
+                const url = selectedOption ? selectedOption.getAttribute(urlDataAttr) : null;
+                if (url && url.trim()) {
+                    btn.style.display = 'inline-flex';
+                    btn.title = '';
+                    btn.setAttribute('aria-label', `Open project ${urlDataAttr.replace('data-', '')}`);
+                    const iconClass = this.getUrlIcon(url);
+                    btn.innerHTML = `<i class="${iconClass}"></i>`;
+                } else {
+                    btn.style.display = 'none';
+                }
+            };
+
+            processUrlButton(this.openProjectUrlBtn1, 'data-url1');
+            processUrlButton(this.openProjectUrlBtn2, 'data-url2');
+            processUrlButton(this.openProjectUrlBtn3, 'data-url3');
+
             // Also handle directory button
             if (this.openProjectDirBtn) {
                 const dir = selectedOption ? selectedOption.getAttribute('data-directory') : null;
@@ -475,11 +510,11 @@ class Timer {
         }
     }
 
-    async openSelectedProjectUrl() {
+    async openSelectedProjectUrl(urlIndex) {
         try {
             if (!this.projectSelector) return;
             const selectedOption = this.projectSelector.options[this.projectSelector.selectedIndex];
-            const url = selectedOption ? selectedOption.getAttribute('data-url') : null;
+            const url = selectedOption ? selectedOption.getAttribute(`data-url${urlIndex}`) : null;
             if (!url) {
                 Utils.showNotification('Warning', 'Selected project has no URL', 'warning');
                 return;

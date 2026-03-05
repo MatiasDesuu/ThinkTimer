@@ -56,7 +56,9 @@ func (db *DB) migrate() error {
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			name TEXT NOT NULL,
 			description TEXT,
-			url TEXT,
+			url1 TEXT,
+			url2 TEXT,
+			url3 TEXT,
 			discord TEXT,
 			directory TEXT,
 			deadline DATETIME,
@@ -118,6 +120,11 @@ func (db *DB) migrate() error {
 
 	// Handle order column migration for projects
 	if err := db.addProjectOrderColumn(); err != nil {
+		return err
+	}
+
+	// Handle url to url1, and add url2, url3 migrations
+	if err := db.addProjectURLsColumns(); err != nil {
 		return err
 	}
 
@@ -195,6 +202,79 @@ func (db *DB) addTimeFormatColumn() error {
 
 		// Update existing record to have timeformat
 		_, err = db.conn.Exec("UPDATE settings SET timeformat = '24' WHERE id = 1 AND timeformat IS NULL")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// addProjectURLsColumns handles transitioning from 'url' to 'url1', 'url2', 'url3'
+func (db *DB) addProjectURLsColumns() error {
+	query := "PRAGMA table_info(projects)"
+	rows, err := db.conn.Query(query)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	hasURL := false
+	hasURL1 := false
+	hasURL2 := false
+	hasURL3 := false
+
+	for rows.Next() {
+		var cid int
+		var name, dataType string
+		var notNull, dfltValue, pk interface{}
+
+		if err := rows.Scan(&cid, &name, &dataType, &notNull, &dfltValue, &pk); err != nil {
+			continue
+		}
+
+		switch name {
+		case "url":
+			hasURL = true
+		case "url1":
+			hasURL1 = true
+		case "url2":
+			hasURL2 = true
+		case "url3":
+			hasURL3 = true
+		}
+	}
+
+	// Rename 'url' to 'url1' if 'url' exists but 'url1' does not
+	if hasURL && !hasURL1 {
+		_, err := db.conn.Exec("ALTER TABLE projects RENAME COLUMN url TO url1")
+		if err != nil {
+			// If SQLite version < 3.25, RENAME COLUMN might fail. In that case, add url1 and update.
+			_, errAdd := db.conn.Exec("ALTER TABLE projects ADD COLUMN url1 TEXT")
+			if errAdd != nil {
+				return errAdd
+			}
+			_, errUpd := db.conn.Exec("UPDATE projects SET url1 = url")
+			if errUpd != nil {
+				return errUpd
+			}
+		}
+	} else if !hasURL1 && !hasURL {
+		_, err := db.conn.Exec("ALTER TABLE projects ADD COLUMN url1 TEXT")
+		if err != nil {
+			return err
+		}
+	}
+
+	if !hasURL2 {
+		_, err := db.conn.Exec("ALTER TABLE projects ADD COLUMN url2 TEXT")
+		if err != nil {
+			return err
+		}
+	}
+
+	if !hasURL3 {
+		_, err := db.conn.Exec("ALTER TABLE projects ADD COLUMN url3 TEXT")
 		if err != nil {
 			return err
 		}

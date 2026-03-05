@@ -20,16 +20,16 @@ func NewProjectService(db *sql.DB) *ProjectService {
 // CreateProject creates a new project
 func (s *ProjectService) CreateProject(req models.CreateProjectRequest) (*models.Project, error) {
 	query := `
-		INSERT INTO projects (name, description, url, discord, directory, deadline, "order", created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-		RETURNING id, name, description, url, discord, directory, deadline, status, "order", created_at, updated_at
+		INSERT INTO projects (name, description, url1, url2, url3, discord, directory, deadline, "order", created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		RETURNING id, name, description, url1, url2, url3, discord, directory, deadline, status, "order", created_at, updated_at
 	`
 
 	now := time.Now()
 
 	var project models.Project
-	err := s.db.QueryRow(query, req.Name, req.Description, req.URL, req.Discord, req.Directory, req.Deadline, req.Order, now, now).Scan(
-		&project.ID, &project.Name, &project.Description, &project.URL, &project.Discord, &project.Directory,
+	err := s.db.QueryRow(query, req.Name, req.Description, req.URL1, req.URL2, req.URL3, req.Discord, req.Directory, req.Deadline, req.Order, now, now).Scan(
+		&project.ID, &project.Name, &project.Description, &project.URL1, &project.URL2, &project.URL3, &project.Discord, &project.Directory,
 		&project.Deadline, &project.Status, &project.Order, &project.CreatedAt, &project.UpdatedAt,
 	)
 
@@ -43,7 +43,7 @@ func (s *ProjectService) CreateProject(req models.CreateProjectRequest) (*models
 // GetAllProjects returns all projects
 func (s *ProjectService) GetAllProjects() ([]models.Project, error) {
 	query := `
-		SELECT id, name, description, url, discord, directory, deadline, status, "order", created_at, updated_at
+		SELECT id, name, description, url1, url2, url3, discord, directory, deadline, status, "order", created_at, updated_at
 		FROM projects
 		ORDER BY "order" ASC, created_at DESC
 	`
@@ -58,7 +58,7 @@ func (s *ProjectService) GetAllProjects() ([]models.Project, error) {
 	for rows.Next() {
 		var project models.Project
 		err := rows.Scan(
-			&project.ID, &project.Name, &project.Description, &project.URL, &project.Discord, &project.Directory,
+			&project.ID, &project.Name, &project.Description, &project.URL1, &project.URL2, &project.URL3, &project.Discord, &project.Directory,
 			&project.Deadline, &project.Status, &project.Order, &project.CreatedAt, &project.UpdatedAt,
 		)
 		if err != nil {
@@ -73,14 +73,14 @@ func (s *ProjectService) GetAllProjects() ([]models.Project, error) {
 // GetProjectByID returns a project by ID
 func (s *ProjectService) GetProjectByID(id int) (*models.Project, error) {
 	query := `
-		SELECT id, name, description, url, discord, directory, deadline, status, "order", created_at, updated_at
+		SELECT id, name, description, url1, url2, url3, discord, directory, deadline, status, "order", created_at, updated_at
 		FROM projects
 		WHERE id = ?
 	`
 
 	var project models.Project
 	err := s.db.QueryRow(query, id).Scan(
-		&project.ID, &project.Name, &project.Description, &project.URL, &project.Discord, &project.Directory,
+		&project.ID, &project.Name, &project.Description, &project.URL1, &project.URL2, &project.URL3, &project.Discord, &project.Directory,
 		&project.Deadline, &project.Status, &project.Order, &project.CreatedAt, &project.UpdatedAt,
 	)
 
@@ -105,9 +105,17 @@ func (s *ProjectService) UpdateProject(id int, req models.UpdateProjectRequest) 
 		setParts = append(setParts, "description = ?")
 		args = append(args, *req.Description)
 	}
-	if req.URL != nil {
-		setParts = append(setParts, "url = ?")
-		args = append(args, *req.URL)
+	if req.URL1 != nil {
+		setParts = append(setParts, "url1 = ?")
+		args = append(args, *req.URL1)
+	}
+	if req.URL2 != nil {
+		setParts = append(setParts, "url2 = ?")
+		args = append(args, *req.URL2)
+	}
+	if req.URL3 != nil {
+		setParts = append(setParts, "url3 = ?")
+		args = append(args, *req.URL3)
 	}
 	if req.Discord != nil {
 		setParts = append(setParts, "discord = ?")

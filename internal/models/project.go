@@ -18,7 +18,9 @@ type Project struct {
 	ID          int           `json:"id" db:"id"`
 	Name        string        `json:"name" db:"name"`
 	Description *string       `json:"description" db:"description"`
-	URL         *string       `json:"url" db:"url"`
+	URL1        *string       `json:"url1" db:"url1"`
+	URL2        *string       `json:"url2" db:"url2"`
+	URL3        *string       `json:"url3" db:"url3"`
 	Discord     *string       `json:"discord" db:"discord"`
 	Directory   *string       `json:"directory" db:"directory"`
 	Deadline    *time.Time    `json:"deadline" db:"deadline"`
@@ -32,7 +34,9 @@ type Project struct {
 type CreateProjectRequest struct {
 	Name        string     `json:"name"`
 	Description *string    `json:"description"`
-	URL         *string    `json:"url"`
+	URL1        *string    `json:"url1"`
+	URL2        *string    `json:"url2"`
+	URL3        *string    `json:"url3"`
 	Discord     *string    `json:"discord"`
 	Directory   *string    `json:"directory"`
 	Deadline    *time.Time `json:"deadline"`
@@ -43,7 +47,9 @@ type CreateProjectRequest struct {
 type UpdateProjectRequest struct {
 	Name        *string        `json:"name"`
 	Description *string        `json:"description"`
-	URL         *string        `json:"url"`
+	URL1        *string        `json:"url1"`
+	URL2        *string        `json:"url2"`
+	URL3        *string        `json:"url3"`
 	Discord     *string        `json:"discord"`
 	Directory   *string        `json:"directory"`
 	Deadline    *time.Time     `json:"deadline"`

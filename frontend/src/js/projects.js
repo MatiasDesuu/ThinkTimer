@@ -33,7 +33,9 @@ class Projects {
                     this.projectModal.setIcon('fas fa-edit', 'project-edit');
                     this.nameField.value = project.name || '';
                     this.descriptionField.value = project.description || '';
-                    this.urlField.value = project.url || '';
+                    this.url1Field.value = project.url1 || '';
+                    this.url2Field.value = project.url2 || '';
+                    this.url3Field.value = project.url3 || '';
                     if (this.discordField) this.discordField.value = project.discord || '';
                     this.directoryField.value = project.directory || '';
                     this.deadlineField.value = project.deadline ? Utils.formatDateForInput(project.deadline) : '';
@@ -65,7 +67,9 @@ class Projects {
         // Form fields
         this.nameField = document.getElementById('project-name');
         this.descriptionField = document.getElementById('project-description');
-        this.urlField = document.getElementById('project-url');
+        this.url1Field = document.getElementById('project-url1');
+        this.url2Field = document.getElementById('project-url2');
+        this.url3Field = document.getElementById('project-url3');
         this.discordField = document.getElementById('project-discord');
     this.directoryField = document.getElementById('project-directory');
         this.deadlineField = document.getElementById('project-deadline');
@@ -174,6 +178,16 @@ class Projects {
         this.initProjectReorder();
     }
 
+    getUrlIcon(url) {
+        if (!url) return 'fas fa-link';
+        const lowerUrl = url.toLowerCase();
+        if (lowerUrl.includes('docs.google.com/document')) return 'fas fa-file-word';
+        if (lowerUrl.includes('docs.google.com/spreadsheets')) return 'fas fa-file-excel';
+        if (lowerUrl.includes('drive.google.com')) return 'fab fa-google-drive';
+        if (lowerUrl.includes('trello.com')) return 'fab fa-trello';
+        return 'fas fa-link';
+    }
+
     createProjectCard(project) {
         const statusClass = project.status || 'active';
         const deadline = project.deadline ? Utils.formatDate(project.deadline) : null;
@@ -213,10 +227,22 @@ class Projects {
                                 <span>Deadline: ${deadline}</span>
                             </div>
                         ` : ''}
-                        ${project.url ? `
+                        ${project.url1 ? `
                             <div class="project-meta-item">
-                                <i class="fas fa-link"></i>
-                                <a href="${project.url}" target="_blank" class="project-url">${Utils.escapeHtml(project.url)}</a>
+                                <i class="${this.getUrlIcon(project.url1)}"></i>
+                                <a href="${project.url1}" target="_blank" class="project-url">${Utils.escapeHtml(project.url1)}</a>
+                            </div>
+                        ` : ''}
+                        ${project.url2 ? `
+                            <div class="project-meta-item">
+                                <i class="${this.getUrlIcon(project.url2)}"></i>
+                                <a href="${project.url2}" target="_blank" class="project-url">${Utils.escapeHtml(project.url2)}</a>
+                            </div>
+                        ` : ''}
+                        ${project.url3 ? `
+                            <div class="project-meta-item">
+                                <i class="${this.getUrlIcon(project.url3)}"></i>
+                                <a href="${project.url3}" target="_blank" class="project-url">${Utils.escapeHtml(project.url3)}</a>
                             </div>
                         ` : ''}
                         ${project.discord ? `
@@ -521,7 +547,9 @@ class Projects {
         // Populate form
         this.nameField.value = project.name;
         this.descriptionField.value = project.description || '';
-        this.urlField.value = project.url || '';
+        this.url1Field.value = project.url1 || '';
+        this.url2Field.value = project.url2 || '';
+        this.url3Field.value = project.url3 || '';
         if (this.discordField) this.discordField.value = project.discord || '';
     this.directoryField.value = project.directory || '';
         this.deadlineField.value = project.deadline ? Utils.formatDateForInput(project.deadline) : '';
@@ -585,18 +613,19 @@ class Projects {
 
         const formData = new FormData(this.projectForm);
 
-        // Handle URL: when updating we must send an explicit empty string
-        // so the backend receives a non-nil value and will clear the column.
-    const rawUrl = formData.get('url');
-    const rawDiscord = formData.get('discord');
-        let urlValue = null;
-        if (this.currentEditingId) {
-            // For updates, send empty string when the user cleared the field
-            urlValue = rawUrl === null ? '' : rawUrl.trim();
-        } else {
-            // For creates, prefer null when empty
-            urlValue = rawUrl && rawUrl.trim() !== '' ? rawUrl.trim() : null;
-        }
+        const rawUrl1 = formData.get('url1');
+        const rawUrl2 = formData.get('url2');
+        const rawUrl3 = formData.get('url3');
+        const rawDiscord = formData.get('discord');
+
+        const processUrl = (raw) => {
+            if (this.currentEditingId) return raw === null ? '' : raw.trim();
+            return raw && raw.trim() !== '' ? raw.trim() : null;
+        };
+
+        let url1Value = processUrl(rawUrl1);
+        let url2Value = processUrl(rawUrl2);
+        let url3Value = processUrl(rawUrl3);
 
         // Handle deadline: create a local-midnight Date to avoid UTC shifts
         const rawDeadline = formData.get('deadline');
@@ -621,7 +650,9 @@ class Projects {
         const projectData = {
             name: formData.get('name').trim(),
             description: formData.get('description').trim() || null,
-            url: urlValue,
+            url1: url1Value,
+            url2: url2Value,
+            url3: url3Value,
             discord: (rawDiscord && String(rawDiscord).trim() !== '') ? String(rawDiscord).trim() : (this.currentEditingId ? '' : null),
             directory: directoryValue,
             deadline: deadlineValue
@@ -633,10 +664,13 @@ class Projects {
             return;
         }
 
-        // Validate URL only when non-empty ('' should be allowed to clear the URL)
-        if (projectData.url && projectData.url.length > 0 && !Utils.isValidURL(projectData.url)) {
-            Utils.showNotification('Error', 'Please enter a valid URL', 'error');
-            return;
+        // Validate URLs
+        const urlsToValidate = [projectData.url1, projectData.url2, projectData.url3];
+        for (const url of urlsToValidate) {
+            if (url && url.length > 0 && !Utils.isValidURL(url)) {
+                Utils.showNotification('Error', 'Please enter a valid URL', 'error');
+                return;
+            }
         }
 
         try {
@@ -681,8 +715,14 @@ class Projects {
                         option.value = project.id;
                         option.textContent = project.name;
                         // Store the project url and directory on the option for quick access from other modules
-                        if (project.url) option.setAttribute('data-url', project.url);
-                        else option.removeAttribute('data-url');
+                        if (project.url1) option.setAttribute('data-url1', project.url1);
+                        else option.removeAttribute('data-url1');
+                        
+                        if (project.url2) option.setAttribute('data-url2', project.url2);
+                        else option.removeAttribute('data-url2');
+
+                        if (project.url3) option.setAttribute('data-url3', project.url3);
+                        else option.removeAttribute('data-url3');
 
                         if (project.directory) option.setAttribute('data-directory', project.directory);
                         else option.removeAttribute('data-directory');

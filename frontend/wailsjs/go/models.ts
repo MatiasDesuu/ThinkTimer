@@ -3,7 +3,9 @@ export namespace models {
 	export class CreateProjectRequest {
 	    name: string;
 	    description?: string;
-	    url?: string;
+	    url1?: string;
+	    url2?: string;
+	    url3?: string;
 	    discord?: string;
 	    directory?: string;
 	    deadline?: time.Time;
@@ -17,7 +19,9 @@ export namespace models {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.name = source["name"];
 	        this.description = source["description"];
-	        this.url = source["url"];
+	        this.url1 = source["url1"];
+	        this.url2 = source["url2"];
+	        this.url3 = source["url3"];
 	        this.discord = source["discord"];
 	        this.directory = source["directory"];
 	        this.deadline = this.convertValues(source["deadline"], time.Time);
@@ -86,7 +90,9 @@ export namespace models {
 	    id: number;
 	    name: string;
 	    description?: string;
-	    url?: string;
+	    url1?: string;
+	    url2?: string;
+	    url3?: string;
 	    discord?: string;
 	    directory?: string;
 	    deadline?: time.Time;
@@ -104,7 +110,9 @@ export namespace models {
 	        this.id = source["id"];
 	        this.name = source["name"];
 	        this.description = source["description"];
-	        this.url = source["url"];
+	        this.url1 = source["url1"];
+	        this.url2 = source["url2"];
+	        this.url3 = source["url3"];
 	        this.discord = source["discord"];
 	        this.directory = source["directory"];
 	        this.deadline = this.convertValues(source["deadline"], time.Time);
@@ -205,7 +213,9 @@ export namespace models {
 	export class UpdateProjectRequest {
 	    name?: string;
 	    description?: string;
-	    url?: string;
+	    url1?: string;
+	    url2?: string;
+	    url3?: string;
 	    discord?: string;
 	    directory?: string;
 	    deadline?: time.Time;
@@ -220,7 +230,9 @@ export namespace models {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.name = source["name"];
 	        this.description = source["description"];
-	        this.url = source["url"];
+	        this.url1 = source["url1"];
+	        this.url2 = source["url2"];
+	        this.url3 = source["url3"];
 	        this.discord = source["discord"];
 	        this.directory = source["directory"];
 	        this.deadline = this.convertValues(source["deadline"], time.Time);
